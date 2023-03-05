@@ -159,42 +159,41 @@ function UpdateServerSkill ()
   }
 }
 
-
-
-
 simulated function string GetServerSkillText ()
 {
   if ( ServerSkill <= 0 )
   {
-    return "ï¿½(Min.2 Players)";
-	
+    return "ÿ(Min.2 Players)";
   }
   if ( ServerSkill < 1 )
   {
-    return "ï¿½ï¿½No-Skill ï¿½ï¿½ï¿½(ï¿½ï¿½" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "ÿ€No-Skill ÿÿÿ(ÿ€" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   if ( ServerSkill < 1.8 )
   {
-    return "ï¿½ï¿½@Low ï¿½ï¿½ï¿½(ï¿½ï¿½@" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "ÿÿ@Low ÿÿÿ(ÿÿ@" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   if ( ServerSkill < 2.1 )
   {
-    return "ï¿½ï¿½Mid ï¿½ï¿½ï¿½(ï¿½ï¿½" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "€ÿMid ÿÿÿ(€ÿ" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   if ( ServerSkill < 2.25 )
   {
-    return "ï¿½ï¿½Good ï¿½ï¿½ï¿½(ï¿½ï¿½" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "€ÿGood ÿÿÿ(€ÿ" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   if ( ServerSkill < 2.7 )
   {
-    return "ï¿½ï¿½High ï¿½ï¿½ï¿½(ï¿½ï¿½" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "€ÿHigh ÿÿÿ(€ÿ" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   if ( ServerSkill > 3.1 )
   {
-    return "ï¿½ï¿½Insane ï¿½ï¿½ï¿½(ï¿½ï¿½" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ï¿½ï¿½ï¿½)";
+    return "€ÿInsane ÿÿÿ(€ÿ" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "ÿÿÿ)";
   }
   
 }
+
+
+
 
 function PlayerReplicationInfo PickWhoToRes (TeamInfo Team)
 {
@@ -283,6 +282,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version=" SoL 1.0"
+     Version=" SoL 1.3"
      EnableNewNet=True
 }

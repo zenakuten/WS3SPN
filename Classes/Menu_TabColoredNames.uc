@@ -19,7 +19,7 @@ class Menu_TabColoredNames extends UT2k3TabPanel;
 
 var automated GUILabel l_ColorNameLetters[20];
 var automated GUILabel l_LetterSelection;
-var automated moCheckBox ch_ColorChat, ch_ColorScoreboard, ch_ColorHUD, ch_ColorQ3, ch_EnemyNames;
+var automated moCheckBox ch_ColorChat, ch_ColorScoreboard, ch_ColorHUD, ch_ColorQ3, ch_EnemyNames, ch_OldDeathMessages;
 var automated GUIComboBox co_SavedNames;
 var automated GUIButton bu_SaveName, bu_DeleteName, bu_ResetWhite, bu_Apply;
 var automated GUISlider sl_RedColor, sl_BlueColor, sl_GreenColor;
@@ -86,6 +86,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	ch_ColorHUD.Checked(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD);
 	ch_ColorQ3.Checked(class'Misc_Player'.default.bAllowColoredMessages);
 	ch_EnemyNames.Checked(class'Misc_Player'.default.bEnableColoredNamesOnEnemies);
+    ch_OldDeathMessages.Checked(class'Misc_DeathMessage'.default.bUseOldDeathMessages);
 	co_DeathSelect.AddItem("Disabled");
 	co_DeathSelect.AddItem("Colored Names");
 	co_DeathSelect.AddItem("Red/Blue Colored Names");
@@ -190,6 +191,10 @@ function InternalOnChange( GUIComponent C )
     case co_DeathSelect:  
 		class'Misc_DeathMessage'.default.bEnableTeamColoredDeaths=(co_DeathSelect.GetIndex()==2);
 		class'Misc_DeathMessage'.default.bDrawColoredNamesInDeathMessages=(co_DeathSelect.GetIndex()==1); 
+		break;
+
+    case ch_OldDeathMessages: 
+		class'Misc_DeathMessage'.default.bUseOldDeathMessages=ch_OldDeathMessages.IsChecked(); 
 		break;
 		
    case sl_LetterSelect: 
@@ -380,7 +385,7 @@ defaultproperties
      Begin Object Class=moCheckBox Name=ColorChatCheck
          Caption="Show colored names in chat messages"
          OnCreateComponent=ColorChatCheck.InternalOnCreateComponent
-         WinTop=0.100000
+         WinTop=0.050000
          WinLeft=0.100000
          WinWidth=0.800000
          OnChange=Menu_TabColoredNames.InternalOnChange
@@ -390,7 +395,7 @@ defaultproperties
      Begin Object Class=moCheckBox Name=ColorScoreboardCheck
          Caption="Show colored names on scoreboard"
          OnCreateComponent=ColorScoreboardCheck.InternalOnCreateComponent
-         WinTop=0.150000
+         WinTop=0.100000
          WinLeft=0.100000
          WinWidth=0.800000
          OnChange=Menu_TabColoredNames.InternalOnChange
@@ -400,7 +405,7 @@ defaultproperties
      Begin Object Class=moCheckBox Name=ColorHUDCheck
          Caption="Show colored names on HUD"
          OnCreateComponent=ColorHUDCheck.InternalOnCreateComponent
-         WinTop=0.200000
+         WinTop=0.150000
          WinLeft=0.100000
          WinWidth=0.800000
          OnChange=Menu_TabColoredNames.InternalOnChange
@@ -410,17 +415,27 @@ defaultproperties
      Begin Object Class=moCheckBox Name=Colorq3Check
          Caption="Show colored text in chat messages(Q3 Style)"
          OnCreateComponent=Colorq3Check.InternalOnCreateComponent
-         WinTop=0.300000
+         WinTop=0.250000
          WinLeft=0.100000
          WinWidth=0.800000
          OnChange=Menu_TabColoredNames.InternalOnChange
      End Object
      ch_ColorQ3=moCheckBox'3SPNvSoL.Menu_TabColoredNames.Colorq3Check'
 
+     Begin Object Class=moCheckBox Name=UseOldDeathMessagesCheck
+         Caption="Use classic 3SPN death messages"
+         OnCreateComponent=Colorq3Check.InternalOnCreateComponent
+         WinTop=0.300000
+         WinLeft=0.100000
+         WinWidth=0.800000
+         OnChange=Menu_TabColoredNames.InternalOnChange
+     End Object
+     ch_OldDeathMessages=moCheckBox'3SPNvSoL.Menu_TabColoredNames.UseOldDeathMessagesCheck'
+
      Begin Object Class=moCheckBox Name=EnemyNamesCheck
          Caption="Show colored enemy names on targeting"
          OnCreateComponent=EnemyNamesCheck.InternalOnCreateComponent
-         WinTop=0.250000
+         WinTop=0.200000
          WinLeft=0.100000
          WinWidth=0.800000
          OnChange=Menu_TabColoredNames.InternalOnChange

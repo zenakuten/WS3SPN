@@ -11,11 +11,14 @@ static function IncrementKills(Controller Killer)
 	{
 		xPRI.flakcount++;
 		if ( (xPRI.flakcount == Default.AwardLevel) && (Misc_Player(Killer) != None) )
-			Misc_Player(Killer).BroadcastAnnouncement(Class'Message_FlakMan');
+			Misc_Player(Killer).BroadcastAward(Class'Message_FlakMan');
+
+		if ( (xPRI.flakcount == Default.AwardLevel) && (Misc_Bot(Killer) != None) )
+			Misc_Bot(Killer).BroadcastAward(Class'Message_FlakMan');
 	}
 }
 
 defaultproperties
 {
-     AwardLevel=7
+    AwardLevel=7
 }

@@ -14,14 +14,16 @@ static function IncrementKills (Controller Killer)
   if ( xPRI != None )
   {
     xPRI.combocount++;
+
     if ( (xPRI.combocount == Default.AwardLevel) && (Misc_Player(Killer) != None) )
-    {
-      Misc_Player(Killer).BroadcastAnnouncement(Class'Message_Combowhore');
-    }
+      Misc_Player(Killer).BroadcastAward(Class'Message_Combowhore');
+
+    if ( (xPRI.combocount == Default.AwardLevel) && (Misc_Bot(Killer) != None) )
+      Misc_Bot(Killer).BroadcastAward(Class'Message_Combowhore');
   }
 }
 
 defaultproperties
 {
-     AwardLevel=8
+    AwardLevel=8
 }

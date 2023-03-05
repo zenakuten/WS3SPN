@@ -32,7 +32,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	InfoTab = Menu_TabInfo(TabC.AddTab("Info", "3SPNvSoL.Menu_TabInfo",, "General Information", DefaultToInfoTab));
 	StatsTab = Menu_TabRanks(TabC.AddTab("Ranks", "3SPNvSoL.Menu_TabRanks",, "Ranks", false));
     MiscTab = Menu_TabMisc(TabC.AddTab("Miscellaneous", "3SPNvSoL.Menu_TabMisc",, "Miscellaneous player options", !DefaultToInfoTab));
-    DamageTab = Menu_TabDamage(TabC.AddTab("Damage Visuals", "3SPNvSoL.Menu_TabDamage",, "Damage Visuals Configuration", false));
+    DamageTab = Menu_TabDamage(TabC.AddTab("Extra", "3SPNvSoL.Menu_TabDamage",, "Extra configuration", false));
     BSTab = Menu_TabBrightskins(TabC.AddTab("Brightskins & Models", "3SPNvSoL.Menu_TabBrightskins",, "Brightskins configuration", false));
 	NamesTab = Menu_TabColoredNames(TabC.AddTab("Colored Names", "3SPNvSoL.Menu_TabColoredNames",, "Colored Names", false));
 	WeaponsTab = Menu_TabWeapons(TabC.AddTab("Weapons", "3SPNvSoL.Menu_TabWeapons",, "Weapons", false));

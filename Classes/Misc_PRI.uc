@@ -29,6 +29,7 @@ var float PPRList[30];
 var float PointsToRankUp;
 var int ShieldCount;
 var int GrenCount;
+var int BioCount;
 
 var int CurrentDamage;
 var int CurrentDamage2;

@@ -47,6 +47,7 @@ struct MiscSettings
 	var float SoundAloneVolume;
 	var bool AutoSyncSettings;
     var int DamageIndicatorType;
+    var int ReceiveAwardType;
 };
 
 struct WeaponSettings

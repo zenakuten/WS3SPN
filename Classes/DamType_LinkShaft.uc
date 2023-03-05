@@ -20,9 +20,10 @@ static function IncrementKills(Controller Killer)
         ++ xPRI.LinkCount;
         
         if((xPRI.LinkCount == default.AwardLevel) && Misc_Player(Killer) != none)
-        {
-            Misc_Player(Killer).BroadcastAnnouncement(class'Message_LinkShafter');
-        }
+            Misc_Player(Killer).BroadcastAward(class'Message_LinkShafter');
+
+        if((xPRI.LinkCount == default.AwardLevel) && Misc_Bot(Killer) != none)
+            Misc_Bot(Killer).BroadcastAward(class'Message_LinkShafter');
     }
    
 }

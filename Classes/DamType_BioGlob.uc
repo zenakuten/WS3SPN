@@ -1,24 +1,24 @@
 class DamType_BioGlob extends DamTypeBioGlob;
 
-#exec AUDIO IMPORT FILE=Sounds\Bukkake.wav     	    GROUP=Sounds
-
-var Sound BukkakeSound;
 var int AwardLevel;
+
 static function IncrementKills(Controller Killer)
 {
-	local xPlayerReplicationInfo xPRI;
+	local Misc_PRI xPRI;
 
-	xPRI = xPlayerReplicationInfo(Killer.PlayerReplicationInfo);
-	if ( xPRI != None )
+	xPRI = Misc_PRI(Killer.PlayerReplicationInfo);
+	if(xPRI != None)
 	{
-		xPRI.ranovercount++;    // using ranovercount to count bio kills for this
-		if ((xPRI.ranovercount == 5) && (UnrealPlayer(Killer) != None))
-            UnrealPlayer(Killer).ClientDelayedAnnouncement(default.BukkakeSound, 15);
-	}
+		++xPRI.BioCount;
+		if((xPRI.BioCount == Default.AwardLevel) && (Misc_Player(Killer) != None))
+			Misc_Player(Killer).BroadcastAward(class'Message_Bukkake');
+
+		if((xPRI.BioCount == Default.AwardLevel) && (Misc_Bot(Killer) != None))
+			Misc_Bot(Killer).BroadcastAward(class'Message_Bukkake');
+	} 	
 }
 
 defaultproperties
 {
-     BukkakeSound=Sound'3SPNvSoL.Sounds.Bukkake'
      AwardLevel=5
 }

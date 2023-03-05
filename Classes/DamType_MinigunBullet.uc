@@ -20,14 +20,15 @@ static function IncrementKills(Controller Killer)
         ++ xPRI.MinigunCount;
         
         if((xPRI.MinigunCount == default.AwardLevel) && Misc_Player(Killer) != none)
-        {
-            Misc_Player(Killer).BroadcastAnnouncement(class'Message_Mini');
-        }
+            Misc_Player(Killer).BroadcastAward(class'Message_Mini');
+
+        if((xPRI.MinigunCount == default.AwardLevel) && Misc_Bot(Killer) != none)
+            Misc_Bot(Killer).BroadcastAward(class'Message_Mini');
     }
    
 }
 
 defaultproperties
 {
-     AwardLevel=3
+    AwardLevel=3
 }

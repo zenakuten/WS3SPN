@@ -1,6 +1,6 @@
 class Message_Shield extends LocalMessage;
 
-#exec AUDIO IMPORT FILE=Sounds\RocketMan.wav GROUP=Sounds
+#exec AUDIO IMPORT FILE=Sounds\HaHa.wav GROUP=Sounds
 
 var Sound RocketManSound;
 var localized string YouAreRocketMan;
@@ -38,7 +38,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     RocketManSound=Sound'3SPNvSoL.Sounds.RocketMan'
+     RocketManSound=Sound'3SPNvSoL.Sounds.HaHa'
      YouAreRocketMan="H U M I L I A T I O N"
      PlayerIsRocketMan="IS A SHIELDER!"
      bIsUnique=True

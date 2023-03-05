@@ -478,7 +478,6 @@ static event string GetDescriptionText(string PropName)
 //      case "UseZAxisRadar":            return "Extended Player HUD Includes Z Axis For Allies";
       case "bFastWeaponSwitching": return "UT2003 style fast weapon switching";
       case "bCanBoostDodge": return "UT2003 style boost dodging";
-
     }
 
     return Super.GetDescriptionText(PropName);

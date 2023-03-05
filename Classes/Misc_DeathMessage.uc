@@ -9,6 +9,7 @@ var Color TextColor;
 var string Text;
 var config bool bDrawColoredNamesInDeathMessages;
 var config bool bEnableTeamColoredDeaths;
+var config bool bUseOldDeathMessages;
 
 static function string MakeTeamColor (PlayerReplicationInfo PRI)
 {
@@ -85,6 +86,13 @@ static function string PriName (PlayerReplicationInfo PRI)
 
 static function ClientReceive (PlayerController P, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)
 {
+
+  if(class'Misc_DeathMessage'.default.bUseOldDeathMessages)
+  {
+      super.ClientReceive(P, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+      return;
+  }
+
   if ( Switch == 1 )
   {
     if (  !Class'xDeathMessage'.Default.bNoConsoleDeathMessages )
@@ -146,4 +154,5 @@ defaultproperties
 {
      TextColor=(B=210,G=210,R=210,A=255)
      bDrawColoredNamesInDeathMessages=True
+     bUseOldDeathMessages=False
 }

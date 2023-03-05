@@ -16,7 +16,10 @@ static function IncrementKills(Controller Killer)
 		xPRI.HeadCount++;
 		
         if ( (xPRI.HeadCount == Default.AwardLevel) && (Misc_Player(Killer) != None) )
-            Misc_Player(Killer).BroadcastAnnouncement(Class'Message_HeadHunter');		
+            Misc_Player(Killer).BroadcastAward(Class'Message_HeadHunter');		
+
+        if ( (xPRI.HeadCount == Default.AwardLevel) && (Misc_Bot(Killer) != None) )
+            Misc_Bot(Killer).BroadcastAward(Class'Message_HeadHunter');		
 	}
 }
 

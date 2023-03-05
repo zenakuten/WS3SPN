@@ -102,6 +102,19 @@ function AwardAdrenaline(float amount)
     }
 }
 
+function BroadcastAward(class<LocalMessage> message)
+{
+	local Controller C;
+
+    for(C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        if(Misc_Player(C)!=None)
+        {
+            Misc_Player(C).ReceiveAwardMessage(message, int(C==self), PlayerReplicationInfo);
+        }
+    }
+}
+
 defaultproperties
 {
      PlayerReplicationInfoClass=Class'3SPNvSoL.Misc_PRI'

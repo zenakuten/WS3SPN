@@ -312,7 +312,7 @@ defaultproperties
      Controls(15)=GUILabel'3SPNvSoL.Menu_TabMisc.DummyObject'
 
      Begin Object Class=moCheckBox Name=StepsCheck
-         Caption="Disable own footsteps."
+         Caption="Disable own footsteps. (Weapon bob must be OFF!)"
          OnCreateComponent=StepsCheck.InternalOnCreateComponent
          WinTop=0.055000
          WinLeft=0.100000

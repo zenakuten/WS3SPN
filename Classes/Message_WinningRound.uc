@@ -2,16 +2,16 @@
 // Message_WinningRound.
 //================================================================================
 
-class Message_WinningRound extends LocalMessage;
+class Message_WinningRound extends LocalMessage config;
 #exec AUDIO IMPORT FILE=Sounds\MatchPoint.wav GROUP=Sounds
 #exec AUDIO IMPORT FILE=Sounds\sudden_death.wav GROUP=Sounds
 
-var Sound SuddenDeathSound;
-var Sound MatchPointSound;
+var config Sound SuddenDeathSound;
+var config Sound MatchPointSound;
 var(Message) localized string RedTeamScores;
 var(Message) localized string BlueTeamScores;
-var(Message) localized string MatchPoint;
-var(Message) localized string SuddenDeath;
+var(Message) config localized string MatchPoint;
+var(Message) config localized string SuddenDeath;
 var(Message) Color RedTeamColor;
 var(Message) Color BlueTeamColor;
 

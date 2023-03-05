@@ -14,8 +14,12 @@ static function IncrementKills(Controller Killer)
 	if(xPRI != None)
 	{
 		++xPRI.GrenCount;
+
 		if((xPRI.GrenCount == Default.AwardLevel) && (Misc_Player(Killer) != None))
-			Misc_Player(Killer).BroadcastAnnouncement(class'Message_RocketMan');
+			Misc_Player(Killer).BroadcastAward(class'Message_RocketMan');
+
+		if((xPRI.GrenCount == Default.AwardLevel) && (Misc_Bot(Killer) != None))
+			Misc_Bot(Killer).BroadcastAward(class'Message_RocketMan');
 	} 	
 	
 }

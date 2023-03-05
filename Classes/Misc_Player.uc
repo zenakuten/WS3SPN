@@ -21,6 +21,16 @@ var config bool bExtendedInfo;          // show extra teammate info
 
 var config int DamageIndicatorType;     // 1 = Disabled, 2 = Centered, 3 = Floating
 
+enum ReceiveAwardTypes
+{
+    RAT_Disabled,
+    RAT_Player,
+    RAT_Team,
+    RAT_All
+};
+
+var config ReceiveAwardTypes ReceiveAwardType;  // what awards does player see
+
 var config bool bMatchHUDToSkins;       // sets HUD color to brightskins color
 /* HUD related */
 
@@ -163,10 +173,11 @@ replication
         ClientResetClock, ClientPlayAlone, ClientPlaySpawnProtection,
         ClientListBest, ClientAddCeremonyRanking, ClientStartCeremony, 
 		ClientReceiveStatsListName, ClientReceiveStatsListIdx,
-        /*ClientLockWeapons,*/ ClientKillBases, ClientSendAssaultStats,
+        ClientKillBases, ClientSendAssaultStats,
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
-        ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats;
+        ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
+        ReceiveAwardMessage;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         HitDamage, bHitContact, HitPawn, bSeeInvis;
@@ -797,9 +808,36 @@ simulated function PlayCustomRewardAnnouncement(sound ASound, byte AnnouncementL
 function BroadcastAnnouncement(class<LocalMessage> message)
 {
 	local Controller C;
-	for(C = Level.ControllerList; C != None; C = C.NextController)
-		if(Misc_Player(C)!=None)
-			Misc_Player(C).ReceiveLocalizedMessage(message, int(C==self), PlayerReplicationInfo);
+    for(C = Level.ControllerList; C != None; C = C.NextController)
+        if(Misc_Player(C)!=None)
+            Misc_Player(C).ReceiveLocalizedMessage(message, int(C==self), PlayerReplicationInfo);
+}
+
+function BroadcastAward(class<LocalMessage> message)
+{
+	local Controller C;
+    for(C = Level.ControllerList; C != None; C = C.NextController)
+    {
+        if(Misc_Player(C)!=None)
+        {
+            Misc_Player(C).ReceiveAwardMessage(message, int(C==self), PlayerReplicationInfo);
+        }
+    }
+}
+
+simulated event ReceiveAwardMessage( class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject )
+{
+    log("Received award "$Message$" awardType = "$ReceiveAwardType);
+    if(ReceiveAwardType == ReceiveAwardTypes.RAT_Disabled)
+        return;
+
+    if((ReceiveAwardType == ReceiveAwardTypes.RAT_All) ||
+       (ReceiveAwardType == ReceiveAwardTypes.RAT_Player && Switch == 1) ||
+       (ReceiveAwardType == ReceiveAwardTypes.RAT_Team && RelatedPRI_1 != None && PlayerReplicationInfo.Team.TeamIndex == RelatedPRI_1.Team.TeamIndex ))
+    {
+        log("Calling receive localized message with message "$Message);
+        ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
+    }
 }
 
 simulated function PlayStatusAnnouncementReliable(name AName, byte AnnouncementLevel, optional bool bForce)
@@ -1802,6 +1840,7 @@ simulated function ReloadDefaults()
 	RedEnemyModel = class'Misc_Player'.default.RedEnemyModel;
 	BlueAllyModel = class'Misc_Player'.default.BlueAllyModel;
     DamageIndicatorType = class'Misc_Player'.default.DamageIndicatorType;
+    ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
 	bDisableAnnouncement = class'Misc_Player'.default.bDisableAnnouncement;
 	bAutoScreenShot = class'Misc_Player'.default.bAutoScreenShot;
 	
@@ -1902,6 +1941,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 
 	class'Misc_Player'.default.AutoSyncSettings = Misc.AutoSyncSettings;
     class'Misc_Player'.default.DamageIndicatorType = Misc.DamageIndicatorType;
+    class'Misc_Player'.default.ReceiveAwardType = ReceiveAwardTypes(Misc.ReceiveAwardType);
 	
 	ReloadDefaults();
 	SetupCombos();
@@ -2035,6 +2075,7 @@ function SaveSettings()
 	Misc.SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
 	Misc.AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
     Misc.DamageIndicatorType = class'Misc_Player'.default.DamageIndicatorType;
+    Misc.ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
 
     Weapons.bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
 
@@ -2180,4 +2221,5 @@ defaultproperties
      PlayerReplicationInfoClass=Class'3SPNvSoL.Misc_PRI'
      Adrenaline=0.100000
      AdrenalineMax=120.000000
+     ReceiveAwardType=RAT_All
 }
