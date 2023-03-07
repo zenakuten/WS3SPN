@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+V1.4
+- fix 'teams' command
+
 v1.3
 - fix config option 'ReceiveAwards' not applying, was only doing 'player' awards previously
 - change shield gun award to use haha sound
