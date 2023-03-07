@@ -28,9 +28,6 @@ static simulated function ClientReceive(
 	)
 {
 	Super.ClientReceive(P, SwitchNum, RelatedPRI_1, RelatedPRI_2, OptionalObject);
-    Misc_Player(P).PlayCustomRewardAnnouncement(default.GrenadeSound, 1);
-	if(SwitchNum==0 && RelatedPRI_2 == None)
-		P.ClientPlaySound(default.GrenadeSound);
 	
 	if(SwitchNum==1)
 		P.ClientPlaySound(default.GrenadeSound);

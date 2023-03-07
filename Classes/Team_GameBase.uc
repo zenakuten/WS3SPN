@@ -2916,10 +2916,11 @@ function BalanceTeamsRoundStart()
   ForceAutoBalance = false;
 }
 
-function QueueAutoBalance()
+function QueueAutoBalance(bool bAdminUser)
 {
-  if(!AutoBalanceTeams || !AllowForceAutoBalance)
-    return;
+    if(!bAdminUser)
+        if(!AutoBalanceTeams || !AllowForceAutoBalance)
+            return;
     
   if(ForceAutoBalanceTimer>0)
   {

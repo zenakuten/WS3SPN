@@ -1443,6 +1443,25 @@ exec function SetSkins(byte r1, byte g1, byte b1, byte r2, byte g2, byte b2, byt
     class'Misc_Player'.static.StaticSaveConfig();
 }
 
+
+function ServerSay(string Msg)
+{
+  local bool isAdmin; //pass player admin status if they say 'teams'
+  
+  Super.ServerSay(Msg);
+  
+  if(Msg ~= "teams")
+  {
+      isAdmin = False;
+
+      if(PlayerReplicationInfo != None)
+          isAdmin = PlayerReplicationInfo.bAdmin;
+
+      if(Team_GameBase(Level.Game) != None)
+         Team_GameBase(Level.Game).QueueAutoBalance(isAdmin);
+  }
+}
+
 exec function Menu3SPN()
 {
 	local Rotator r;

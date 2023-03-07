@@ -29,9 +29,6 @@ static simulated function ClientReceive(
 {
 	Super.ClientReceive(P, SwitchNum, RelatedPRI_1, RelatedPRI_2, OptionalObject);
     
-	if(SwitchNum==0 && RelatedPRI_2 == None)
-		P.ClientPlaySound(default.RocketManSound);
-	
 	if(SwitchNum==1)
 		P.ClientPlaySound(default.RocketManSound);
 }
