@@ -184,6 +184,8 @@ var bool UseZAxisRadar;
 var config bool bFastWeaponSwitching;
 var config bool bCanBoostDodge;
 
+var config int MinPlayersForStatsRecording;
+
 struct ControllerArray
 {
     var array<Controller> C;
@@ -384,6 +386,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "ScoreboardCommunityName", "Scoreboard Community Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, True);
+    PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
+
 //    PI.AddSetting("3SPN", "UseZAxisRadar", "Extended HUD Includes Z Axis", 0, Weight++, "Check");
 
     //serverlink menu entry
@@ -474,6 +478,7 @@ static event string GetDescriptionText(string PropName)
       case "ScoreboardCommunityName":  return "Scoreboard Community Name";
       case "ScoreboardRedTeamName":    return "Scoreboard Red Team Name";
       case "ScoreboardBlueTeamName":   return "Scoreboard Blue Team Name";
+      case "MinPlayersForStatsRecording": return "Number of players before recording stats";
 
 //      case "UseZAxisRadar":            return "Extended Player HUD Includes Z Axis For Allies";
       case "bFastWeaponSwitching": return "UT2003 style fast weapon switching";
@@ -1514,65 +1519,6 @@ function float RatePlayerStart(NavigationPoint N, byte Team, Controller Player)
     return FMax(Score, 5);
 } // RatePlayerStart()
 
-//BOOSTER
-function SetBoosterState ()
-{
-  local Controller C;
-  local int i;
-  
-  C = Level.ControllerList;
-  J0x14:
- 
-  if ( C != None )
-  {
-    if ( (C.PlayerReplicationInfo != None) && (C.PlayerReplicationInfo.Team != None) )
-    {
-      i++;
-    }
-    C = C.nextController;
-    goto J0x14;
-  }
-  if ( (i == 0) || (i == LastPlayerCount) )
-  {
-    return;
-  }
-  if ( i <= 4 )
-  {
-    if ( Misc_BaseGRI(GameReplicationInfo).bDisableBooster || (LastPlayerCount == 0) )
-    {
-      Misc_BaseGRI(GameReplicationInfo).bDisableBooster = False;
-      C = Level.ControllerList;
-	  J0xE8:
-      if ( C != None )
-      {
-        if ( (PlayerController(C) != None) && (PlayerController(C).PlayerReplicationInfo != None) )
-        {
-          PlayerController(C).ReceiveLocalizedMessage(Class'BoostStateMessage',1);
-        }
-        C = C.nextController;
-       goto J0xE8;
-      }
-    }
-  } else {
-    if (  !Misc_BaseGRI(GameReplicationInfo).bDisableBooster || (LastPlayerCount == 0) )
-    {
-      Misc_BaseGRI(GameReplicationInfo).bDisableBooster = True;
-      C = Level.ControllerList;
-	  J0x1A2:
-      if ( C != None )
-      {
-        if ( (PlayerController(C) != None) && (PlayerController(C).PlayerReplicationInfo != None) )
-        {
-          PlayerController(C).ReceiveLocalizedMessage(Class'BoostStateMessage',2);
-        }
-        C = C.nextController;
-        goto J0x1A2;
-      }
-    }
-  }
-  LastPlayerCount = i;
-}
-
 function StartMatch()
 {	
   local Controller C;
@@ -1598,13 +1544,13 @@ if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
             goto J0x32;
         }
         // End:0xAD
-        if(CountPlayers < 6)
+        if(CountPlayers < MinPlayersForStatsRecording)
         {
             BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled');
             NoStatsForThisMatch = true; Misc_BaseGRI(GameReplicationInfo).stat = false;
 			
 			
-        } else if (CountPlayers >= 6) {Misc_BaseGRI(GameReplicationInfo).stat = true; }
+        } else if (CountPlayers >= MinPlayersForStatsRecording) {Misc_BaseGRI(GameReplicationInfo).stat = true; }
 		
     }
 		
@@ -1624,7 +1570,6 @@ if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
     NextRoundTime = 0;
 
     GameReplicationInfo.bStopCountdown = false;
-	SetBoosterState();
 }
 
 function StartNewRound()
@@ -1653,7 +1598,6 @@ function StartNewRound()
     Misc_BaseGRI(GameReplicationInfo).CurrentRound = CurrentRound;
     bEndOfRound = false;
     Misc_BaseGRI(GameReplicationInfo).bEndOfRound = false;
-	SetBoosterState();
     DarkHorse = none;
 
     Misc_BaseGRI(GameReplicationInfo).RoundTime = RoundTime;
@@ -3956,7 +3900,7 @@ defaultproperties
      bScoreTeamKills=False
      bFastWeaponSwitching=True
      bCanBoostDodge=False
-
+     MinPlayersForStatsRecording=2
      FriendlyFireScale=0.500000
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
