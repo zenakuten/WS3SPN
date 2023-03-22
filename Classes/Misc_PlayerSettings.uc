@@ -43,6 +43,7 @@ struct MiscSettings
 	var bool bUseHitSounds;
 	var bool bEnableEnhancedNetCode;
 	var bool bDisableEndCeremonySound;
+	var bool bEnableWidescreenFix;
 	var float SoundHitVolume;
 	var float SoundAloneVolume;
 	var bool AutoSyncSettings;
