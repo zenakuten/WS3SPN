@@ -115,10 +115,10 @@ function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, f
 
 simulated function DrawCrosshair(Canvas C)
 {
-    if (class'Misc_Player'.default.bEnableWidescreenFix)
-        WideDrawCrosshair(C);
-    else
-        Super.DrawCrosshair(C);
+	if (class'Misc_Player'.default.bEnableWidescreenFix)
+  		WideDrawCrosshair(C);
+  else
+			Super.DrawCrosshair(C);
 }
 
 simulated function bool ShouldDrawPlayer(Misc_PRI PRI)

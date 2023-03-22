@@ -433,4 +433,5 @@ defaultproperties
          OnChange=Menu_TabMisc.OnChange
      End Object
      Controls(25)=moCheckBox'3SPNvSoL.Menu_TabMisc.SyncSettingsCheck'
+
 }

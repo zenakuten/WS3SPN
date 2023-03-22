@@ -1872,7 +1872,7 @@ simulated function ReloadDefaults()
 	SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	SoundAlone = class'Misc_Player'.default.SoundAlone; 
 	SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
-  SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
+    SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
 	SoundTMDeath = class'Misc_Player'.default.SoundTMDeath;
 	SoundUnlock = class'Misc_Player'.default.SoundUnlock;
 	
