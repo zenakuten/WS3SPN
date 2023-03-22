@@ -35,6 +35,11 @@ var int CurrentStatsList;
 var array<vector> TargetingLines;
 var Actor TargetingActor;
 
+#include Classes\Include\_HudCommon.h.uci
+#include Classes\Include\_HudCommon.uci
+#include Classes\Include\DrawCrosshair.uci
+#include Classes\Include\_HudCommon.p.uci
+
 exec function ShowStats()
 {
     bShowLocalStats = !bShowLocalStats;
@@ -106,6 +111,14 @@ function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, f
     Scaling = 24 * C.ClipX * (0.45 * HUDScale) / 1600;
 
     C.DrawTile(LocationDot, Scaling, Scaling, 340, 432, 78, 78);
+}
+
+simulated function DrawCrosshair(Canvas C)
+{
+    if (class'Misc_Player'.default.bEnableWidescreenFix)
+        WideDrawCrosshair(C);
+    else
+        Super.DrawCrosshair(C);
 }
 
 simulated function bool ShouldDrawPlayer(Misc_PRI PRI)
