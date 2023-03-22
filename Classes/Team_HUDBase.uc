@@ -38,6 +38,7 @@ var Actor TargetingActor;
 #include Classes\Include\_HudCommon.h.uci
 #include Classes\Include\_HudCommon.uci
 #include Classes\Include\DrawCrosshair.uci
+#include Classes\Include\DrawAdrenaline.uci
 #include Classes\Include\_HudCommon.p.uci
 
 exec function ShowStats()
