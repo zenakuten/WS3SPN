@@ -108,6 +108,8 @@ var config Interactions.EInputKey Menu3SPNKey;
 
 var config bool bDisableEndCeremonySound;
 
+var config bool bEnableWidescreenFix;
+
 var bool EndCeremonyStarted;
 var float EndCeremonyTimer;
 var int EndCeremonyPlayerIdx;
@@ -1870,7 +1872,7 @@ simulated function ReloadDefaults()
 	SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	SoundAlone = class'Misc_Player'.default.SoundAlone; 
 	SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
-  SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
+	SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
 	SoundTMDeath = class'Misc_Player'.default.SoundTMDeath;
 	SoundUnlock = class'Misc_Player'.default.SoundUnlock;
 	
@@ -1953,6 +1955,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 	class'Misc_Player'.default.bUseHitSounds = Misc.bUseHitSounds;
 	class'Misc_Player'.default.bEnableEnhancedNetCode = Misc.bEnableEnhancedNetCode;
 	class'Misc_Player'.default.bDisableEndCeremonySound = Misc.bDisableEndCeremonySound;
+	class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
 	class'Misc_Player'.default.SoundHitVolume = Misc.SoundHitVolume;
 	class'Misc_Player'.default.SoundAloneVolume = Misc.SoundAloneVolume;
 
@@ -2090,6 +2093,7 @@ function SaveSettings()
 	Misc.bUseHitSounds = class'Misc_Player'.default.bUseHitSounds;
 	Misc.bEnableEnhancedNetCode = class'Misc_Player'.default.bEnableEnhancedNetCode;
 	Misc.bDisableEndCeremonySound = class'Misc_Player'.default.bDisableEndCeremonySound;
+	Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
 	Misc.SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	Misc.SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
 	Misc.AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
