@@ -89,10 +89,10 @@ simulated function DrawAdrenaline(Canvas C)
             
             ComboType[CRI.Combos[i].Type].PosY = (posy - (0.033 * drawn) * Scale);
             
-			if (class'Misc_Player'.default.bEnableWidescreenFix)
-				DrawSpriteTileWidget(C, ComboType[CRI.Combos[i].Type]);
-			else
-            	DrawSpriteWidget(C, ComboType[CRI.Combos[i].Type]);
+            if (class'Misc_Player'.default.bEnableWidescreenFix)
+                DrawSpriteTileWidget(C, ComboType[CRI.Combos[i].Type]);
+            else
+                DrawSpriteWidget(C, ComboType[CRI.Combos[i].Type]);
 
             ComboAdren.Value = CRI.Combos[i].Time;
             ComboAdren.PosY = (posy - (0.033 * drawn) * Scale);
@@ -100,7 +100,7 @@ simulated function DrawAdrenaline(Canvas C)
             if (class'Misc_Player'.default.bEnableWidescreenFix)
                 DrawNumericTileWidget(C, ComboAdren, DigitsBig);
             else
-				DrawNumericWidget(C, ComboAdren, DigitsBig);
+                DrawNumericWidget(C, ComboAdren, DigitsBig);
             
             drawn++;
         }
