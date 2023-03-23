@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-class NewNet_RocketProj extends RocketProj;
+class NewNet_RocketProj extends TeamColorRocketProj;
 
 var PlayerController PC;
 var vector DesiredDeltaFake;
@@ -67,7 +67,6 @@ simulated function DoSetLoc(Vector V)
     SetLocation(V);
 }
 
-
 simulated function bool CheckForFakeProj()
 {
      local float ping;
@@ -95,14 +94,11 @@ simulated function bool CheckForFakeProj()
      return false;
 }
 
-
-
 simulated function FindFPM()
 {
     foreach DynamicActors(Class'NewNet_FakeProjectileManager', FPM)
         break;
 }
-
 
 simulated function Tick(float deltatime)
 {

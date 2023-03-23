@@ -22,7 +22,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     moCheckBox(Controls[6]).Checked(!class'Misc_Player'.default.bShowTeamInfo);
     moCheckBox(Controls[7]).Checked(!class'Misc_Player'.default.bShowCombos);    
     moCheckBox(Controls[14]).Checked(class'Misc_Player'.default.bExtendedInfo);
-    moCheckBox(Controls[26]).Checked(class'Misc_Player'.default.bEnableWidescreenFix);
 
     moCheckBox(Controls[16]).Checked(!class'Misc_Pawn'.default.bPlayOwnFootsteps);
     moCheckBox(Controls[17]).Checked(class'Misc_Player'.default.bAutoScreenShot);
@@ -109,8 +108,6 @@ function OnChange(GUIComponent C)
 			class'Misc_Player'.default.bDisableEndCeremonySound = b;
 		else if(c == Controls[25])
 			class'Misc_Player'.default.AutoSyncSettings = b;
-        else if(c == Controls[26])
-			class'Misc_Player'.default.bEnableWidescreenFix = b;
     }
     else if(GUISlider(c) != None)
     {
@@ -307,16 +304,6 @@ defaultproperties
          OnChange=Menu_TabMisc.OnChange
      End Object
      Controls(14)=moCheckBox'3SPNvSoL.Menu_TabMisc.ExtendCheck'
-
-     Begin Object Class=moCheckBox Name=WidescreenFixCheck
-         Caption="Enable Widescreen fixes."
-         OnCreateComponent=WidescreenFixCheck.InternalOnCreateComponent
-         WinTop=0.010000
-         WinLeft=0.100000
-         WinWidth=0.800000
-         OnChange=Menu_TabMisc.OnChange
-     End Object
-     Controls(26)=moCheckBox'3SPNvSoL.Menu_TabMisc.WidescreenFixCheck'
 
      Begin Object Class=GUILabel Name=DummyObject
          TextColor=(B=255,G=255,R=255,A=0)

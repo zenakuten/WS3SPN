@@ -55,6 +55,8 @@ var string SoundSpawnProtectionName;
 var Team_GameBase.EServerLinkStatus ServerLinkStatus; //enum type dependson Team_GameBase
 
 var bool bCanBoostDodge;
+var int MinNetSpeed;
+var int MaxNetSpeed;
 
 replication
 {
@@ -64,7 +66,8 @@ replication
         OTInterval, CampThreshold, bKickExcessiveCampers, bSpecExcessiveCampers, bForceRUP, ForceRUPMinPlayers,
         TimeOuts, Acronym, EnableNewNet, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
-        SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge;
+        SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
+        MaxNetSpeed, MinNetSpeed;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -265,7 +268,6 @@ simulated function Timer()
     UpdateServerSkill();
 	}
     UpdateWhoToRes();
-   
   
     if(Level.NetMode == NM_Client)
     {
@@ -282,6 +284,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version=" SoL 1.5"
+     Version="SoL 1.6"
      EnableNewNet=True
 }

@@ -77,9 +77,24 @@ simulated function bool PutDown()
 simulated function SpawnLGEffect(class<Actor> tmpHitEmitClass, vector ArcEnd, vector HitNormal, vector HitLocation)
 {
     local xEmitter HitEmitter;
+    //local int TeamNum;
     hitEmitter = xEmitter(Spawn(tmpHitEmitClass,,, arcEnd, Rotator(HitNormal)));
     if ( hitEmitter != None )
 	  	hitEmitter.mSpawnVecA = HitLocation;
+    /*
+    if(hitEmitter != None)
+    {
+        TeamNum=255;
+        if(Instigator != None && Instigator.Controller != None)
+            TeamNum = Instigator.Controller.GetTeamNum();
+
+        if(TeamColorLightningBolt(hitEmitter) != None)
+            TeamColorLightningBolt(hitEmitter).TeamNum=TeamNum;
+        else if(TeamColorChildLightningBolt(hitEmitter) != None)
+            TeamColorChildLightningBolt(hitEmitter).TeamNum=TeamNum;
+    }
+    */
+
     if(Level.NetMode!=NM_Client)
         Warn("Server should never spawn the client lightningbolt");
 }

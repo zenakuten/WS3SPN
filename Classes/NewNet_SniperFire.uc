@@ -220,6 +220,7 @@ function DoTrace(Vector Start, Rotator Dir)
     local Pawn HeadShotPawn;
 	local vector EffectOffset;
 	local vector PawnHitLocation;
+    //local int TeamNum;
 //	local float f;
 
 	if(!bUseEnhancedNetCode)
@@ -369,6 +370,20 @@ function DoTrace(Vector Start, Rotator Dir)
         hitEmitter = xEmitter(Weapon.Spawn(tmpHitEmitClass,,, arcEnd, Rotator(HitNormal)));
         if ( hitEmitter != None )
 			hitEmitter.mSpawnVecA = HitLocation;
+        /*
+        if(hitEmitter != None)
+        {
+            TeamNum=255;
+            if(Instigator != None && Instigator.Controller != None)
+                TeamNum = Instigator.Controller.GetTeamNum();
+
+            if(TeamColorLightningBolt(hitEmitter) != None)
+                TeamColorLightningBolt(hitEmitter).TeamNum=TeamNum;
+            else if(TeamColorChildLightningBolt(hitEmitter) != None)
+                TeamColorChildLightningBolt(hitEmitter).TeamNum=TeamNum;
+        }
+        */
+        
 		if ( HitScanBlockingVolume(Other) != None )
 		{
         	UnTimeTravel();

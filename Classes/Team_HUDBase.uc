@@ -40,6 +40,7 @@ var Actor TargetingActor;
 #include Classes\Include\DrawCrosshair.uci
 #include Classes\Include\_HudCommon.p.uci
 
+
 exec function ShowStats()
 {
     bShowLocalStats = !bShowLocalStats;

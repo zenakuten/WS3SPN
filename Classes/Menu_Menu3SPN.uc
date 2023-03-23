@@ -26,7 +26,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     bAdmin = PlayerOwner().PlayerReplicationInfo!=None && (PlayerOwner().PlayerReplicationInfo.bAdmin || PlayerOwner().Level.NetMode == NM_Standalone);
 	
-	GUITitleBar(Controls[1]).Caption = "3SPN"@class'Misc_BaseGRI'.default.Version@"Configuration";	
+	GUITitleBar(Controls[1]).Caption = "3SPN "@class'Misc_BaseGRI'.default.Version@"Configuration";	
 		
     TabC = GUITabControl(Controls[2]);
 	InfoTab = Menu_TabInfo(TabC.AddTab("Info", "3SPNvSoL.Menu_TabInfo",, "General Information", DefaultToInfoTab));
