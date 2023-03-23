@@ -37,10 +37,10 @@ simulated function DrawAdrenaline(Canvas C)
     local TeamInfo TRI;
     local Misc_DynComboReplicationInfo CRI;
 
-	if (class'Misc_Player'.default.bEnableWidescreenFix)
-		WideDrawAdrenaline(C);
-	else
-    	Super.DrawAdrenaline(C);
+    if (class'Misc_Player'.default.bEnableWidescreenFix)
+        WideDrawAdrenaline(C);
+    else
+        Super.DrawAdrenaline(C);
 
     if(myOwner == None || !class'Misc_Player'.default.bShowCombos)
         return;
@@ -82,10 +82,10 @@ simulated function DrawAdrenaline(Canvas C)
         {
             ComboBack.PosY = (posy - (0.033 * drawn) * Scale);
 
-			if (class'Misc_Player'.default.bEnableWidescreenFix)
-				DrawSpriteTileWidget(C, ComboBack);
-			else
-            	DrawSpriteWidget(C, ComboBack);
+            if (class'Misc_Player'.default.bEnableWidescreenFix)
+                DrawSpriteTileWidget(C, ComboBack);
+            else
+                DrawSpriteWidget(C, ComboBack);
             
             ComboType[CRI.Combos[i].Type].PosY = (posy - (0.033 * drawn) * Scale);
             
@@ -97,8 +97,8 @@ simulated function DrawAdrenaline(Canvas C)
             ComboAdren.Value = CRI.Combos[i].Time;
             ComboAdren.PosY = (posy - (0.033 * drawn) * Scale);
 			
-			if (class'Misc_Player'.default.bEnableWidescreenFix)
-				DrawNumericTileWidget(C, ComboAdren, DigitsBig);
+            if (class'Misc_Player'.default.bEnableWidescreenFix)
+                DrawNumericTileWidget(C, ComboAdren, DigitsBig);
             else
 				DrawNumericWidget(C, ComboAdren, DigitsBig);
             
