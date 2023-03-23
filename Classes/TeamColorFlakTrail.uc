@@ -13,22 +13,22 @@ function SetColors()
         if(TeamNum == 0)
         {
             mColorRange[0].R=255;
-            mColorRange[0].G=0;
-            mColorRange[0].B=0;
+            mColorRange[0].G=64;
+            mColorRange[0].B=64;
 
             mColorRange[1].R=255;
-            mColorRange[1].G=0;
-            mColorRange[1].B=0;
+            mColorRange[1].G=64;
+            mColorRange[1].B=64;
             bColorSet=true;
         }
         else if(TeamNum == 1)
         {
-            mColorRange[0].R=0;
-            mColorRange[0].G=0;
+            mColorRange[0].R=64;
+            mColorRange[0].G=64;
             mColorRange[0].B=255;
 
-            mColorRange[1].R=0;
-            mColorRange[1].G=0;
+            mColorRange[1].R=64;
+            mColorRange[1].G=64;
             mColorRange[1].B=255;
             bColorSet=true;
         }

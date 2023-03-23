@@ -96,17 +96,21 @@ simulated function SetColors()
 
         if(TeamNum == 0)
         {
-            LightHue=0;
+            LightBrightness=210;
+            LightHue=8;
+
             Alpha.Color.R = 255;
-            Alpha.Color.G = 32;
-            Alpha.Color.B = 32;
+            Alpha.Color.G = 64;
+            Alpha.Color.B = 64;
             bColorSet=true;
         }
         else if(TeamNum == 1)
         {
+            LightBrightness=210;
             LightHue=160;
-            Alpha.Color.R = 32;
-            Alpha.Color.G = 32;
+
+            Alpha.Color.R = 64;
+            Alpha.Color.G = 64;
             Alpha.Color.B = 255;
             bColorSet=true;
         }

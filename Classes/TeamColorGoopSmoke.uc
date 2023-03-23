@@ -30,19 +30,19 @@ simulated function SetColors()
         if(TeamNum == 0)
         {
             mColorRange[0].R=240;
-            mColorRange[0].G=20;
-            mColorRange[0].B=20;
+            mColorRange[0].G=64;
+            mColorRange[0].B=64;
             mColorRange[1].R=255;
-            mColorRange[1].G=20;
-            mColorRange[1].B=20;
+            mColorRange[1].G=64;
+            mColorRange[1].B=64;
         }
         else if(TeamNum == 1)
         {
-            mColorRange[0].R=20;
-            mColorRange[0].G=20;
+            mColorRange[0].R=64;
+            mColorRange[0].G=64;
             mColorRange[0].B=240;
-            mColorRange[1].R=20;
-            mColorRange[1].G=20;
+            mColorRange[1].R=64;
+            mColorRange[1].G=64;
             mColorRange[1].B=255;
         }
     }
