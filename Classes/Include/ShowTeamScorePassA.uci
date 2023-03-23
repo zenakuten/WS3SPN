@@ -1,0 +1,44 @@
+/*
+	COPYRIGHT NOTICE
+	Below code is copyright Epic Games - all rights reserved
+	(Note: This package is not endorsed by Epic Games)
+
+	It is included for technical purposes only (e.g. to enable widescreen functionality)
+	There are a two specific function replacements made:
+		DrawSpriteWidget -> DrawSpriteTileWidget
+		DrawNumericWidget -> DrawNumericTileWidget
+	Additionally, Super function calls are replaced with the appropriate "Wide" call:
+		Super.AbcXYZ -> WideAbcXYZ
+	Finally, there may be smaller tweaks made based on Azarael's original HUDFix Mutator
+	These changes are marked with ~fox on a per-line basis detailing what changed
+*/
+
+//#include Classes\Include\Team\_Internal\ShowTeamScorePassA.uci
+#include Classes\Include\ShowVersusIcon.uci
+
+simulated function WideShowTeamScorePassA(Canvas C)
+{
+	if ( bShowPoints )
+	{
+		DrawSpriteTileWidget (C, TeamScoreBackground[0]);
+		DrawSpriteTileWidget (C, TeamScoreBackground[1]);
+		DrawSpriteTileWidget (C, TeamScoreBackgroundDisc[0]);
+		DrawSpriteTileWidget (C, TeamScoreBackgroundDisc[1]);
+
+		TeamScoreBackground[0].Tints[TeamIndex] = HudColorBlack;
+		TeamScoreBackground[0].Tints[TeamIndex].A = 150;
+		TeamScoreBackground[1].Tints[TeamIndex] = HudColorBlack;
+		TeamScoreBackground[1].Tints[TeamIndex].A = 150;
+
+
+		if (TeamSymbols[0].WidgetTexture != None)
+			DrawSpriteTileWidget (C, TeamSymbols[0]);
+
+		if (TeamSymbols[1].WidgetTexture != None)
+			DrawSpriteTileWidget (C, TeamSymbols[1]);
+
+		WideShowVersusIcon(C);
+	 	DrawNumericTileWidget (C, ScoreTeam[0], DigitsBig);
+		DrawNumericTileWidget (C, ScoreTeam[1], DigitsBig);
+	}
+}

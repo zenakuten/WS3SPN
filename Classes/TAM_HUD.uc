@@ -11,6 +11,9 @@ var SpriteWidget ComboDisc;
 var SpriteWidget ComboType[10];
 /* combo related */
 
+#include Classes\Include\DrawAdrenaline.uci
+#include Classes\Include\DrawChargeBar.uci
+
 function DisplayMessages(Canvas C)
 {
     if(bShowScoreboard || bShowLocalStats)
@@ -23,8 +26,13 @@ function DisplayMessages(Canvas C)
 
 simulated function DrawChargeBar(Canvas C)
 {
-    if(!bDrawCombos)
-        super.DrawChargeBar(C);
+    if (!bDrawCombos)
+    {
+        if(class'Misc_Player'.default.bEnableWidescreenFix)
+            WideDrawChargeBar(C);
+        else
+            Super.DrawChargeBar(C);
+    }
 }
 
 simulated function DrawAdrenaline(Canvas C)
@@ -82,25 +90,16 @@ simulated function DrawAdrenaline(Canvas C)
         {
             ComboBack.PosY = (posy - (0.033 * drawn) * Scale);
 
-            if (class'Misc_Player'.default.bEnableWidescreenFix)
-                DrawSpriteTileWidget(C, ComboBack);
-            else
-                DrawSpriteWidget(C, ComboBack);
+            DrawSpriteTileWidget(C, ComboBack);
             
             ComboType[CRI.Combos[i].Type].PosY = (posy - (0.033 * drawn) * Scale);
             
-            if (class'Misc_Player'.default.bEnableWidescreenFix)
-                DrawSpriteTileWidget(C, ComboType[CRI.Combos[i].Type]);
-            else
-                DrawSpriteWidget(C, ComboType[CRI.Combos[i].Type]);
+            DrawSpriteTileWidget(C, ComboType[CRI.Combos[i].Type]);
 
             ComboAdren.Value = CRI.Combos[i].Time;
             ComboAdren.PosY = (posy - (0.033 * drawn) * Scale);
-			
-            if (class'Misc_Player'.default.bEnableWidescreenFix)
-                DrawNumericTileWidget(C, ComboAdren, DigitsBig);
-            else
-                DrawNumericWidget(C, ComboAdren, DigitsBig);
+
+            DrawNumericTileWidget(C, ComboAdren, DigitsBig);
             
             drawn++;
         }

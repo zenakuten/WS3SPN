@@ -8,10 +8,10 @@
 //Courtesy of HUD Scaling Fix by Azarael, modified a bit for portability
 simulated final function DrawSpriteTileWidget(Canvas C, SpriteWidget W)
 {
-	//if (ResScaleX / ResScaleY * HUDScale == 1f) {
-	//	DrawSpriteWidget(C, W);
-	//	return;
-	//}
+	if (!class'Misc_Player'.default.bEnableWidescreenFix) {
+		DrawSpriteWidget(C, W);
+		return;
+	}
 
 	C.Style = W.RenderStyle;
 	C.DrawColor = W.Tints[TeamIndex];
@@ -133,10 +133,10 @@ simulated final function DrawNumericTileWidget(Canvas C, NumericWidget W, DigitS
 	local int padding, length, i;
 	local byte coordindex;
 
-	//if (ResScaleX / ResScaleY * HUDScale == 1f) {
-	//	DrawNumericWidget(C, W, D);
-	//	return;
-	//}
+	if (!class'Misc_Player'.default.bEnableWidescreenFix) {
+		DrawNumericWidget(C, W, D);
+		return;
+	}
 
 	C.Style = W.RenderStyle;
 	C.DrawColor = W.Tints[TeamIndex];
