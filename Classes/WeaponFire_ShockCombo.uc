@@ -1,13 +1,21 @@
-class WeaponFire_ShockCombo extends ShockProjectile;
+//class WeaponFire_ShockCombo extends ShockProjectile;
+class WeaponFire_ShockCombo extends TeamColorShockProjectile;
 
 function SuperExplosion()
 {
 	local actor HitActor;
 	local vector HitLocation, HitNormal;
+    local TeamColorShockCombo combo;
 
 	HurtRadius(ComboDamage, ComboRadius, class'DamType_ShockCombo', ComboMomentumTransfer, Location );
 
-	Spawn(class'ShockCombo');
+	//Spawn(class'ShockCombo');
+	combo = Spawn(class'TeamColorShockCombo');
+    if(combo != None)
+    {
+        combo.TeamNum = TeamNum;
+    }
+
 	if ( (Level.NetMode != NM_DedicatedServer) && EffectIsRelevant(Location,false) )
 	{
 		HitActor = Trace(HitLocation, HitNormal,Location - Vect(0,0,120), Location,false);

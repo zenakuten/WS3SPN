@@ -164,10 +164,21 @@ var float LastSettingsLoadTimeSeconds;
 var float LastSettingsSaveTimeSeconds;
 /* persistent settings */
 
+var Misc_BaseGRI RepInfo;
+var config bool bConfigureNetSpeed;
+var config int ConfigureNetSpeedValue;
+
+var config bool bTeamColorRockets;
+var config bool bTeamColorBio;
+var config bool bTeamColorFlak;
+var config bool bTeamColorShock;
+var config bool bTeamColorSniper;
+
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
 delegate OnPlayerDataRemovedCallback(string PlayerName);
 /* persistent stats */
+
 
 replication
 {
@@ -411,6 +422,10 @@ function PlayerTick(float DeltaTime)
     
     Super.PlayerTick(DeltaTime);
 
+    if (RepInfo==None)
+        foreach DynamicActors(Class'Misc_BaseGRI', RepInfo)
+            break;
+
 	if(Pawn!=None)
 	{
 		// if we have a pawn, we must be looking at it
@@ -429,8 +444,17 @@ function PlayerTick(float DeltaTime)
         class'Misc_Player'.default.bReportNewNetStats = false;
 	    SetEyeHeightAlgorithm(class'Misc_Player'.default.bUseNewEyeHeightAlgorithm);
         SetInitialColoredName();
+        SetInitialNetSpeed();
 		PlayerInitialized = true;
 	}
+
+    if (Level.NetMode == NM_Client && RepInfo != none) 
+    {
+        if (Player.CurrentNetSpeed > RepInfo.MaxNetSpeed)
+            SetNetSpeed(RepInfo.MaxNetSpeed);
+        else if (Player.CurrentNetSpeed < RepInfo.MinNetSpeed)
+            SetNetSpeed(RepInfo.MinNetSpeed);
+    }
 
 	if(EndCeremonyStarted)
 	{
@@ -829,7 +853,6 @@ function BroadcastAward(class<LocalMessage> message)
 
 simulated event ReceiveAwardMessage( class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject )
 {
-    log("Received award "$Message$" awardType = "$ReceiveAwardType);
     if(ReceiveAwardType == ReceiveAwardTypes.RAT_Disabled)
         return;
 
@@ -837,7 +860,6 @@ simulated event ReceiveAwardMessage( class<LocalMessage> Message, optional int S
        (ReceiveAwardType == ReceiveAwardTypes.RAT_Player && Switch == 1) ||
        (ReceiveAwardType == ReceiveAwardTypes.RAT_Team && RelatedPRI_1 != None && PlayerReplicationInfo.Team.TeamIndex == RelatedPRI_1.Team.TeamIndex ))
     {
-        log("Calling receive localized message with message "$Message);
         ReceiveLocalizedMessage(Message, Switch, RelatedPRI_1, RelatedPRI_2, OptionalObject);
     }
 }
@@ -1872,7 +1894,7 @@ simulated function ReloadDefaults()
 	SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	SoundAlone = class'Misc_Player'.default.SoundAlone; 
 	SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
-	SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
+    SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
 	SoundTMDeath = class'Misc_Player'.default.SoundTMDeath;
 	SoundUnlock = class'Misc_Player'.default.SoundUnlock;
 	
@@ -1893,6 +1915,9 @@ simulated function ReloadDefaults()
 	ColoredName =  class'Misc_Player'.default.ColoredName;
 	
 	AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
+    bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
+    bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
+    ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
 }
 
 /* settings */
@@ -1955,7 +1980,6 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 	class'Misc_Player'.default.bUseHitSounds = Misc.bUseHitSounds;
 	class'Misc_Player'.default.bEnableEnhancedNetCode = Misc.bEnableEnhancedNetCode;
 	class'Misc_Player'.default.bDisableEndCeremonySound = Misc.bDisableEndCeremonySound;
-	class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
 	class'Misc_Player'.default.SoundHitVolume = Misc.SoundHitVolume;
 	class'Misc_Player'.default.SoundAloneVolume = Misc.SoundAloneVolume;
 
@@ -1964,6 +1988,10 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 	class'Misc_Player'.default.AutoSyncSettings = Misc.AutoSyncSettings;
     class'Misc_Player'.default.DamageIndicatorType = Misc.DamageIndicatorType;
     class'Misc_Player'.default.ReceiveAwardType = ReceiveAwardTypes(Misc.ReceiveAwardType);
+    class'Misc_Player'.default.bConfigureNetSpeed = Misc.bConfigureNetSpeed;
+    class'Misc_Player'.default.ConfigureNetSpeedValue = Misc.ConfigureNetSpeedValue;
+    class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
+
 	
 	ReloadDefaults();
 	SetupCombos();
@@ -2093,12 +2121,15 @@ function SaveSettings()
 	Misc.bUseHitSounds = class'Misc_Player'.default.bUseHitSounds;
 	Misc.bEnableEnhancedNetCode = class'Misc_Player'.default.bEnableEnhancedNetCode;
 	Misc.bDisableEndCeremonySound = class'Misc_Player'.default.bDisableEndCeremonySound;
-	Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
+    Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
 	Misc.SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	Misc.SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
 	Misc.AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
     Misc.DamageIndicatorType = class'Misc_Player'.default.DamageIndicatorType;
     Misc.ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
+    Misc.bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
+    Misc.ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
+    Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
 
     Weapons.bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
 
@@ -2155,6 +2186,21 @@ ignores SeePlayer, HearNoise, Bump;
     }
 }
 
+
+simulated function SetInitialNetSpeed()
+{
+    local int netspeed;
+    local bool bConfigure;
+    if(Role < ROLE_Authority)
+    {
+        netspeed = class'Misc_Player'.default.ConfigureNetSpeedValue;
+        bConfigure = class'Misc_Player'.default.bConfigureNetSpeed;
+        if(bConfigure)
+        {
+            SetNetSpeed(netspeed);
+        }
+    }
+}
 
 /* settings */
 
@@ -2245,4 +2291,13 @@ defaultproperties
      Adrenaline=0.100000
      AdrenalineMax=120.000000
      ReceiveAwardType=RAT_All
+     bConfigureNetSpeed=false
+     ConfigureNetSpeedValue=15000
+     bEnableWidescreenFix=false
+
+     bTeamColorRockets=false
+     bTeamColorBio=false
+     bTeamColorFlak=false
+     bTeamColorShock=false
+     bTeamColorSniper=false
 }

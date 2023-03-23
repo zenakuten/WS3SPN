@@ -255,6 +255,46 @@ function bool IsReasonable(Vector V)
     return clErr < 750.0;
 }
 
+// overloaded to use team rockets
+function Projectile OldNetSpawnProjectile(Vector Start, Rotator Dir)
+{
+    local RocketProj Rocket;
+    local SeekingRocketProj SeekingRocket;
+	local bot B;
+
+    bBreakLock = true;
+
+	// decide if bot should be locked on
+	B = Bot(Instigator.Controller);
+	if ( (B != None) && (B.Skill > 2 + 5 * FRand()) && (FRand() < 0.6) && (B.Target != None)
+		&& (B.Target == B.Enemy) && (VSize(B.Enemy.Location - B.Pawn.Location) > 2000 + 2000 * FRand())
+		&& (Level.TimeSeconds - B.LastSeenTime < 0.4) && (Level.TimeSeconds - B.AcquireTime > 1.5) )
+	{
+		bLockedOn = true;
+		SeekTarget = B.Enemy;
+	}
+
+    if (bLockedOn && SeekTarget != None)
+    {
+        //SeekingRocket = Spawn(class'SeekingRocketProj',,, Start, Dir);
+        SeekingRocket = Spawn(class'TeamColorSeekingRocketProj',,, Start, Dir);
+        SeekingRocket.Seeking = SeekTarget;
+        if ( B != None )
+        {
+			//log("LOCKED");
+			bLockedOn = false;
+			SeekTarget = None;
+		}
+        return SeekingRocket;
+    }
+    else
+    {
+        //Rocket = Spawn(class'RocketProj',,, Start, Dir);
+        Rocket = Spawn(class'TeamColorRocketProj',,, Start, Dir);
+        return Rocket;
+    }
+}
+
 function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
     local RocketProj Rocket;
@@ -267,7 +307,8 @@ function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 
 	if(!bUseEnhancedNetCode)
 	{
-	    return super.SpawnProjectile(Start, Dir);
+	    //return super.SpawnProjectile(Start, Dir);
+	    return OldNetSpawnProjectile(Start, Dir);
 	}
 
     bBreakLock = true;
@@ -330,6 +371,7 @@ function Projectile SpawnProjectile(Vector Start, Rotator Dir)
 			bLockedOn = false;
 			SeekTarget = None;
 		}
+
         return SeekingRocket;
     }
     else
@@ -372,6 +414,7 @@ function Projectile SpawnProjectile(Vector Start, Rotator Dir)
         }
         else
             Rocket = Spawn(Class'NewNet_RocketProj',,, Start, Dir);
+
         return Rocket;
     }
 }

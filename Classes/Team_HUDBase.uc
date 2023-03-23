@@ -42,6 +42,7 @@ var Actor TargetingActor;
 #include Classes\Include\DrawWeaponBar.uci
 #include Classes\Include\_HudCommon.p.uci
 
+
 exec function ShowStats()
 {
     bShowLocalStats = !bShowLocalStats;

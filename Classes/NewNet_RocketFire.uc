@@ -48,6 +48,7 @@ function PlayFiring()
 
    if(Level.NetMode != NM_Client || !class'Misc_Player'.static.UseNewNet())
        return;
+
    if(!bSkipNextEffect)
        CheckFireEffect();
    else

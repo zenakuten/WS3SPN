@@ -183,6 +183,9 @@ var bool UseZAxisRadar;
 
 var config bool bFastWeaponSwitching;
 var config bool bCanBoostDodge;
+var config int MinNetSpeed;
+var config int MaxNetSpeed;
+
 
 var config int MinPlayersForStatsRecording;
 
@@ -267,6 +270,8 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).bFastWeaponSwitching = bFastWeaponSwitching;
     Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
+    Misc_BaseGRI(GameReplicationInfo).MinNetSpeed = MinNetSpeed;
+    Misc_BaseGRI(GameReplicationInfo).MaxNetSpeed = MaxNetSpeed;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -387,6 +392,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
+    PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "5;9636:25000");
+    PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "5;9636:25000");
 
 //    PI.AddSetting("3SPN", "UseZAxisRadar", "Extended HUD Includes Z Axis", 0, Weight++, "Check");
 
@@ -483,6 +490,8 @@ static event string GetDescriptionText(string PropName)
 //      case "UseZAxisRadar":            return "Extended Player HUD Includes Z Axis For Allies";
       case "bFastWeaponSwitching": return "UT2003 style fast weapon switching";
       case "bCanBoostDodge": return "UT2003 style boost dodging";
+      case "MinNetSpeed": return "Minimum netspeed for clients";
+      case "MaxNetSpeed": return "Maximum netspeed for clients";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -3901,6 +3910,8 @@ defaultproperties
      bFastWeaponSwitching=True
      bCanBoostDodge=False
      MinPlayersForStatsRecording=2
+     MinNetSpeed=9636
+     MaxNetSpeed=20000
      FriendlyFireScale=0.500000
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
