@@ -2193,9 +2193,9 @@ simulated function SetInitialNetSpeed()
     local bool bConfigure;
     if(Role < ROLE_Authority)
     {
-        netspeed = class'Player'.default.ConfiguredInternetSpeed;
+        netspeed = class'Misc_Player'.default.ConfigureNetSpeedValue;
         bConfigure = class'Misc_Player'.default.bConfigureNetSpeed;
-        if(netspeed > 10000 && bConfigure)
+        if(bConfigure)
         {
             SetNetSpeed(netspeed);
         }
