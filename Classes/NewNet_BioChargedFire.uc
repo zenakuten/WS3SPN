@@ -27,6 +27,27 @@ var bool bUseEnhancedNetCode;
 const PROJ_TIMESTEP = 0.0201;
 const MAX_PROJECTILE_FUDGE = 0.07500;
 
+function projectile OldNetSpawnProjectile(Vector Start, Rotator Dir)
+{
+    local BioGlob Glob;
+
+    GotoState('');
+
+    if (GoopLoad == 0) return None;
+
+    Glob = Weapon.Spawn(class'TeamColorBioGlob',,, Start, Dir);
+    if ( Glob != None )
+    {
+		Glob.Damage *= DamageAtten;
+		Glob.SetGoopLevel(GoopLoad);
+		Glob.AdjustSpeed();
+    }
+    GoopLoad = 0;
+    if ( Weapon.AmmoAmount(ThisModeNum) <= 0 )
+        Weapon.OutOfAmmo();
+    return Glob;
+}
+
 
 function projectile SpawnProjectile(Vector Start, Rotator Dir)
 {
@@ -42,7 +63,7 @@ function projectile SpawnProjectile(Vector Start, Rotator Dir)
     if (GoopLoad == 0) return None;
 
     if(!bUseEnhancedNetCode)
-        return super.SpawnProjectile(start,Dir);
+        return OldNetSpawnProjectile(start,Dir);
     if( class'BioGlob' != none )
     {
         if(PingDT > 0.0 && Weapon.Owner!=None)
@@ -77,14 +98,14 @@ function projectile SpawnProjectile(Vector Start, Rotator Dir)
            VZ.Z = class'BioGlob'.default.TossZ;
      //      NewDir =  rotator(vector(NewDir)*class'BioGlob'.default.speed - VZ);
            if(Other == none)
-               glob = Weapon.Spawn(class'BioGlob',,, End, NewDir);
+               glob = Weapon.Spawn(class'TeamColorBioGlob',,, End, NewDir);
            else
            {
-               glob = Weapon.Spawn(class'BioGlob',,, HitLocation - Vector(Newdir)*16.0, NewDir);
+               glob = Weapon.Spawn(class'TeamColorBioGlob',,, HitLocation - Vector(Newdir)*16.0, NewDir);
            }
         }
         else
-            glob = Weapon.Spawn(class'BioGlob',,, Start, Dir);
+            glob = Weapon.Spawn(class'TeamColorBioGlob',,, Start, Dir);
     }
 
     if ( Glob != None )

@@ -224,12 +224,19 @@ function bool IsReasonable(Vector V)
 simulated function SpawnBeamEffect(vector HitLocation, vector HitNormal, vector Start, rotator Dir, int reflectnum)
 {
     local ShockBeamEffect Beam;
+    local int TeamNum;
+
+    TeamNum=255;
+    if(Instigator != None && Instigator.Controller != None)
+        TeamNum = Instigator.Controller.GetTeamNum();
 
     if(bClientDemoNetFunc)
     {
         Start.Z = Start.Z - 64.0;
     }
     Beam = Spawn(Class'NewNet_Client_ShockBeamEffect',,, Start, Dir);
+    if(Beam != None && TeamColorShockBeamEffect(Beam) != None)
+        TeamColorShockBeamEffect(Beam).TeamNum = TeamNum;
     if (ReflectNum != 0) Beam.Instigator = None; // prevents client side repositioning of beam start
        Beam.AimAt(HitLocation, HitNormal);
 }

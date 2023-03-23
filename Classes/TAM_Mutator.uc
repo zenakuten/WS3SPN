@@ -28,6 +28,8 @@ class TAM_Mutator extends DMMutator
     HideDropDown
     CacheExempt;
 
+#exec OBJ LOAD FILE=Textures\3SPNvSoLTex.utx PACKAGE=3SPNvSoL
+
 /* weapons */
 struct WeaponData
 {
@@ -252,6 +254,7 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 	//class'ShieldGun'.Default.DamageType = Class'DamType_ShieldImpact';
 	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
     class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
+
 	if(EnableNewNet)
 	{
 		class'NewNet_BioGlob'.default.MyDamageType = class'DamType_BioGlob';
@@ -288,9 +291,14 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 		class'NewNet_MiniGunAltFire'.Default.DamageType = Class'DamType_MinigunAlt';
         class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
         class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
-		
-		
 	}
+
+    //snarf setup old weapons, these are used when newnet=false
+    class'FlakFire'.default.ProjectileClass = class'TeamColorFlakChunk';
+    class'FlakAltFire'.default.ProjectileClass = class'TeamColorFlakShell';
+
+    class'ShockProjFire'.default.ProjectileClass = class'TeamColorShockProjectile';
+
 }
 	
 function ResetWeaponsToDefaults(bool bModifyShieldGun)
@@ -394,7 +402,13 @@ function ResetWeaponsToDefaults(bool bModifyShieldGun)
 		class'DamTypeSniperShot'.default.WeaponClass = class'xWeapons.SniperRifle';
 		class'DamType_ClassicSniperShot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';	
 		class'DamType_ClassicHeadshot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';	
-			}
+    }
+
+    //snarf restore old weapons
+    class'FlakFire'.default.ProjectileClass = class'XWeapons.FlakChunk';
+    class'FlakAltFire'.default.ProjectileClass = class'XWeapons.FlakShell';
+    class'ShockProjFire'.default.ProjectileClass = class'XWeapons.ShockProjectile';
+
 }
 	
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
