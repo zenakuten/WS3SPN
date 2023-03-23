@@ -1,6 +1,16 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v1.6
+- new config option "Auto Set Netspeed", set netspeed at match start
+- new server options MinNetSpeed, MaxNetSpeed.  Admin can restrict netspeeds to a range.  
+- new config option "Enable Widescreen Fix".  Add some widescreen fixes from Fox WS Fix.  Currently fixes crosshairs.  More to come.  (thanks ds8k!)
+- new config options to enable team colors for rockets, bio, flak, and shock rifle.  
+
+v1.5
+- fix issue with booster sometimes not working
+- new config option 'MinPlayersForStatsRecording', minimum players needed before recording stats, default is 2 (was hardcoded at 6)
+
 V1.4
 - fix 'teams' command
 
