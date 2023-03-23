@@ -123,6 +123,14 @@ simulated function DrawCrosshair(Canvas C)
 		Super.DrawCrosshair(C);
 }
 
+simulated function DrawWeaponBar(Canvas C)
+{
+	if (class'Misc_Player'.default.bEnableWidescreenFix)
+		WideDrawWeaponBar(C);
+	else
+		Super.DrawWeaponBar(C);
+}
+
 simulated function DrawHudPassA(Canvas C)
 {
 	if (class'Misc_Player'.default.bEnableWidescreenFix)
