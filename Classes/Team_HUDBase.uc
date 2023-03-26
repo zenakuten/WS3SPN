@@ -38,6 +38,8 @@ var Actor TargetingActor;
 #include Classes\Include\_HudCommon.h.uci
 #include Classes\Include\_HudCommon.uci
 #include Classes\Include\DrawCrosshair.uci
+#include Classes\Include\DrawTeamHudPassA.uci
+#include Classes\Include\DrawWeaponBar.uci
 #include Classes\Include\_HudCommon.p.uci
 
 
@@ -120,6 +122,22 @@ simulated function DrawCrosshair(Canvas C)
 		WideDrawCrosshair(C);
 	else
 		Super.DrawCrosshair(C);
+}
+
+simulated function DrawWeaponBar(Canvas C)
+{
+	if (class'Misc_Player'.default.bEnableWidescreenFix)
+		WideDrawWeaponBar(C);
+	else
+		Super.DrawWeaponBar(C);
+}
+
+simulated function DrawHudPassA(Canvas C)
+{
+	if (class'Misc_Player'.default.bEnableWidescreenFix)
+		TeamWideDrawHudPassA(C);
+	else
+		Super.DrawHudPassA(C);
 }
 
 simulated function bool ShouldDrawPlayer(Misc_PRI PRI)
@@ -1314,9 +1332,9 @@ simulated function DrawTimer(Canvas C)
     TimerBackground.Tints[TeamIndex] = HudColorBlack;
     TimerBackground.Tints[TeamIndex].A = 150;
 
-    DrawSpriteWidget(C, TimerBackground);
-    DrawSpriteWidget(C, TimerBackgroundDisc);
-    DrawSpriteWidget(C, TimerIcon);
+    DrawSpriteTileWidget(C, TimerBackground);
+    DrawSpriteTileWidget(C, TimerBackgroundDisc);
+    DrawSpriteTileWidget(C, TimerIcon);
 
     TimerMinutes.OffsetX = default.TimerMinutes.OffsetX - 80;
     TimerSeconds.OffsetX = default.TimerSeconds.OffsetX - 80;
@@ -1343,9 +1361,10 @@ simulated function DrawTimer(Canvas C)
             TimerDigitSpacer[0].OffsetX = Default.TimerDigitSpacer[0].OffsetX - 32;
             TimerDigitSpacer[1].OffsetX = Default.TimerDigitSpacer[1].OffsetX - 32;
         }
-        DrawSpriteWidget( C, TimerDigitSpacer[0]);
+
+        DrawSpriteTileWidget( C, TimerDigitSpacer[0]);
     }
-    DrawSpriteWidget( C, TimerDigitSpacer[1]);
+    DrawSpriteTileWidget( C, TimerDigitSpacer[1]);
 
     Minutes = Seconds / 60;
     Seconds -= Minutes * 60;
@@ -1353,8 +1372,8 @@ simulated function DrawTimer(Canvas C)
     TimerMinutes.Value = Min(Minutes, 60);
     TimerSeconds.Value = Min(Seconds, 60);
 
-    DrawNumericWidget( C, TimerMinutes, DigitsBig);
-    DrawNumericWidget( C, TimerSeconds, DigitsBig);
+    DrawNumericTileWidget( C, TimerMinutes, DigitsBig);
+    DrawNumericTileWidget( C, TimerSeconds, DigitsBig);
 }
 
 /* colored names */
