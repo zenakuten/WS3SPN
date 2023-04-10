@@ -30,7 +30,7 @@ simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
 
     if(class'Misc_Player'.default.bTeamColorBio)
@@ -77,29 +77,19 @@ simulated function Destroyed()
 // get replicated team number from owner projectile and set texture
 simulated function SetColors()
 {
-    if(class'Misc_Player'.default.bTeamColorBio && !bColorSet && Level.NetMode == NM_Client)
+    local Color color;
+    if(class'Misc_Player'.default.bTeamColorBio && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1)
         {
 
             LightBrightness=210;
-            LightRadius=0.8;
-            LightHue=8;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            Alpha.Color.R = 255;
-            Alpha.Color.G = 64;
-            Alpha.Color.B = 64;
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            LightBrightness=210;
-            LightRadius=0.8;
-            LightHue=170;
-
-            Alpha.Color.R = 64;
-            Alpha.Color.G = 64;
-            Alpha.Color.B = 255;
+            Alpha.Color.R = color.R;
+            Alpha.Color.G = color.G;
+            Alpha.Color.B = color.B;
             bColorSet=true;
         }
     }

@@ -31,6 +31,16 @@ enum ReceiveAwardTypes
 
 var config ReceiveAwardTypes ReceiveAwardType;  // what awards does player see
 
+enum AbortNecroSounds
+{
+    ANS_None,
+    ANS_Meow,
+    ANS_Buzz,
+    ANS_Fart
+};
+
+var config AbortNecroSounds AbortNecroSoundType;
+
 var config bool bMatchHUDToSkins;       // sets HUD color to brightskins color
 /* HUD related */
 
@@ -173,6 +183,9 @@ var config bool bTeamColorBio;
 var config bool bTeamColorFlak;
 var config bool bTeamColorShock;
 var config bool bTeamColorSniper;
+var config Color TeamColorRed, TeamColorBlue;
+var config bool bTeamColorUseBrightSkinsEnemy;
+var config bool bTeamColorUseBrightSkinsAlly;
 
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
@@ -190,7 +203,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage;
+        ReceiveAwardMessage, AbortNecro;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         HitDamage, bHitContact, HitPawn, bSeeInvis;
@@ -1918,6 +1931,11 @@ simulated function ReloadDefaults()
     bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
     bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
+
+    TeamColorRed = class'Misc_Player'.default.TeamColorRed;
+    TeamColorBlue = class'Misc_Player'.default.TeamColorBlue;
+
+    AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
 }
 
 /* settings */
@@ -2202,6 +2220,36 @@ simulated function SetInitialNetSpeed()
     }
 }
 
+simulated function AbortNecro()
+{
+    local float rnd;
+    local Sound soundToPlay;
+
+    if(AbortNecroSoundType == ANS_None)
+        return;
+
+    switch(AbortNecroSoundType)
+    {
+        case ANS_Buzz:
+            soundToPlay=Sound'ShortCircuit';
+        break;
+        case ANS_Fart:
+            soundToPlay=Sound'Fart';
+        break;
+        case ANS_Meow:
+            rnd = FRand();
+            if(rnd < 0.33)
+                soundToPlay = Sound'Meow1';
+            else if(rnd < 0.66)
+                soundToPlay = Sound'Meow2';
+            else
+                soundToPlay = Sound'Meow3';
+        break;
+    }
+
+    ClientPlaySound(soundToPlay, false, 300.0, SLOT_None);
+}
+
 /* settings */
 
 defaultproperties
@@ -2300,4 +2348,10 @@ defaultproperties
      bTeamColorFlak=false
      bTeamColorShock=false
      bTeamColorSniper=false
+     TeamColorRed=(R=255,G=80,B=80,A=255)
+     TeamColorBlue=(R=80,G=80,B=255,A=255)
+     bTeamColorUseBrightSkinsEnemy=false
+     bTeamColorUseBrightSkinsAlly=false
+
+     AbortNecroSoundType=ANS_Meow
 }

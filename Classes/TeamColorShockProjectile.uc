@@ -1,13 +1,8 @@
 class TeamColorShockProjectile extends ShockProjectile;
 
-#exec TEXTURE IMPORT NAME=shock_core_low_white FILE=textures\shock_core_low_white.dds MIPS=off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=shock_core_low_red FILE=textures\shock_core_low_red.dds MIPS=off DXT=1
-#exec TEXTURE IMPORT NAME=shock_core_low_blue FILE=textures\shock_core_low_blue.dds MIPS=off DXT=1
 
 var int TeamNum;
-var Material TeamColorMaterial;
-var ColorModifier Alpha;
-var bool bColorSet, bAlphaSet;
+var bool bColorSet;
 
 replication
 {
@@ -27,9 +22,8 @@ simulated function PostBeginPlay()
 {
     super(Projectile).PostBeginPlay();
 
-    if ( Level.NetMode != NM_DedicatedServer )
+    if ( Level.NetMode != NM_DedicatedServer)
 	{
-        //ShockBallEffect = Spawn(class'ShockBall', self);
         ShockBallEffect = Spawn(class'TeamColorShockBall', self);
         ShockBallEffect.SetBase(self);
 	}
@@ -46,65 +40,29 @@ simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
-
-/*
-    if(class'Misc_Player'.default.bTeamColorShock)
-    {
-        Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
-        Alpha.Material = TeamColorMaterial;
-        Alpha.AlphaBlend = true;
-        Alpha.RenderTwoSided = true;
-        Alpha.Color.A = 255;
-        Skins[0] = Alpha;
-        Texture=Alpha;
-        bAlphaSet=true;
-    }
-    */
 
     SetupTeam();
     SetColors();
 }
 
-simulated function Destroyed()
-{
-	if ( bAlphaSet )
-	{
-		Level.ObjectPool.FreeObject(Skins[0]);
-		Skins[0] = None;
-	}
-
-	super.Destroyed();
-}
-
 // get replicated team number from owner projectile and set texture
 simulated function SetColors()
 {
-    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode == NM_Client)
+    local Color color;
+    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            LightHue=0;
-            /*
-            Alpha.Color.R = 255;
-            Alpha.Color.G = 32;
-            Alpha.Color.B = 32;
-            */
-            Texture=Texture'shock_core_low_red';
-            //Texture=Texture'XEffectMat.Shock.shock_core_low';
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            LightHue=160;
-            /*
-            Alpha.Color.R = 32;
-            Alpha.Color.G = 32;
-            Alpha.Color.B = 255;
-            */
-            Texture=Texture'shock_core_low_blue';
+            //when using team colors, we simulate this texture using the TeamColorShockBall emitter
+            //so we can color it
+            Texture=None;
+            Skins[0]=None;
+
             bColorSet=true;
         }
     }
@@ -120,5 +78,4 @@ defaultproperties
 {
     TeamNum=255
     bColorSet=false
-    TeamColorMaterial=Texture'shock_core_low_white'
 }

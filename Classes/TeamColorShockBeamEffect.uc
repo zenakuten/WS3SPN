@@ -1,10 +1,10 @@
 class TeamColorShockBeamEffect extends ShockBeamEffect;
 
 var int TeamNum;
-var bool bColorSet;
-var Texture RedTexture, BlueTexture;
+var bool bColorSet, bAlphaSet;
 var ShockBeamCoil Coil;
-var Color RedColor, BlueColor;
+var Material TeamColorMaterial;
+var ColorModifier Alpha;
 
 replication
 {
@@ -12,27 +12,54 @@ replication
         TeamNum;
 }
 
+simulated function PostNetBeginPlay()
+{
+    super.PostNetBeginPlay();
+
+    if(Level.NetMode == NM_DedicatedServer)
+        return;
+
+    if(class'Misc_Player'.default.bTeamColorShock)
+    {
+        Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
+        Alpha.Material = TeamColorMaterial;
+        Alpha.AlphaBlend = true;
+        Alpha.RenderTwoSided = true;
+        Alpha.Color.A = 255;
+        Skins[0] = Alpha;
+        bAlphaSet=true;
+    }
+
+    SetColors();
+}
+
+simulated function Destroyed()
+{
+	if ( bAlphaSet )
+	{
+		Level.ObjectPool.FreeObject(Skins[0]);
+		Skins[0] = None;
+	}
+
+	super.Destroyed();
+}
+
+
 simulated function SetColors()
 {
-    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode == NM_Client && Coil != None)
+    local Color color;
+    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer && Coil != None)
     {
-        if(TeamNum == 0)
+        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            Skins[0]=RedTexture;
+            Alpha.Color.R = color.R;
+            Alpha.Color.G = color.G;
+            Alpha.Color.B = color.B;
             if(Coil != None)
             {
-                Coil.mColorRange[0]=RedColor;
-                Coil.mColorRange[1]=RedColor;
-            }
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            Skins[0]=BlueTexture;
-            if(Coil != None)
-            {
-                Coil.mColorRange[0]=BlueColor;
-                Coil.mColorRange[1]=BlueColor;
+                Coil.mColorRange[0]=color;
+                Coil.mColorRange[1]=color;
             }
             bColorSet=true;
         }
@@ -86,10 +113,8 @@ simulated function SpawnEffects()
 
 defaultproperties
 {
-    RedTexture=Texture'3SPNvSoL.ShockBeamTex_red'
-    BlueTexture=Texture'3SPNvSoL.ShockBeamTex_blue'
-    RedColor=(R=255,G=0,B=0)
-    BlueColor=(R=0,G=0,B=255)
 
     TeamNum=255
+
+    TeamColorMaterial=Texture'3SPNvSoL.ShockBeamTex_white'
 }

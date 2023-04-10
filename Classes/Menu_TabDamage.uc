@@ -5,6 +5,7 @@ var automated moComboBox ReceiveAward;
 var automated moCheckBox ConfigureNetSpeed;
 var automated GUINumericEdit EditConfigureNetSpeedValue;
 var automated moCheckBox EnableWidescreenFixes;
+var automated moComboBox AbortNecro;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -45,9 +46,16 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     ConfigureNetSpeed.Checked(class'Misc_Player'.default.bConfigureNetSpeed);
     EnableWidescreenFixes.Checked(class'Misc_Player'.default.bEnableWidescreenFix);
     EditConfigureNetSpeedValue.MinValue=9000;
-    EditConfigureNetSpeedValue.MaxValue=20000;
+    EditConfigureNetSpeedValue.MaxValue=99999;
     EditConfigureNetSpeedValue.MyEditBox.MaxWidth=5;
     EditConfigureNetSpeedValue.SetValue(class'Misc_Player'.default.ConfigureNetSpeedValue);
+
+    AbortNecro.AddItem("None");
+    AbortNecro.AddItem("Meow");
+    AbortNecro.AddItem("Buzz");
+    AbortNecro.AddItem("Fart");
+    AbortNecro.ReadOnly(true);
+	AbortNecro.SetIndex(class'Misc_Player'.default.AbortNecroSoundType);
 
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
@@ -66,14 +74,22 @@ function InternalOnChange( GUIComponent C )
 
 		case ConfigureNetSpeed:
 			class'Misc_Player'.default.bConfigureNetSpeed = ConfigureNetSpeed.IsChecked();
+             Misc_Player(PlayerOwner()).SetInitialNetSpeed();
 			break;
 		case EditConfigureNetSpeedValue:
             if(int(EditConfigureNetSpeedValue.Value) > 0)
+            {
                 class'Misc_Player'.default.ConfigureNetSpeedValue = int(EditConfigureNetSpeedValue.Value);
+                Misc_Player(PlayerOwner()).SetInitialNetSpeed();
+            }
 			break;
 
 		case EnableWidescreenFixes:
 			class'Misc_Player'.default.bEnableWidescreenFix = EnableWidescreenFixes.IsChecked();
+			break;
+
+		case AbortNecro:
+			class'Misc_Player'.default.AbortNecroSoundType = AbortNecroSounds(AbortNecro.GetIndex());
 			break;
     }
 	
@@ -131,4 +147,14 @@ defaultproperties
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      EnableWidescreenFixes=moCheckBox'3SPNvSoL.Menu_TabDamage.WidescreenFixCheck'
+
+     Begin Object Class=moComboBox Name=AbortNecroSoundTypesCombo
+         Caption="Abort Necro Sound:"
+         OnCreateComponent=ComboReceiveAwardType.InternalOnCreateComponent
+         WinTop=0.580000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     AbortNecro=moComboBox'3SPNvSoL.Menu_TabDamage.AbortNecroSoundTypesCombo'
 }

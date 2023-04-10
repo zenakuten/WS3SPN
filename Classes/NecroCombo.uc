@@ -132,8 +132,6 @@ function Abort (bool bEndOfRoundError)
   local float rnd;
   local Sound soundToPlay;
 	
-
-
   P = Pawn(Owner);
   if ( P != None )
   {
@@ -162,7 +160,14 @@ function Abort (bool bEndOfRoundError)
 
       if(bOnlyPlayerHearsSound)
       {
-        PlayerController(NecroMancer).ClientPlaySound(soundToPlay,false,300.0, SLOT_None);
+        if(Misc_Player(NecroMancer) != None)
+        {
+            Misc_Player(NecroMancer).AbortNecro();
+        }
+        else  
+        {
+            PlayerController(NecroMancer).ClientPlaySound(soundToPlay,false,300.0, SLOT_None);
+        }
       }
       else
       {

@@ -4,8 +4,7 @@ class TeamColorRocketTrail extends Emitter
 #exec OBJ LOAD FILE=AS_FX_TX.utx
 
 var int TeamNum;
-var Color RedColor[3];
-var Color BlueColor[3];
+var bool bColorSet;
 
 simulated function PreBeginPlay()
 {
@@ -21,28 +20,36 @@ simulated function PreBeginPlay()
 // get replicated team number from owner projectile and set texture
 function SetColors()
 {
-    if(class'Misc_Player'.default.bTeamColorRockets && TeamNum==255)
+    local Color color;
+    if(class'Misc_Player'.default.bTeamColorRockets && !bColorSet)
     {
         if(TeamColorRocketProj(Owner) != None)
             TeamNum = TeamColorRocketProj(Owner).TeamNum;
         else if(TeamColorSeekingRocketProj(Owner) != None)
             TeamNum = TeamColorSeekingRocketProj(Owner).TeamNum;
 
+        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
         if(TeamNum == 0)
         {
             bHidden=false;
             Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Red';
-            Emitters[1].ColorScale[0].Color=RedColor[0];
-            Emitters[1].ColorScale[1].Color=RedColor[1];
-            Emitters[1].ColorScale[2].Color=RedColor[2];
+            Emitters[1].ColorScale[0].Color=color;
+            Emitters[1].ColorScale[1].Color=color;
+            Emitters[1].ColorScale[2].Color=color;
+            Emitters[0].Reset();
+            Emitters[1].Reset();
+            bColorSet=true;
         }
         else if(TeamNum == 1)
         {
             bHidden=false;
             Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Blue';
-            Emitters[1].ColorScale[0].Color=BlueColor[0];
-            Emitters[1].ColorScale[1].Color=BlueColor[1];
-            Emitters[1].ColorScale[2].Color=BlueColor[2];
+            Emitters[1].ColorScale[0].Color=color;
+            Emitters[1].ColorScale[1].Color=color;
+            Emitters[1].ColorScale[2].Color=color;
+            Emitters[0].Reset();
+            Emitters[1].Reset();
+            bColorSet=true;
         }
     }
 }
@@ -51,7 +58,7 @@ simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
         
     SetColors();
@@ -65,21 +72,7 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-    /*
-    RedColor(0)=(R=255,G=128,B=64)
-    RedColor(1)=(R=255,G=128,B=64)
-    RedColor(2)=(R=255,G=128,B=64)
-    BlueColor(0)=(B=255,G=128,R=64)
-    BlueColor(1)=(B=255,G=128,R=64)
-    BlueColor(2)=(B=255,G=128,R=64)
-    */
 
-    RedColor(0)=(R=255,G=0,B=0)
-    RedColor(1)=(R=255,G=0,B=0)
-    RedColor(2)=(R=255,G=0,B=0)
-    BlueColor(0)=(B=255,G=0,R=0)
-    BlueColor(1)=(B=255,G=0,R=0)
-    BlueColor(2)=(B=255,G=0,R=0)
 
     Begin Object Class=TrailEmitter Name=TrailEmitter0
 		Opacity=0.67
@@ -129,7 +122,7 @@ defaultproperties
         AutomaticInitialSpawning=False
         Texture=Texture'EpicParticles.Flares.FlickerFlare'
 		SecondsBeforeInactive=0.000000
-        LifetimeRange=(Min=2.000000,Max=2.000000)
+        LifetimeRange=(Min=2.000000,Max=10.000000)
         InitialDelayRange=(Min=0.050000,Max=0.050000)
         Name="SpriteEmitter22"
     End Object

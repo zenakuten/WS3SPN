@@ -3911,7 +3911,7 @@ defaultproperties
      bCanBoostDodge=False
      MinPlayersForStatsRecording=2
      MinNetSpeed=9636
-     MaxNetSpeed=20000
+     MaxNetSpeed=50000
      FriendlyFireScale=0.500000
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

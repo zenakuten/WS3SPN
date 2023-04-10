@@ -5,31 +5,24 @@ var bool bColorSet;
 
 function SetColors()
 {
+    local Color color;
     if(bColorSet)
         return;
 
-    if(class'Misc_Player'.default.bTeamColorFlak && Level.NetMode == NM_Client)
+    if(class'Misc_Player'.default.bTeamColorFlak && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            mColorRange[0].R=255;
-            mColorRange[0].G=64;
-            mColorRange[0].B=64;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            mColorRange[1].R=255;
-            mColorRange[1].G=64;
-            mColorRange[1].B=64;
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            mColorRange[0].R=64;
-            mColorRange[0].G=64;
-            mColorRange[0].B=255;
+            mColorRange[0].R=color.R;
+            mColorRange[0].G=color.G;
+            mColorRange[0].B=color.B;
 
-            mColorRange[1].R=64;
-            mColorRange[1].G=64;
-            mColorRange[1].B=255;
+            mColorRange[1].R=color.R;
+            mColorRange[1].G=color.G;
+            mColorRange[1].B=color.B;
             bColorSet=true;
         }
     }

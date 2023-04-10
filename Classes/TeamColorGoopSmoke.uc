@@ -2,13 +2,12 @@ class TeamColorGoopSmoke extends xEmitter;
 
 var int TeamNum;
 var bool bColorSet;
-var Color RedColor,BlueColor;
 
 simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
 
     SetColors();
@@ -16,7 +15,8 @@ simulated function PostNetBeginPlay()
 
 simulated function SetColors()
 {
-    if(Level.NetMode != NM_Client)
+    local Color color;
+    if(Level.NetMode == NM_DedicatedServer)
         return;
 
     if(bColorSet)
@@ -27,23 +27,16 @@ simulated function SetColors()
 
     if(class'Misc_Player'.default.bTeamColorBio)
     {
-        if(TeamNum == 0)
+        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            mColorRange[0].R=240;
-            mColorRange[0].G=64;
-            mColorRange[0].B=64;
-            mColorRange[1].R=255;
-            mColorRange[1].G=64;
-            mColorRange[1].B=64;
-        }
-        else if(TeamNum == 1)
-        {
-            mColorRange[0].R=64;
-            mColorRange[0].G=64;
-            mColorRange[0].B=240;
-            mColorRange[1].R=64;
-            mColorRange[1].G=64;
-            mColorRange[1].B=255;
+            mColorRange[0].R=color.R;
+            mColorRange[0].G=color.G;
+            mColorRange[0].B=color.B;
+            mColorRange[1].R=color.R;
+            mColorRange[1].G=color.G;
+            mColorRange[1].B=color.B;
         }
     }
 
@@ -60,9 +53,6 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-    RedColor=(R=255,G=20,B=20)
-    BlueColor=(R=20,G=20,B=255)
-
 	bHighDetail=true
     Skins(0)=Texture'EmitSmoke_t'
     mNumTileColumns=4

@@ -1,33 +1,61 @@
 class TeamColorShockBall extends ShockBall;
 
-var Texture RedTexture1, RedTexture2, RedTexture3;
-var Texture BlueTexture1, BlueTexture2, BlueTexture3;
-
 var int TeamNum;
-var Color RedColor[3];
-var Color BlueColor[3];
+
+var bool bColorSet, bAlphaSet;
 
 // get replicated team number from owner projectile and set texture
 function SetColors()
 {
-    if(class'Misc_Player'.default.bTeamColorShock && TeamNum==255)
+    local Color color, altColor;
+    if(class'Misc_Player'.default.bTeamColorShock)
     {
         if(TeamColorShockProjectile(Owner) != None)
             TeamNum = TeamColorShockProjectile(Owner).TeamNum;
 
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1 && !bColorSet)
         {
-            Emitters[0].Texture=RedTexture1;
-            Emitters[1].Texture=RedTexture2;
-            Emitters[2].Texture=RedTexture3;
+            LightBrightness=210;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
 
+            color.A=255;
+            altColor.R = Min(color.R+64,255);
+            altColor.G = Min(color.G+64,255);
+            altColor.B = Min(color.B+64,255);
+            altColor.A = 255;
+
+            Emitters[0].UseColorScale=true;
+            Emitters[0].ColorScale[0].Color = color;
+            Emitters[0].ColorScale[1].Color = color;
+
+            Emitters[1].UseColorScale=true;
+            Emitters[1].ColorScale[0].Color = color;
+            Emitters[1].ColorScale[1].Color = altColor;
+
+            Emitters[2].UseColorScale=true;
+            Emitters[2].ColorScale[0].Color = color;
+            Emitters[2].ColorScale[1].Color = altColor;
+
+            Emitters[3].UseColorScale=true;
+            Emitters[3].ColorScale[0].Color = color;
+            Emitters[3].ColorScale[1].Color = altColor;
+
+            Emitters[0].Disabled=false;            
+            Emitters[1].Disabled=false;            
+            Emitters[2].Disabled=false;            
+            Emitters[3].Disabled=false;
+
+            bColorSet=true;
         }
-        else if(TeamNum == 1)
-        {
-            Emitters[0].Texture=BlueTexture1;
-            Emitters[1].Texture=BlueTexture2;
-            Emitters[2].Texture=BlueTexture3;
-        }
+
+        Emitters[1].ParticlesPerSecond=2;
+        Emitters[1].InitialParticlesPerSecond=2;
+        Emitters[1].AllParticlesDead=false;
+
+        Emitters[3].ParticlesPerSecond=100;
+        Emitters[3].InitialParticlesPerSecond=100;
+        Emitters[3].AllParticlesDead=false;
     }
 }
 
@@ -35,7 +63,7 @@ simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
         
     SetColors();
@@ -49,19 +77,122 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-    RedTexture1=Texture'3SPNvSoL.shock_core_low_red'
-    RedTexture2=Texture'3SPNvSoL.shock_flare_a_red'
-    RedTexture3=Texture'3SPNvSoL.shock_core_red'
-    BlueTexture1=Texture'3SPNvSoL.shock_core_low_blue'
-    BlueTexture2=Texture'3SPNvSoL.shock_flare_a_blue'
-    BlueTexture3=Texture'3SPNvSoL.shock_core_blue'
 
-    RedColor(0)=(R=255,G=0,B=0)
-    RedColor(1)=(R=255,G=0,B=0)
-    RedColor(2)=(R=255,G=0,B=0)
-    BlueColor(0)=(B=255,G=0,R=0)
-    BlueColor(1)=(B=255,G=0,R=0)
-    BlueColor(2)=(B=255,G=0,R=0)
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter0
+        UseColorScale=False
+        ColorScale(0)=(Color=(B=130,G=20,R=91,A=255))
+        ColorScale(1)=(RelativeTime=0.400000,Color=(B=145,G=80,R=110))
+        ColorScale(2)=(RelativeTime=1.000000)
+
+        FadeOut=True
+        FadeIn=True
+        ResetAfterChange=True
+        AutoReset=True
+        SpinParticles=True
+        UniformSize=True
+        FadeOutStartTime=0.320000
+        FadeInEndTime=0.050000
+        CoordinateSystem=PTCS_Relative
+        MaxParticles=1
+        StartSpinRange=(X=(Min=0.132000,Max=0.900000))
+        StartSizeRange=(X=(Min=45.000000,Max=45.000000),Y=(Min=65.000000,Max=65.000000),Z=(Min=65.000000,Max=65.000000))
+        Texture=XEffectMat.Shock.shock_core_low
+        LifetimeRange=(Min=0.350000,Max=0.350000)
+        WarmupTicksPerSecond=20.000000
+        RelativeWarmupTime=1.000000
+        Name="SpriteEmitter0"
+    End Object
+    Emitters(0)=SpriteEmitter'SpriteEmitter0'
+
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter1
+
+        UseColorScale=False
+        ColorScale(0)=(Color=(B=130,G=20,R=91,A=255))
+        ColorScale(1)=(RelativeTime=0.400000,Color=(B=145,G=80,R=110))
+        ColorScale(2)=(RelativeTime=1.000000)
+
+        FadeOut=True
+        FadeIn=True
+        ResetAfterChange=True
+        AutoReset=True
+        SpinParticles=True
+        UniformSize=True
+        FadeOutStartTime=0.200000
+        FadeInEndTime=0.250000
+        CoordinateSystem=PTCS_Relative
+        MaxParticles=2
+        SpinsPerSecondRange=(X=(Min=0.100000,Max=0.300000))
+        StartSpinRange=(X=(Min=0.154000,Max=0.913000))
+        StartSizeRange=(X=(Min=60.000000,Max=60.000000))
+        InitialParticlesPerSecond=2.000000
+        Texture=XEffectMat.Shock.shock_flare_a
+        LifetimeRange=(Min=0.400000,Max=0.400000)
+        WarmupTicksPerSecond=20.000000
+        RelativeWarmupTime=1.000000
+        Name="SpriteEmitter1"
+    End Object
+    Emitters(1)=SpriteEmitter'SpriteEmitter1'
+
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter2
+
+        UseColorScale=False
+        ColorScale(0)=(Color=(B=130,G=20,R=91,A=255))
+        ColorScale(1)=(RelativeTime=0.400000,Color=(B=145,G=80,R=110))
+        ColorScale(2)=(RelativeTime=1.000000)
+
+        FadeOut=True
+        FadeIn=True
+        ResetAfterChange=True
+        DetailMode=DM_High
+        AutoReset=True
+        UniformSize=True
+        FadeOutStartTime=0.300000
+        FadeInEndTime=0.100000
+        CoordinateSystem=PTCS_Relative
+        MaxParticles=15
+        StartSizeRange=(X=(Min=4.500000,Max=4.500000))
+        Texture=XEffectMat.Shock.shock_core
+        LifetimeRange=(Min=0.350000,Max=0.350000)
+        StartVelocityRange=(X=(Min=-70.000000,Max=70.000000),Y=(Min=-70.000000,Max=70.000000),Z=(Min=-70.000000,Max=70.000000))
+        VelocityScale(0)=(RelativeTime=1.000000,RelativeVelocity=(X=-1.000000,Y=-1.000000,Z=-1.000000))
+        WarmupTicksPerSecond=50.000000
+        RelativeWarmupTime=1.000000
+        Name="SpriteEmitter2"
+    End Object
+    Emitters(2)=SpriteEmitter'SpriteEmitter2'
+
+    ///////////////////////////////////////////////////////
+    // this emitter replaces the projectile texture when using team colors
+    // there wasn't a good way to color the texture without using the emitter system
+	Begin Object Class=SpriteEmitter Name=ShockCoreLowWhite
+
+        UseColorScale=True
+        ColorScale(0)=(Color=(B=130,G=20,R=91,A=255))
+        ColorScale(1)=(RelativeTime=0.400000,Color=(B=145,G=80,R=110))
+        ColorScale(2)=(RelativeTime=1.000000)
+        FadeOutStartTime=20.800000
+
+        MaxParticles=1
+        StartLocationRange=(X=(Min=0.000000,Max=0.000000),Y=(Min=0.000000,Max=0.000000),Z=(Min=0.000000,Max=0.000000))
+        StartSizeRange=(X=(Min=40.000000,Max=40.000000),Y=(Min=40.000000,Max=40.000000))
+        UniformSize=True
+        SkeletalScale=(X=0.400000,Y=0.400000,Z=0.370000)
+        InitialParticlesPerSecond=50.000000
+        ParticlesPerSecond=50.000000
+        RespawnDeadParticles=False
+        AutomaticInitialSpawning=False
+        //Texture=Texture'3SPNvSoL.shock_core_low_white'
+        Texture=Texture'XEffectMat.Shock.shock_core_low'
+        LifetimeRange=(Min=0.250000,Max=0.500000)
+		SecondsBeforeInactive=0
+        UseSkeletalLocationAs=PTSU_Location
+        CoordinateSystem=PTCS_Relative
+        DrawStyle=PTDS_Translucent
+        Disabled=true
+        Name="SpriteEmitter3"
+
+    End Object
+    Emitters(3)=SpriteEmitter'ShockCoreLowWhite'
 
     TeamNum=255
 }

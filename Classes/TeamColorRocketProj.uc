@@ -21,16 +21,13 @@ simulated function SetupTeam()
 
 simulated function SetupColor()
 {
-    if(class'Misc_Player'.default.bTeamColorRockets && !bColorSet && Level.NetMode == NM_Client)
+    local Color c;
+    if(class'Misc_Player'.default.bTeamColorRockets && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            LightHue=0;
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            LightHue=160;
+            c = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue=class'TeamColorManager'.static.GetHue(c);
             bColorSet=true;
         }
     }
@@ -66,7 +63,7 @@ simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
 
-    if(Level.NetMode != NM_Client)
+    if(Level.NetMode == NM_DedicatedServer)
         return;
 
     SetupTeam();

@@ -3,34 +3,55 @@ class TeamColorShockComboVortex extends ShockComboVortex;
 var int TeamNum;
 var bool bColorSet;
 
-var FinalBlend RedTexture, BlueTexture, WhiteTexture;
+var Material TeamColorMaterial;
+var ColorModifier Alpha;
+var bool bAlphaSet;
 
-simulated function PostBeginPlay()
+simulated function PostNetBeginPlay()
 {
-    super.PostBeginPlay();
-}
+    super.PostNetBeginPlay();
 
+    if(Level.NetMode == NM_DedicatedServer)
+        return;
+
+    if(class'Misc_Player'.default.bTeamColorShock)
+    {
+        Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
+        Alpha.Material = TeamColorMaterial;
+        Alpha.AlphaBlend = true;
+        Alpha.RenderTwoSided = true;
+        Alpha.Color.A = 255;
+        Skins[0] = Alpha;
+        bAlphaSet=true;
+    }
+}
 simulated function SetColors()
 {
+    local Color color;
+
     if(TeamNum == 255)
         return;
 
     if(bColorSet)
         return;
 
-    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode == NM_Client)
+    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+        if(TeamNum == 0 || TeamNum == 1)
         {
-            Skins[0]=RedTexture;
-        }
-        else if(TeamNum == 1)
-        {
-            Skins[0]=BlueTexture;
-        }
-    }
+            LightBrightness=210;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
 
-    bColorSet=true;
+            Alpha.Color.R = color.R;
+            Alpha.Color.G = color.G;
+            Alpha.Color.B = color.B;
+            bColorSet=true;
+        
+        }     
+
+        bColorSet=true;
+    }
 }
 
 simulated function Tick(float DT)
@@ -41,9 +62,7 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-    RedTexture=FinalBlend'3SPNvSoL.ElecRingFB_red'
-    BlueTexture=FinalBlend'3SPNvSoL.ElecRingFB_blue'
-    WhiteTexture=FinalBlend'3SPNvSoL.ElecRingFB_white'
+    TeamColorMaterial=FinalBlend'3SPNvSoL.ElecRingFB_white'
 
     TeamNum=255
     bColorSet=false

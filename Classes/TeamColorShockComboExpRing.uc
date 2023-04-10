@@ -1,30 +1,54 @@
 class TeamColorShockComboExpRing extends ShockComboExpRing;
 
-// #exec OBJ LOAD FILE=Textures\3SPNvSoLTex.utx PACKAGE=3SPNvSoL
-
 var int TeamNum;
 var bool bColorSet;
 
-var Texture RedTexture, BlueTexture;
+var Material TeamColorMaterial;
+var ColorModifier Alpha;
+var bool bAlphaSet;
+
+simulated function PostNetBeginPlay()
+{
+    super.PostNetBeginPlay();
+
+    if(Level.NetMode == NM_DedicatedServer)
+        return;
+
+    if(class'Misc_Player'.default.bTeamColorShock)
+    {
+        Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
+        Alpha.Material = TeamColorMaterial;
+        Alpha.AlphaBlend = true;
+        Alpha.RenderTwoSided = true;
+        Alpha.Color.A = 255;
+        Skins[0] = Alpha;
+        bAlphaSet=true;
+    }
+}
 
 function SetColors()
 {
+    local Color color;
+
     if(TeamNum == 255)
         return;
 
     if(bColorSet)
         return;
 
-    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode == NM_Client)
+    if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0)
+       if(TeamNum == 0 || TeamNum == 1)
         {
-            Skins[0] = RedTexture;
-        }
-        else if(TeamNum == 1)
-        {
-            Skins[0] = BlueTexture;
-        }
+            LightBrightness=210;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            LightHue = class'TeamColorManager'.static.GetHue(color);
+
+            Alpha.Color.R = color.R;
+            Alpha.Color.G = color.G;
+            Alpha.Color.B = color.B;
+            bColorSet=true;
+        }        
     }
 
     bColorSet=true;
@@ -38,8 +62,7 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-    RedTexture=Texture'3SPNvSoL.Shock_ring_a_red'
-    BlueTexture=Texture'3SPNvSoL.Shock_ring_a_blue'
+    TeamColorMaterial=Texture'3SPNvSoL.Shock_ring_a_white'
     TeamNum=255
     bColorSet=false
 }
