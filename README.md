@@ -1,6 +1,16 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v1.8
+- increase config/webadmin setting for maxnetspeed.  It could be changed in the ini but using webadmin 
+would force it to be within 9636-25000 range.  New range is 9636-100000
+
+v1.7
+- increase auto net speed max settings in gui
+- add the rest of Fox WS Fix (thanks ds8k :) )
+- add custom team colors for weapons
+- add config option for abort necro sound
+
 v1.6
 - new config option "Auto Set Netspeed", set netspeed at match start
 - new server options MinNetSpeed, MaxNetSpeed.  Admin can restrict netspeeds to a range.  
