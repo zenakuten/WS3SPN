@@ -942,6 +942,69 @@ event UpdateEyeHeight( float DeltaTime )
     Controller.AdjustView(DeltaTime);
 }
 
+event Landed(vector HitNormal)
+{
+    super(UnrealPawn).Landed( HitNormal );
+    MultiJumpRemaining = MaxMultiJump;
+
+    if ( (Health > 0) && !bHidden && (Level.TimeSeconds - SplashTime > 0.25) && bPlayOwnFootsteps)
+        PlayOwnedSound(GetSound(EST_Land), SLOT_Interact, FMin(1,-0.3 * Velocity.Z/JumpZ));
+}
+
+simulated function FootStepping(int Side)
+{
+    local int SurfaceNum, i;
+	local actor A;
+	local material FloorMat;
+	local vector HL,HN,Start,End,HitLocation,HitNormal;
+    local float Volume;
+    local int Radius;
+
+    Volume = 0.15;
+    Radius = 400;
+
+    if(Misc_Player(Controller) != None && Misc_Player(Controller).RepInfo != None)
+    {
+        Volume = Misc_Player(Controller).RepInfo.FootstepVolume;
+        Radius = Misc_Player(Controller).RepInfo.FootstepRadius;
+    }
+
+    SurfaceNum = 0;
+
+    for ( i=0; i<Touching.Length; i++ )
+		if ( ((PhysicsVolume(Touching[i]) != None) && PhysicsVolume(Touching[i]).bWaterVolume)
+			|| (FluidSurfaceInfo(Touching[i]) != None) )
+		{
+			if ( FRand() < 0.5 )
+				PlaySound(sound'PlayerSounds.FootStepWater2', SLOT_Interact, FootstepVolume );
+			else
+				PlaySound(sound'PlayerSounds.FootStepWater1', SLOT_Interact, FootstepVolume );
+				
+			if ( !Level.bDropDetail && (Level.DetailMode != DM_Low) && (Level.NetMode != NM_DedicatedServer)
+				&& !Touching[i].TraceThisActor(HitLocation, HitNormal,Location - CollisionHeight*vect(0,0,1.1), Location) )
+					Spawn(class'WaterRing',,,HitLocation,rot(16384,0,0));
+			return;
+		}
+
+	if ( bIsCrouched || bIsWalking )
+		return;
+
+	if ( (Base!=None) && (!Base.IsA('LevelInfo')) && (Base.SurfaceType!=0) )
+	{
+		SurfaceNum = Base.SurfaceType;
+	}
+	else
+	{
+		Start = Location - Vect(0,0,1)*CollisionHeight;
+		End = Start - Vect(0,0,16);
+		A = Trace(hl,hn,End,Start,false,,FloorMat);
+		if (FloorMat !=None)
+			SurfaceNum = FloorMat.SurfaceType;
+	}
+	PlaySound(SoundFootsteps[SurfaceNum], SLOT_Interact, Volume,,Radius );
+}
+
+
 defaultproperties
 {
      RedColor=(R=100)

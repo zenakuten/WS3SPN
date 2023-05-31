@@ -11,54 +11,25 @@ static function Color GetColor(int TeamNum, PlayerController PC)
     local Color retval;
     local int PlayerTeam;
 
-    if(class'Misc_Player'.default.bUseTeamColors)
-    {
-        if(TeamNum == 0)
-        {
-            retval = class'Misc_Player'.default.TeamColorRed;
-            if(class'Misc_Player'.default.bTeamColorUseBrightSkinsEnemy)
-            {
-                retval.R = cscale(class'Misc_Player'.default.RedOrEnemy.R);
-                retval.G = cscale(class'Misc_Player'.default.RedOrEnemy.G);
-                retval.B = cscale(class'Misc_Player'.default.RedOrEnemy.B);
-                retval.A = cscale(class'Misc_Player'.default.RedOrEnemy.A);
-            }
-        }
-        else
-        {
-            retval = class'Misc_Player'.default.TeamColorBlue;
-            if(class'Misc_Player'.default.bTeamColorUseBrightSkinsAlly)
-            {
-                retval.R = cscale(class'Misc_Player'.default.BlueOrAlly.R);
-                retval.G = cscale(class'Misc_Player'.default.BlueOrAlly.G);
-                retval.B = cscale(class'Misc_Player'.default.BlueOrAlly.B);
-                retval.A = cscale(class'Misc_Player'.default.BlueOrAlly.A);
-            }
-        }
-    }
+    if(PC != None)
+        PlayerTeam = PC.GetTeamNum();
+    
+    if(TeamNum == 0)
+        retval = class'Misc_Player'.default.TeamColorRed;
     else
-    {
-        if(PC != None)
-            PlayerTeam = PC.GetTeamNum();
-        
-        if(TeamNum == 0)
-            retval = class'Misc_Player'.default.TeamColorRed;
-        else
-            retval = class'Misc_Player'.default.TeamColorBlue;
+        retval = class'Misc_Player'.default.TeamColorBlue;
 
-        if(TeamNum == PlayerTeam && class'Misc_Player'.default.bTeamColorUseBrightSkinsAlly)
+    if(!class'Misc_Player'.default.bTeamColorUseTeam)
+    {
+        if(TeamNum == PlayerTeam)
         {
-            retval.R = cscale(class'Misc_Player'.default.BlueOrAlly.R);
-            retval.G = cscale(class'Misc_Player'.default.BlueOrAlly.G);
-            retval.B = cscale(class'Misc_Player'.default.BlueOrAlly.B);
-            retval.A = cscale(class'Misc_Player'.default.BlueOrAlly.A);
+            //blue or ally
+            retval = class'Misc_Player'.default.TeamColorBlue;
         }
-        else if(TeamNum != PlayerTeam && class'Misc_Player'.default.bTeamColorUseBrightSkinsEnemy)
+        else
         {
-            retval.R = cscale(class'Misc_Player'.default.RedOrEnemy.R);
-            retval.G = cscale(class'Misc_Player'.default.RedOrEnemy.G);
-            retval.B = cscale(class'Misc_Player'.default.RedOrEnemy.B);
-            retval.A = cscale(class'Misc_Player'.default.RedOrEnemy.A);
+            //red or enemy
+            retval = class'Misc_Player'.default.TeamColorRed;
         }
     }
 

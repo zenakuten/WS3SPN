@@ -137,7 +137,8 @@ static function FillPlayInfo(PlayInfo PlayInfo)
 	if (default.NecroComboClass != None)
 	{
 		default.NecroComboClass.static.FillPlayInfo(PlayInfo);
-        PlayInfo.Dump();
+        // this spams a fuckton to logs
+        // PlayInfo.Dump();
 		PlayInfo.PopClass();
 	}
 }

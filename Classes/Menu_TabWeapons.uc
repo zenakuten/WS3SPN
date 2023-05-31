@@ -4,11 +4,10 @@ var automated moCheckBox ch_TeamColorRockets;
 var automated moCheckBox ch_TeamColorBio;
 var automated moCheckBox ch_TeamColorFlak;
 var automated moCheckBox ch_TeamColorShock;
-var automated moCheckBox ch_TeamColorUseBrightSkinsEnemy;
-var automated moCheckBox ch_TeamColorUseBrightSkinsAlly;
 var automated GUIImage weaponCheckBox, redBox, blueBox;
 var automated GUILabel RRL, RBL, RGL, BRL, BGL, BBL, redBoxLabel, blueBoxLabel;
 var automated GUISlider RRSlide, RBSlide, RGSlide, BRSlide, BGSlide, BBSlide;
+var automated moCheckBox ch_TeamColorEnemyAlly;
 var TeamColorSpinnyRocket redRox,blueRox;
 var vector      RedRoxOffset;
 var vector      BlueRoxOffset;
@@ -78,30 +77,50 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     ch_TeamColorBio.Checked(class'Misc_Player'.default.bTeamColorBio);
     ch_TeamColorFlak.Checked(class'Misc_Player'.default.bTeamColorFlak);
     ch_TeamColorShock.Checked(class'Misc_Player'.default.bTeamColorShock);
-    ch_TeamColorUseBrightSkinsEnemy.Checked(class'Misc_Player'.default.bTeamColorUseBrightSkinsEnemy);
-    ch_TeamColorUseBrightSkinsAlly.Checked(class'Misc_Player'.default.bTeamColorUseBrightSkinsAlly);
+    ch_TeamColorEnemyAlly.Checked(!class'Misc_Player'.default.bTeamColorUseTeam);
+    UpdateColorTextTeam();    
 
     if(redRox == None)
     {
         redRox = P.Spawn(class'TeamColorSpinnyRocket');
         redRox.SetTeam(0);
+        UpdateRedRoxColors();
     }
 
     if(blueRox == None)
     {
         blueRox = P.Spawn(class'TeamColorSpinnyRocket');
         blueRox.SetTeam(1);
+        UpdateBlueRoxColors();
     }
 
-    RRSlide.Value = P.TeamColorRed.R;
-    RGSlide.Value = P.TeamColorRed.G;
-    RBSlide.Value = P.TeamColorRed.B;
-
-    BRSlide.Value = P.TeamColorBlue.R;
-    BGSlide.Value = P.TeamColorBlue.G;
-    BBSlide.Value = P.TeamColorBlue.B;
+    MatchSlidersToColors();
 
     class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
+}
+
+function MatchSlidersToColors()
+{
+    local Color red;
+    local Color blue;
+    local int myTeam;
+
+    myTeam = PlayerOwner().GetTeamNum();
+    red = class'TeamColorManager'.static.GetColor(0,PlayerOwner());
+    blue = class'TeamColorManager'.static.GetColor(1,PlayerOwner());
+    if(IsEnemyAlly())
+    {
+        red = class'TeamColorManager'.static.GetColor(1-myTeam,PlayerOwner());
+        blue = class'TeamColorManager'.static.GetColor(myTeam,PlayerOwner());
+    }
+
+    RRSlide.Value = red.R;
+    RGSlide.Value = red.G;
+    RBSlide.Value = red.B;
+
+    BRSlide.Value = blue.R;
+    BGSlide.Value = blue.G;
+    BBSlide.Value = blue.B;
 }
 
 function InternalOnChange( GUIComponent C )
@@ -111,6 +130,12 @@ function InternalOnChange( GUIComponent C )
         case ch_UseNewEyeHeight:
             class'Misc_Player'.default.bUseNewEyeHeightAlgorithm = ch_UseNewEyeHeight.IsChecked();
             Misc_Player(PlayerOwner()).SetEyeHeightAlgorithm(ch_UseNewEyeHeight.IsChecked());
+        break;
+
+        case ch_TeamColorEnemyAlly:
+            class'Misc_Player'.default.bTeamColorUseTeam = !ch_TeamColorEnemyAlly.IsChecked();
+            UpdateColors();
+            MatchSlidersToColors();
         break;
 
         case ch_TeamColorRockets:
@@ -129,46 +154,34 @@ function InternalOnChange( GUIComponent C )
             class'Misc_Player'.default.bTeamColorShock = ch_TeamColorShock.IsChecked();
         break;
 
-        case ch_TeamColorUseBrightSkinsEnemy:
-            class'Misc_Player'.default.bTeamColorUseBrightSkinsEnemy = ch_TeamColorUseBrightSkinsEnemy.IsChecked();
-            UpdateRedRoxColors();
-            UpdateBlueRoxColors();
-        break;
-
-        case ch_TeamColorUseBrightSkinsAlly:
-            class'Misc_Player'.default.bTeamColorUseBrightSkinsAlly = ch_TeamColorUseBrightSkinsAlly.IsChecked();
-            UpdateRedRoxColors();
-            UpdateBlueRoxColors();
-        break;
-
         case RRSlide:
             class'Misc_Player'.default.TeamColorRed.R = RRSlide.Value;
-            UpdateRedRoxColors();
+            UpdateColors();
         break;
 
         case RGSlide:
             class'Misc_Player'.default.TeamColorRed.G = RGSlide.Value;
-            UpdateRedRoxColors();
+            UpdateColors();
         break;
 
         case RBSlide:
             class'Misc_Player'.default.TeamColorRed.B = RBSlide.Value;
-            UpdateRedRoxColors();
+            UpdateColors();
         break;
         
         case BRSlide:
             class'Misc_Player'.default.TeamColorBlue.R = BRSlide.Value;
-            UpdateBlueRoxColors();
+            UpdateColors();
         break;
 
         case BGSlide:
             class'Misc_Player'.default.TeamColorBlue.G = BGSlide.Value;
-            UpdateBlueRoxColors();
+            UpdateColors();
         break;
 
         case BBSlide:
             class'Misc_Player'.default.TeamColorBlue.B = BBSlide.Value;
-            UpdateBlueRoxColors();
+            UpdateColors();
         break;
 
     }
@@ -178,22 +191,46 @@ function InternalOnChange( GUIComponent C )
     class'Menu_Menu3SPN'.default.SettingsDirty = true;
 }
 
+function bool IsEnemyAlly()
+{
+    return !class'Misc_Player'.default.bTeamColorUseTeam;
+}
+
 function UpdateRedRoxColors()
 {
+    local int myTeam;
+    myTeam = PlayerOwner().GetTeamNum();
     if(redRox != None && redRox.RocketTrail != None)
     {
+        if(IsEnemyAlly())
+        {
+            redRox.SetTeam(1-myTeam);
+        }
+        else
+        {
+            redRox.SetTeam(0);
+        }
+
         redRox.RocketTrail.bColorSet=false;
     }
-    redBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(0,PlayerOwner());
 }
 
 function UpdateBlueRoxColors()
 {
+    local int myTeam;
+    myTeam = PlayerOwner().GetTeamNum();
     if(blueRox != None && blueRox.RocketTrail != None)
     {
+        if(IsEnemyAlly())
+        {
+            blueRox.SetTeam(myTeam);
+        }
+        else
+        {
+            blueRox.SetTeam(1);
+        }
         blueRox.RocketTrail.bColorSet=false;
     }
-    blueBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(1,PlayerOwner());
 }
 
 function bool InternalDraw(Canvas C)
@@ -243,6 +280,29 @@ function ShowPanel(bool bShow)
 {
     Super.ShowPanel(bShow);
     HideSpinnyRox(!bShow);
+}
+
+function UpdateColorTextTeam()
+{
+    local int myTeam;
+    myTeam=PlayerOwner().GetTeamNum();
+    if(IsEnemyAlly())
+    {
+        redBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(1-myTeam,PlayerOwner());
+        blueBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(myTeam,PlayerOwner());
+    }
+    else
+    {
+        redBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(0,PlayerOwner());
+        blueBoxLabel.TextColor = class'TeamColorManager'.static.GetColor(1,PlayerOwner());
+    }
+}
+
+function UpdateColors()
+{
+    UpdateColorTextTeam();
+    UpdateRedRoxColors();
+    UpdateBlueRoxColors();
 }
 
 defaultproperties
@@ -315,29 +375,18 @@ defaultproperties
      End Object
      ch_TeamColorShock=moCheckBox'3SPNvSoL.Menu_TabWeapons.CheckTeamColorShock'
 
-    Begin Object Class=moCheckBox Name=CheckTeamColorUseBrightSkinsEnemy
-         Caption="Use BrightSkin colors (red or enemy)"
+    Begin Object Class=moCheckBox Name=CheckTeamColorEnemyAlly
+         Caption="Use enemy/ally colors"
          OnCreateComponent=SpeedCheck.InternalOnCreateComponent
-         Hint="Use BrightSkin colors to color weapons"
-         WinTop=0.830000
-         WinLeft=0.100000
-         WinWidth=0.350000
-         OnChange=Menu_TabWeapons.InternalOnChange
-    End Object
-    ch_TeamColorUseBrightSkinsEnemy=moCheckBox'3SPNvSoL.Menu_TabWeapons.CheckTeamColorUseBrightSkinsEnemy'
-
-    Begin Object Class=moCheckBox Name=CheckTeamColorUseBrightSkinsAlly
-         Caption="Use BrightSkin colors (blue or ally)"
-         OnCreateComponent=SpeedCheck.InternalOnCreateComponent
-         Hint="Use BrightSkin colors to color weapons"
+         Hint="Use enemy/ally logic instead of red/blue"
          //WinTop=0.760000
-         WinTop=0.880000
+         WinTop=0.830000
          //WinLeft=0.550000
          WinLeft=0.100000
          WinWidth=0.350000
          OnChange=Menu_TabWeapons.InternalOnChange
     End Object
-    ch_TeamColorUseBrightSkinsAlly=moCheckBox'3SPNvSoL.Menu_TabWeapons.CheckTeamColorUseBrightSkinsAlly'
+    ch_TeamColorEnemyAlly=moCheckBox'3SPNvSoL.Menu_TabWeapons.CheckTeamColorEnemyAlly'
 
     Begin Object Class=GUIImage Name=TabRedColorBackground
          Image=Texture'InterfaceContent.Menu.ScoreBoxA'
@@ -366,19 +415,19 @@ defaultproperties
     blueBox=GUIImage'3SPNvSoL.Menu_TabWeapons.TabBlueColorBackground'
 
     Begin Object Class=GUILabel Name=RedBoxLbl
-         Caption="Red"
+         Caption="Red or Enemy"
          TextColor=(B=255,G=255,R=255)
          WinTop=0.580000
-         WinLeft=0.250000
+         WinLeft=0.230000
          WinHeight=20.000000
      End Object
      redboxLabel=GUILabel'3SPNvSoL.Menu_TabWeapons.RedBoxLbl'
 
     Begin Object Class=GUILabel Name=BlueBoxLbl
-         Caption="Blue"
+         Caption="Blue or Ally"
          TextColor=(B=255,G=255,R=255)
          WinTop=0.580000
-         WinLeft=0.700000
+         WinLeft=0.680000
          WinHeight=20.000000
      End Object
      blueboxLabel=GUILabel'3SPNvSoL.Menu_TabWeapons.BlueBoxLbl'

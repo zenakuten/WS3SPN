@@ -183,8 +183,13 @@ var bool UseZAxisRadar;
 
 var config bool bFastWeaponSwitching;
 var config bool bCanBoostDodge;
+
 var config int MinNetSpeed;
 var config int MaxNetSpeed;
+
+var config bool UseNetUpdateRate;
+var config float MinNetUpdateRate;
+var config float MaxNetUpdateRate;
 
 
 var config int MinPlayersForStatsRecording;
@@ -198,6 +203,9 @@ var config bool EnforceMaxPlayers;
 
 var TournamentModuleBase TournamentModule;
 var config string TournamentModuleClass;
+
+var config float FootstepVolume;
+var config int FootstepRadius;
 
 /*
 struct RestartInfo
@@ -272,6 +280,13 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
     Misc_BaseGRI(GameReplicationInfo).MinNetSpeed = MinNetSpeed;
     Misc_BaseGRI(GameReplicationInfo).MaxNetSpeed = MaxNetSpeed;
+
+    Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate = UseNetUpdateRate;
+    Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate = MinNetUpdateRate;
+    Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate = MaxNetUpdateRate;
+
+    Misc_BaseGRI(GameReplicationInfo).FootstepVolume = FootstepVolume;
+    Misc_BaseGRI(GameReplicationInfo).FootstepRadius = FootstepRadius;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -392,8 +407,16 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
-    PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "5;9636:25000");
-    PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "5;9636:25000");
+    PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
+    PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
+    PI.AddSetting("3SPN", "UseNetUpdateRate", "Use UTComp movement update", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "MinNetUpdateRate", "Minimum net update rate for clients", 0, Weight++, "Text", "3;90:250");
+    PI.AddSetting("3SPN", "MaxNetUpdateRate", "Maximum net update rate for clients", 0, Weight++, "Text", "3;90:250");
+
+//    PI.AddSetting("3SPN", "MaxHealth", "Max Health", 0, Weight++, "Text", "8;1.0:2.0");
+
+    PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
+    PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
 
 //    PI.AddSetting("3SPN", "UseZAxisRadar", "Extended HUD Includes Z Axis", 0, Weight++, "Check");
 
@@ -492,6 +515,11 @@ static event string GetDescriptionText(string PropName)
       case "bCanBoostDodge": return "UT2003 style boost dodging";
       case "MinNetSpeed": return "Minimum netspeed for clients";
       case "MaxNetSpeed": return "Maximum netspeed for clients";
+      case "UseNetUpdateRate": return "Use UTComp movement update";
+      case "MinNetUpdateRate": return "Minimum net update rate for clients";
+      case "MaxNetUpdateRate": return "Maximum net update rate for clients";
+      case "FootstepVolume": return "Volume of player footstep sound";
+      case "FootstepRadius": return "Radius of player footstep sound";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -3911,7 +3939,12 @@ defaultproperties
      bCanBoostDodge=False
      MinPlayersForStatsRecording=2
      MinNetSpeed=9636
-     MaxNetSpeed=50000
+     MaxNetSpeed=100000
+     UseNetUpdateRate=True
+     MinNetUpdateRate=90.0
+     MaxNetUpdateRate=250.0
+     FootstepVolume=0.15
+     FootstepRadius=400
      FriendlyFireScale=0.500000
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

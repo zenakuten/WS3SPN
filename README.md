@@ -1,6 +1,13 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v1.9
+- disable landing sound if bPlayOwnFootsteps is false
+- add server settings FootstepVolume and FootstepRadius for footstep sound
+- remove unneccessary logging
+- Add UTComp style movement updates
+- Add ally/enemy logic for weapon colors, remove 'use brightskins' for weapon colors
+
 v1.8
 - increase config/webadmin setting for maxnetspeed.  It could be changed in the ini but using webadmin 
 would force it to be within 9636-25000 range.  New range is 9636-100000
