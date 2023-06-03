@@ -289,6 +289,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 1.9"
+     Version="SoL 1.9a"
      EnableNewNet=True
 }
