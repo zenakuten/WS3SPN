@@ -206,6 +206,7 @@ var config string TournamentModuleClass;
 
 var config float FootstepVolume;
 var config int FootstepRadius;
+var config bool ClearOldStats;
 
 /*
 struct RestartInfo
@@ -434,6 +435,8 @@ static function FillPlayInfo(PlayInfo PI)
     Weight=1;
     PI.AddSetting("3SPN 2003 Style", "bFastWeaponSwitching", "Fast Weapon Switching", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN 2003 Style", "bCanBoostDodge", "Can Boost Dodge", 0, Weight++, "Check",,, True);
+    // stats
+    PI.AddSetting("3SPN Local StatsDB", "ClearOldStats", "Clear Old Stats", 0, Weight++, "Check",,, True);
 
 
 }
@@ -3946,6 +3949,7 @@ defaultproperties
      FootstepVolume=0.15
      FootstepRadius=400
      FriendlyFireScale=0.500000
+     ClearOldStats=false
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
      LoginMenuClass="3SPNvSoL.Menu_TAMLoginMenu"

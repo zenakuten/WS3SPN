@@ -469,14 +469,6 @@ function PlayerTick(float DeltaTime)
 		PlayerInitialized = true;
 	}
 
-    /* this maybe fix movement bug? */
-    if (DoubleClickDir == DCLICK_Active &&
-        Misc_Pawn(Pawn) != none && Misc_Pawn(Pawn).MultiDodgesRemaining > 0
-    ) {
-        Misc_Pawn(Pawn).MultiDodgesRemaining -= 1;
-        DoubleClickDir = DCLICK_None;
-    }
-
     if (Level.NetMode == NM_Client && RepInfo != none) 
     {
         if (Player.CurrentNetSpeed > RepInfo.MaxNetSpeed)

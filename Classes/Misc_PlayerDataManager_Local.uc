@@ -30,6 +30,7 @@ var private int SLRow;
 var string TopName;
 var int TopScore;
 //var config int Moneyreal;
+var Team_GameBase BaseGame;
 
 function Misc_ServerLink GetServerLink()
 {
@@ -40,6 +41,11 @@ function Misc_ServerLink GetServerLink()
 function PostBeginPlay()
 {
     super.PostBeginPlay();
+
+    if(BaseGame==None)
+        foreach DynamicActors(class'Team_GameBase', BaseGame)
+            break;
+
     PurgeAndUpdateTopScore();
     SLAwaiting = 0;
     //return;    
@@ -127,19 +133,24 @@ function PurgeAndUpdateTopScore()
     local Misc_LocalStatsDB StatsDB;
     local string Time;
     local int Score;
+    local bool ClearOldStats;
 
     Time = class'Misc_LocalStatsDB'.static.GetCurrentTime(Level);
     Names = GetPerObjectNames(GetGameConfigClass().default.ConfigName, string(GetGameConfigClass().default.Class.Name), 10000);
     default.TopName = "";
     default.TopScore = 0;
     i = 0;
+    ClearOldStats=false;
+    if(BaseGame != None)
+        ClearOldStats=BaseGame.ClearOldStats;
+
     J0x6A:
     // End:0x105 [Loop If]
     if(i < Names.Length)
     {
         StatsDB = new (none, Names[i]) GetGameConfigClass();
         // End:0xB7
-        if(StatsDB.IsOutDated(Time))
+        if(StatsDB.IsOutDated(Time) && ClearOldStats)
         {
             StatsDB.ClearConfig();
         }

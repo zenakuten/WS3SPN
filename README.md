@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.0
+- stats update
+
 v1.9
 - disable landing sound if bPlayOwnFootsteps is false
 - add server settings FootstepVolume and FootstepRadius for footstep sound
