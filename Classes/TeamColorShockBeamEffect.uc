@@ -12,6 +12,17 @@ replication
         TeamNum;
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
@@ -21,13 +32,16 @@ simulated function PostNetBeginPlay()
 
     if(class'Misc_Player'.default.bTeamColorShock)
     {
-        Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
-        Alpha.Material = TeamColorMaterial;
-        Alpha.AlphaBlend = true;
-        Alpha.RenderTwoSided = true;
-        Alpha.Color.A = 255;
-        Skins[0] = Alpha;
-        bAlphaSet=true;
+        if(CanUseColors())
+        {
+            Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
+            Alpha.Material = TeamColorMaterial;
+            Alpha.AlphaBlend = true;
+            Alpha.RenderTwoSided = true;
+            Alpha.Color.A = 255;
+            Skins[0] = Alpha;
+            bAlphaSet=true;
+        }
     }
 
     SetColors();
@@ -50,18 +64,21 @@ simulated function SetColors()
     local Color color;
     if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer && Coil != None)
     {
-        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-        if(TeamNum == 0 || TeamNum == 1)
+        if(CanUseColors())
         {
-            Alpha.Color.R = color.R;
-            Alpha.Color.G = color.G;
-            Alpha.Color.B = color.B;
-            if(Coil != None)
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            if(TeamNum == 0 || TeamNum == 1)
             {
-                Coil.mColorRange[0]=color;
-                Coil.mColorRange[1]=color;
+                Alpha.Color.R = color.R;
+                Alpha.Color.G = color.G;
+                Alpha.Color.B = color.B;
+                if(Coil != None)
+                {
+                    Coil.mColorRange[0]=color;
+                    Coil.mColorRange[1]=color;
+                }
+                bColorSet=true;
             }
-            bColorSet=true;
         }
     }
 }

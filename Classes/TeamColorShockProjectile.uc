@@ -10,6 +10,17 @@ replication
        TeamNum;
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 function SetupTeam()
 {
     if(Instigator != None && Instigator.Controller != None)
@@ -53,17 +64,20 @@ simulated function SetColors()
     local Color color;
     if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0 || TeamNum == 1)
+        if(CanUseColors())
         {
-            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-            LightHue = class'TeamColorManager'.static.GetHue(color);
+            if(TeamNum == 0 || TeamNum == 1)
+            {
+                color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+                LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            //when using team colors, we simulate this texture using the TeamColorShockBall emitter
-            //so we can color it
-            Texture=None;
-            Skins[0]=None;
+                //when using team colors, we simulate this texture using the TeamColorShockBall emitter
+                //so we can color it
+                Texture=None;
+                Skins[0]=None;
 
-            bColorSet=true;
+                bColorSet=true;
+            }
         }
     }
 }

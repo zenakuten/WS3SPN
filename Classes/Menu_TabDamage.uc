@@ -6,7 +6,6 @@ var automated moCheckBox ConfigureNetSpeed;
 var automated GUINumericEdit EditConfigureNetSpeedValue;
 var automated moCheckBox EnableWidescreenFixes;
 var automated moComboBox AbortNecro;
-var automated moNumericEdit EditNetUpdateRate;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -50,15 +49,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     EditConfigureNetSpeedValue.MaxValue=99999;
     EditConfigureNetSpeedValue.MyEditBox.MaxWidth=5;
     EditConfigureNetSpeedValue.SetValue(class'Misc_Player'.default.ConfigureNetSpeedValue);
-    
-    EditNetUpdateRate.MinValue=90;
-    EditNetUpdateRate.MaxValue=250;
-    if(Misc_Player(PlayerOwner()) != None)
-    {
-        EditNetUpdateRate.MinValue=Misc_Player(PlayerOwner()).RepInfo.MinNetUpdateRate;
-        EditNetUpdateRate.MaxValue=Misc_Player(PlayerOwner()).RepInfo.MaxNetUpdateRate;
-    }
-    EditNetUpdateRate.SetValue(class'Misc_Player'.default.DesiredNetUpdateRate);
 
     AbortNecro.AddItem("None");
     AbortNecro.AddItem("Meow");
@@ -102,11 +92,6 @@ function InternalOnChange( GUIComponent C )
 		case AbortNecro:
 			class'Misc_Player'.default.AbortNecroSoundType = AbortNecroSounds(AbortNecro.GetIndex());
 			break;
-
-        case EditNetUpdateRate:
-            class'Misc_Player'.default.DesiredNetUpdateRate = EditNetUpdateRate.GetValue();
-            Misc_Player(PlayerOwner()).ServerSetNetUpdateRate(EditNetUpdateRate.GetValue(), PlayerOwner().Player.CurrentNetSpeed);
-            break;
     }
 	
     Misc_Player(PlayerOwner()).ReloadDefaults();
@@ -173,13 +158,4 @@ defaultproperties
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      AbortNecro=moComboBox'3SPNvSoL.Menu_TabDamage.AbortNecroSoundTypesCombo'
-
-     Begin Object Class=moNumericEdit Name=InputNetUpdateRate
-         Caption="Net Update Rate (for movement):"
-         WinTop=0.630000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     EditNetUpdateRate=moNumericEdit'3SPNvSoL.Menu_TabDamage.InputNetUpdateRate'
 }

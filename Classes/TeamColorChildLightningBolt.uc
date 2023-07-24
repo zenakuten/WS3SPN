@@ -10,6 +10,17 @@ replication
         TeamNum;
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
@@ -17,7 +28,7 @@ simulated function PostNetBeginPlay()
     if(Level.NetMode != NM_Client)
         return;
 
-    if(class'Misc_Player'.default.bTeamColorSniper)
+    if(class'Misc_Player'.default.bTeamColorSniper && CanUseColors())
     {
         Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
         Alpha.Material = Skins[0];
@@ -47,23 +58,26 @@ simulated function SetColors()
 {
     if(class'Misc_Player'.default.bTeamColorSniper && !bColorSet && Level.NetMode == NM_Client && Alpha != None && TeamNum!=255)
     {
-        if(TeamNum == 0)
+        if(CanUseColors())
         {
-            LightHue=0;
-            Alpha.Color.R = 255;
-            Alpha.Color.G = 32;
-            Alpha.Color.B = 32;
+            if(TeamNum == 0)
+            {
+                LightHue=0;
+                Alpha.Color.R = 255;
+                Alpha.Color.G = 32;
+                Alpha.Color.B = 32;
+            }
+            else if(TeamNum == 1)
+            {
+                LightHue=160;
+                Alpha.Color.R = 32;
+                Alpha.Color.G = 32;
+                Alpha.Color.B = 255;
+            }
+            bColorSet=true;
+            mStartParticles=10;
+            mRegen=false;
         }
-        else if(TeamNum == 1)
-        {
-            LightHue=160;
-            Alpha.Color.R = 32;
-            Alpha.Color.G = 32;
-            Alpha.Color.B = 255;
-        }
-        bColorSet=true;
-        mStartParticles=10;
-        mRegen=false;
     }
 }
 

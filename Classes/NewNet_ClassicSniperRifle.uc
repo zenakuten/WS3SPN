@@ -123,4 +123,7 @@ function NewNet_ServerStartFire(byte Mode, float ClientTimeStamp)
 defaultproperties
 {
      FireModeClass(0)=Class'3SPNvSoL.NewNet_ClassicSniperFire'
+     PutDownTime=0.400000
+     BringUpTime=0.400000
+     InventoryGroup=10     
 }

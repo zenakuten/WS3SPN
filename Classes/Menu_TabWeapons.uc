@@ -20,6 +20,17 @@ function bool AllowOpen(string MenuClass)
 	return true;
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_Player(PlayerOwner()).RepInfo;
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 event Opened(GUIComponent Sender)
 {
 	local bool OldDirty;
@@ -78,6 +89,22 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     ch_TeamColorFlak.Checked(class'Misc_Player'.default.bTeamColorFlak);
     ch_TeamColorShock.Checked(class'Misc_Player'.default.bTeamColorShock);
     ch_TeamColorEnemyAlly.Checked(!class'Misc_Player'.default.bTeamColorUseTeam);
+
+    if(!CanUseColors())
+    {
+        ch_TeamColorRockets.DisableMe();
+        ch_TeamColorBio.DisableMe();
+        ch_TeamColorFlak.DisableMe();
+        ch_TeamColorShock.DisableMe();
+        ch_TeamColorEnemyAlly.DisableMe();
+        RRSlide.DisableMe();
+        RBSlide.DisableMe();
+        RGSlide.DisableMe();
+        BRSlide.DisableMe();
+        BGSlide.DisableMe();
+        BBSlide.DisableMe();
+    }
+
     UpdateColorTextTeam();    
 
     if(redRox == None)

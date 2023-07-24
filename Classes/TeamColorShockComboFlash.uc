@@ -7,6 +7,17 @@ var Material TeamColorMaterial;
 var ColorModifier Alpha;
 var bool bAlphaSet;
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 simulated function PostNetBeginPlay()
 {
     super.PostNetBeginPlay();
@@ -14,7 +25,7 @@ simulated function PostNetBeginPlay()
     if(Level.NetMode == NM_DedicatedServer)
         return;
 
-    if(class'Misc_Player'.default.bTeamColorShock)
+    if(class'Misc_Player'.default.bTeamColorShock && CanUseColors())
     {
         Alpha = ColorModifier(Level.ObjectPool.AllocateObject(class'ColorModifier'));
         Alpha.Material = TeamColorMaterial;
@@ -38,17 +49,20 @@ function SetColors()
 
     if(class'Misc_Player'.default.bTeamColorShock && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0 || TeamNum == 1)
+        if(CanUseColors())
         {
-            LightBrightness=210;
-            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-            LightHue = class'TeamColorManager'.static.GetHue(color);
+            if(TeamNum == 0 || TeamNum == 1)
+            {
+                LightBrightness=210;
+                color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+                LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            Alpha.Color.R = color.R;
-            Alpha.Color.G = color.G;
-            Alpha.Color.B = color.B;
-            bColorSet=true;
-        }        
+                Alpha.Color.R = color.R;
+                Alpha.Color.G = color.G;
+                Alpha.Color.B = color.B;
+                bColorSet=true;
+            }        
+        }
     }
 
     bColorSet=true;

@@ -177,10 +177,8 @@ var float LastSettingsSaveTimeSeconds;
 var Misc_BaseGRI RepInfo;
 var config bool bConfigureNetSpeed;
 var config int ConfigureNetSpeedValue;
-var config float DesiredNetUpdateRate;
 
 var transient PlayerInput PlayerInput2;
-var float TimeBetweenUpdates;
 
 var config bool bTeamColorRockets;
 var config bool bTeamColorBio;
@@ -207,7 +205,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, TimeBetweenUpdates;
+        ReceiveAwardMessage, AbortNecro;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         HitDamage, bHitContact, HitPawn, bSeeInvis;
@@ -218,12 +216,8 @@ replication
     reliable if(Role < ROLE_Authority)
         ServerSetMapString, ServerCallTimeout,
 		SetNetCodeDisabled, SetTeamScore,
-		ServerLoadSettings, ServerSaveSettings, ServerReportNewNetStats,ServerSetEyeHeightAlgorithm, ServerSetNetUpdateRate;
+		ServerLoadSettings, ServerSaveSettings, ServerReportNewNetStats,ServerSetEyeHeightAlgorithm;
 		
-
-    unreliable if (Role < ROLE_Authority)
-        UTComp_ServerMove, UTComp_DualServerMove, UTComp_ShortServerMove;
-
 	reliable if(Role == ROLE_Authority)
 		ClientSettingsResult, ClientLoadSettings;
 }
@@ -492,7 +486,7 @@ function PlayerTick(float DeltaTime)
     if(HitDamage != LastDamage)
     {
         Damage = HitDamage - LastDamage;
-        
+
         if(bHitContact)
         {
             if(HitDamage < LastDamage)
@@ -500,7 +494,7 @@ function PlayerTick(float DeltaTime)
             else
                 Pawn.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
         }
-        
+            
         if(HitPawn != None && Misc_BaseGRI(GameReplicationInfo).bDamageIndicator)
         {
             if (DamageIndicatorType == 2)
@@ -983,6 +977,11 @@ function ServerViewNextPlayer()
     PlayerReplicationInfo.bOnlySpectator = true;
     RealTeam = PlayerReplicationInfo.Team;
 
+    HitDamage=0.0;
+    LastDamage=0.0;
+    HitPawn=None;
+    bHitContact=false;
+
     // view next player
     for ( C=Level.ControllerList; C!=None; C=C.NextController )
     {
@@ -1035,7 +1034,7 @@ state Spectating
 			    bFrozen = false;
 		    return;
 	    }
-		
+
         ServerViewNextPlayer();
     }
 
@@ -1060,6 +1059,75 @@ state Spectating
 	{
     	bFrozen = false;
 	}
+
+    function PlayerTick(float DeltaTime)
+    {
+        local int Damage;
+        local Pawn ViewPawn;
+
+        super.PlayerTick(DeltaTime);
+        
+        if (RepInfo==None)
+            foreach DynamicActors(Class'Misc_BaseGRI', RepInfo)
+                break;
+
+        if(ViewTarget == None)
+            return; 
+
+        ViewPawn = Pawn(ViewTarget);
+        if(ViewPawn == None)
+            return;
+
+        if(Misc_Player(ViewPawn.Controller) != None)
+        {
+            HitDamage = Misc_Player(ViewPawn.Controller).HitDamage;
+            LastDamage = Misc_Player(ViewPawn.Controller).LastDamage;
+            bHitContact = Misc_Player(ViewPawn.Controller).bHitContact;
+            HitPawn = Misc_Player(ViewPawn.Controller).HitPawn;
+        }
+        else if(Misc_Bot(ViewPawn.Controller) != None)
+        {
+            HitDamage = Misc_Bot(ViewPawn.Controller).HitDamage;
+            LastDamage = Misc_Bot(ViewPawn.Controller).LastDamage;
+            bHitContact = Misc_Bot(ViewPawn.Controller).bHitContact;
+            HitPawn = Misc_Bot(ViewPawn.Controller).HitPawn;
+        }
+
+
+        if(HitDamage == LastDamage)
+        {
+            LastDamage = HitDamage;
+            return;
+        }
+
+        if(HitDamage != LastDamage)
+        {
+            Damage = HitDamage - LastDamage;
+
+            if(bHitContact && bUseHitsounds)
+            {
+                if(HitDamage < LastDamage)
+                    ViewTarget.PlaySound(soundHitFriendly,, soundHitVolume,,,(48 / (-Damage)), false);
+                else
+                    ViewTarget.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
+            }
+                
+            if(HitPawn != None && RepInfo.bDamageIndicator)
+            {
+                if (DamageIndicatorType == 2)
+                {
+                    if ( (Level.TimeSeconds - SumDamageTime > 1) || (SumDamage > 0 ^^ Damage > 0) )
+                        SumDamage = 0;
+                    SumDamage += Damage;
+                    SumDamageTime = Level.TimeSeconds;
+                }
+                
+                if(DamageIndicatorType == 3)
+                    class'Emitter_Damage'.static.ShowDamage(HitPawn, HitPawn.Location, Damage);        
+            }        
+        }
+        LastDamage = HitDamage;
+    }
 	
     function BeginState()
     {
@@ -1389,14 +1457,16 @@ state GameEnded
 
         if(MyHUD != None)
         {
-            MyHUD.bShowScoreBoard = false;
+            //MyHUD.bShowScoreBoard = false;
+            MyHUD.bShowScoreBoard = true;
             MyHUD.bShowLocalStats = false;
         }
 
 		bBehindView = true;
 		ClientSetBehindView(true);
 		
-        SetTimer(1.0, false);
+        //SetTimer(1.0, false);
+        SetTimer(0.1, false);
     }
 
     function Timer()
@@ -2261,19 +2331,6 @@ simulated function AbortNecro()
     ClientPlaySound(soundToPlay, false, 300.0, SLOT_None);
 }
 
-function ServerSetNetUpdateRate(float Rate, int NetSpeed) {
-    local float MaxRate;
-    local float MinRate;
-
-    MaxRate = RepInfo.MaxNetUpdateRate;
-    if (NetSpeed != 0)
-        MaxRate = FMin(MaxRate, NetSpeed/100.0);
-
-    MinRate = RepInfo.MinNetUpdateRate;
-
-    TimeBetweenUpdates = 1.0 / FClamp(Rate, MinRate, MaxRate);
-}
-
 /* UTCOMP movement */
 function FindPlayerInput() {
     local PlayerInput PIn;
@@ -2391,630 +2448,13 @@ state PlayerWalking
 
         if ( Role < ROLE_Authority ) // then save this move and replicate it
         {
-            if(RepInfo.UseNetUpdateRate)
-            {
-                //use UTComp movement
-                UTComp_ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
-            }
-            else
-            {
-                //use default movement
-                ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
-            }
+            ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         }
         else
             ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;
     }
 }
-
-function UTComp_ReplicateMove(
-    float DeltaTime,
-    vector NewAccel,
-    eDoubleClickDir DoubleClickMove,
-    rotator DeltaRot
-) {
-    local SavedMove NewMove, OldMove, AlmostLastMove, LastMove;
-    local byte ClientRoll;
-    local float OldTimeDelta, NetMoveDelta;
-    local int OldAccel;
-    local vector BuildAccel, AccelNorm, MoveLoc, CompareAccel;
-    local bool bPendingJumpStatus;
-
-    MaxResponseTime = Default.MaxResponseTime * Level.TimeDilation;
-    DeltaTime = FMin(DeltaTime, MaxResponseTime);
-
-    // find the most recent move, and the most recent interesting move
-    if ( SavedMoves != None )
-    {
-        LastMove = SavedMoves;
-        AlmostLastMove = LastMove;
-        AccelNorm = Normal(NewAccel);
-        while ( LastMove.NextMove != None )
-        {
-            // find most recent interesting move to send redundantly
-            if ( LastMove.IsJumpMove() )
-            {
-                OldMove = LastMove;
-            }
-            else if ( (Pawn != None) && ((OldMove == None) || !OldMove.IsJumpMove()) )
-            {
-                // see if acceleration direction changed
-                if ( OldMove != None )
-                    CompareAccel = Normal(OldMove.Acceleration);
-                else
-                    CompareAccel = AccelNorm;
-
-                if ( (LastMove.Acceleration != CompareAccel) && ((normal(LastMove.Acceleration) Dot CompareAccel) < 0.95) )
-                    OldMove = LastMove;
-            }
-
-            AlmostLastMove = LastMove;
-            LastMove = LastMove.NextMove;
-        }
-        if ( LastMove.IsJumpMove() )
-        {
-            OldMove = LastMove;
-        }
-        else if ( (Pawn != None) && ((OldMove == None) || !OldMove.IsJumpMove()) )
-        {
-            // see if acceleration direction changed
-            if ( OldMove != None )
-                CompareAccel = Normal(OldMove.Acceleration);
-            else
-                CompareAccel = AccelNorm;
-
-            if ( (LastMove.Acceleration != CompareAccel) && ((normal(LastMove.Acceleration) Dot CompareAccel) < 0.95) )
-                OldMove = LastMove;
-        }
-    }
-
-    // Get a SavedMove actor to store the movement in.
-    NewMove = GetFreeMove();
-    if ( NewMove == None )
-        return;
-    NewMove.SetMoveFor(self, DeltaTime, NewAccel, DoubleClickMove);
-    NewMove.RemoteRole = ROLE_None;
-
-    // Simulate the movement locally.
-    bDoubleJump = false;
-    ProcessMove(NewMove.Delta, NewMove.Acceleration, NewMove.DoubleClickMove, DeltaRot);
-
-    // see if the two moves could be combined
-    if ((PendingMove != None) &&
-        (Pawn != None) &&
-        (Pawn.Physics == PHYS_Walking) &&
-        (NewMove.Delta + PendingMove.Delta < MaxResponseTime) &&
-        (NewAccel != vect(0,0,0)) &&
-        (PendingMove.SavedPhysics == PHYS_Walking) &&
-        !PendingMove.bPressedJump &&
-        !NewMove.bPressedJump &&
-        (PendingMove.bRun == NewMove.bRun) &&
-        (PendingMove.bDuck == NewMove.bDuck) &&
-        (PendingMove.bDoubleJump == NewMove.bDoubleJump) &&
-        (PendingMove.DoubleClickMove == DCLICK_None) &&
-        (NewMove.DoubleClickMove == DCLICK_None) &&
-        ((Normal(PendingMove.Acceleration) Dot Normal(NewAccel)) > 0.99) &&
-        (Level.TimeDilation >= 0.9)
-    ) {
-        Pawn.SetLocation(PendingMove.GetStartLocation());
-        Pawn.Velocity = PendingMove.StartVelocity;
-        if ( PendingMove.StartBase != Pawn.Base);
-            Pawn.SetBase(PendingMove.StartBase);
-        Pawn.Floor = PendingMove.StartFloor;
-        NewMove.Delta += PendingMove.Delta;
-        NewMove.SetInitialPosition(Pawn);
-
-        // remove pending move from move list
-        if (LastMove == PendingMove) {
-            if (SavedMoves == PendingMove) {
-                SavedMoves.NextMove = FreeMoves;
-                FreeMoves = SavedMoves;
-                SavedMoves = None;
-            } else {
-                PendingMove.NextMove = FreeMoves;
-                FreeMoves = PendingMove;
-                if (AlmostLastMove != None) {
-                    AlmostLastMove.NextMove = None;
-                    LastMove = AlmostLastMove;
-                }
-            }
-            FreeMoves.Clear();
-        }
-        PendingMove = None;
-    }
-
-    if (Pawn != None)
-        Pawn.AutonomousPhysics(NewMove.Delta);
-    else
-        AutonomousPhysics(DeltaTime);
-    NewMove.PostUpdate(self);
-
-    if (SavedMoves == None)
-        SavedMoves = NewMove;
-    else
-        LastMove.NextMove = NewMove;
-
-    if (PendingMove == None) {
-        // Decide whether to hold off on move
-        //snarf check useNewNet
-        if(RepInfo != None && class'Misc_Player'.default.bEnableEnhancedNetCode)
-        {
-            //snarf only use TimeBetweenUpdates if client net speed > 10000
-            if (Player.CurrentNetSpeed > 10000)
-                NetMoveDelta = TimeBetweenUpdates;
-            else
-                NetMoveDelta = FMax(0.0222,2 * Level.MoveRepSize/Player.CurrentNetSpeed);
-
-            //if ((Level.TimeSeconds - ClientUpdateTime) * Level.TimeDilation * 0.91 < TimeBetweenUpdates) {
-            if ((Level.TimeSeconds - ClientUpdateTime) * Level.TimeDilation * 0.91 < NetMoveDelta) {
-                PendingMove = NewMove;
-                return;
-            }
-        }
-        else
-        {
-            //snarf use old calc from PlayerController
-            if ( (Player.CurrentNetSpeed > 10000) && (GameReplicationInfo != None) && (GameReplicationInfo.PRIArray.Length <= 10) )
-                NetMoveDelta = 0.011;
-            else
-                NetMoveDelta = FMax(0.0222,2 * Level.MoveRepSize/Player.CurrentNetSpeed);
-
-            if ( (Level.TimeSeconds - ClientUpdateTime) * Level.TimeDilation * 0.91 < NetMoveDelta )
-            {
-                PendingMove = NewMove;
-                return;
-            }
-        }
-    }
-
-    ClientUpdateTime = Level.TimeSeconds;
-
-    // check if need to redundantly send previous move
-    if ( OldMove != None )
-    {
-        // old move important to replicate redundantly
-        OldTimeDelta = FMin(255, (Level.TimeSeconds - OldMove.TimeStamp) * 500);
-        BuildAccel = 0.05 * OldMove.Acceleration + vect(0.5, 0.5, 0.5);
-        OldAccel = (CompressAccel(BuildAccel.X) << 23)
-                    + (CompressAccel(BuildAccel.Y) << 15)
-                    + (CompressAccel(BuildAccel.Z) << 7);
-        if (OldMove.bRun)
-            OldAccel += 64;
-        if (OldMove.bDoubleJump)
-            OldAccel += 32;
-        if (OldMove.bPressedJump)
-            OldAccel += 16;
-        OldAccel += OldMove.DoubleClickMove;
-    }
-
-    // Send to the server
-    ClientRoll = (Rotation.Roll >> 8) & 255;
-    if (PendingMove != None) {
-        if ( PendingMove.bPressedJump )
-            bJumpStatus = !bJumpStatus;
-        bPendingJumpStatus = bJumpStatus;
-    }
-    if (NewMove.bPressedJump)
-        bJumpStatus = !bJumpStatus;
-
-    if (Pawn == None)
-        MoveLoc = Location;
-    else
-        MoveLoc = Pawn.Location;
-
-    UTComp_CallServerMove(
-        NewMove.TimeStamp,
-        NewMove.Acceleration * 10,
-        MoveLoc,
-        NewMove.bRun,
-        NewMove.bDuck,
-        bPendingJumpStatus,
-        bJumpStatus,
-        NewMove.bDoubleJump,
-        NewMove.DoubleClickMove,
-        ClientRoll,
-        ((0xFFFF & Rotation.Pitch) << 16) | (0xFFFF & Rotation.Yaw),
-        OldTimeDelta,
-        OldAccel
-    );
-    PendingMove = None;
-}
-
-function UTComp_CallServerMove(
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbPendingJumpStatus,
-    bool NewbJumpStatus,
-    bool NewbDoubleJump,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local byte PendingCompress;
-    local bool bCombine;
-
-    if ( PendingMove != None ) {
-        PendingCompress = PendingCompress | int(PendingMove.bRun);
-        PendingCompress = PendingCompress | int(PendingMove.bDuck) << 1;
-        PendingCompress = PendingCompress | int(NewbPendingJumpStatus) << 2;
-        PendingCompress = PendingCompress | int(PendingMove.bDoubleJump) << 3;
-        PendingCompress = PendingCompress | int(NewbRun) << 4;
-        PendingCompress = PendingCompress | int(NewbDuck) << 5;
-        PendingCompress = PendingCompress | int(NewbJumpStatus) << 6;
-        PendingCompress = PendingCompress | int(NewbDoubleJump) << 7;
-
-        // send two moves simultaneously
-        if ((InAccel == vect(0,0,0)) &&
-            (PendingMove.StartVelocity == vect(0,0,0)) &&
-            (DoubleClickMove == DCLICK_None) &&
-            (PendingMove.Acceleration == vect(0,0,0)) &&
-            (PendingMove.DoubleClickMove == DCLICK_None) &&
-            !PendingMove.bDoubleJump
-        ) {
-            if ( Pawn == None )
-                bCombine = (Velocity == vect(0,0,0));
-            else
-                bCombine = (Pawn.Velocity == vect(0,0,0));
-
-            if (bCombine) {
-                if (OldTimeDelta == 0) {
-                    UTComp_ShortServerMove(
-                        TimeStamp,
-                        ClientLoc,
-                        NewbRun,
-                        NewbDuck,
-                        NewbJumpStatus,
-                        ClientRoll,
-                        View
-                    );
-                } else {
-                    UTComp_ServerMove(
-                        TimeStamp,
-                        InAccel,
-                        ClientLoc,
-                        NewbRun,
-                        NewbDuck,
-                        NewbJumpStatus,
-                        NewbDoubleJump,
-                        DoubleClickMove,
-                        ClientRoll,
-                        View,
-                        OldTimeDelta,
-                        OldAccel
-                    );
-                }
-                return;
-            }
-        }
-
-        if ( OldTimeDelta == 0 )
-            UTComp_DualServerMove(
-                PendingMove.TimeStamp,
-                PendingMove.Acceleration * 10,
-                PendingCompress,
-                PendingMove.DoubleClickMove,
-                ((0xFFFF & PendingMove.Rotation.Pitch) << 16) | (0xFFFF & PendingMove.Rotation.Yaw),
-                TimeStamp,
-                InAccel,
-                ClientLoc,
-                DoubleClickMove,
-                ClientRoll,
-                View
-            );
-        else
-            UTComp_DualServerMove(
-                PendingMove.TimeStamp,
-                PendingMove.Acceleration * 10,
-                PendingCompress,
-                PendingMove.DoubleClickMove,
-                ((0xFFFF & PendingMove.Rotation.Pitch) << 16) | (0xFFFF & PendingMove.Rotation.Yaw),
-                TimeStamp,
-                InAccel,
-                ClientLoc,
-                DoubleClickMove,
-                ClientRoll,
-                View,
-                OldTimeDelta,
-                OldAccel
-            );
-    } else if ( OldTimeDelta != 0 ) {
-        UTComp_ServerMove(
-            TimeStamp,
-            InAccel,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            NewbDoubleJump,
-            DoubleClickMove,
-            ClientRoll,
-            View,
-            OldTimeDelta,
-            OldAccel
-        );
-    } else if ((InAccel == vect(0,0,0)) && (DoubleClickMove == DCLICK_None) && !NewbDoubleJump) {
-        UTComp_ShortServerMove(
-            TimeStamp,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            ClientRoll,
-            View
-        );
-    } else {
-        UTComp_ServerMove(
-            TimeStamp,
-            InAccel,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            NewbDoubleJump,
-            DoubleClickMove,
-            ClientRoll,
-            View
-        );
-    }
-}
-
-/* ShortServerMove()
-compressed version of server move for bandwidth saving
-*/
-function UTComp_ShortServerMove(
-    float TimeStamp,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbJumpStatus,
-    byte ClientRoll,
-    int View
-) {
-    UTComp_ServerMove(TimeStamp,vect(0,0,0),ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,false,DCLICK_None,ClientRoll,View);
-}
-
-/* DualServerMove()
-- replicated function sent by client to server - contains client movement and firing info for two moves
-*/
-function UTComp_DualServerMove(
-    float TimeStamp0,
-    vector InAccel0,
-    byte PendingCompress,
-    eDoubleClickDir DoubleClickMove0,
-    int View0,
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local bool NewbRun0,NewbDuck0,NewbJumpStatus0,NewbDoubleJump0,
-                NewbRun,NewbDuck,NewbJumpStatus,NewbDoubleJump;
-
-    NewbRun0 =        (PendingCompress & 0x01) != 0;
-    NewbDuck0 =       (PendingCompress & 0x02) != 0;
-    NewbJumpStatus0 = (PendingCompress & 0x04) != 0;
-    NewbDoubleJump0 = (PendingCompress & 0x08) != 0;
-    NewbRun =         (PendingCompress & 0x10) != 0;
-    NewbDuck =        (PendingCompress & 0x20) != 0;
-    NewbJumpStatus =  (PendingCompress & 0x40) != 0;
-    NewbDoubleJump =  (PendingCompress & 0x80) != 0;
-
-    UTComp_ServerMove(TimeStamp0,InAccel0,vect(0,0,0),NewbRun0,NewbDuck0,NewbJumpStatus0,NewbDoubleJump0,DoubleClickMove0,
-            ClientRoll,View0);
-    if ( ClientLoc == vect(0,0,0) )
-        ClientLoc = vect(0.1,0,0);
-    UTComp_ServerMove(TimeStamp,InAccel,ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,NewbDoubleJump,DoubleClickMove,ClientRoll,View,OldTimeDelta,OldAccel);
-}
-
-/* ServerMove()
-- replicated function sent by client to server - contains client movement and firing info.
-*/
-function UTComp_ServerMove(
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbJumpStatus,
-    bool NewbDoubleJump,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local float DeltaTime, clientErr, OldTimeStamp;
-    local rotator DeltaRot, Rot, ViewRot;
-    local vector Accel, LocDiff;
-    local int maxPitch, ViewPitch, ViewYaw;
-    local bool NewbPressedJump, OldbRun, OldbDoubleJump;
-    local eDoubleClickDir OldDoubleClickMove;
-
-    // If this move is outdated, discard it.
-    if ( CurrentTimeStamp >= TimeStamp )
-        return;
-
-    if ( AcknowledgedPawn != Pawn )
-    {
-        OldTimeDelta = 0;
-        InAccel = vect(0,0,0);
-        GivePawn(Pawn);
-    }
-
-    // if OldTimeDelta corresponds to a lost packet, process it first
-    if (  OldTimeDelta != 0 )
-    {
-        OldTimeStamp = TimeStamp - float(OldTimeDelta)/500 - 0.001;
-        if ( CurrentTimeStamp < OldTimeStamp - 0.001 )
-        {
-            // split out components of lost move (approx)
-            Accel.X = OldAccel >>> 23;
-            if ( Accel.X > 127 )
-                Accel.X = -1 * (Accel.X - 128);
-            Accel.Y = (OldAccel >>> 15) & 255;
-            if ( Accel.Y > 127 )
-                Accel.Y = -1 * (Accel.Y - 128);
-            Accel.Z = (OldAccel >>> 7) & 255;
-            if ( Accel.Z > 127 )
-                Accel.Z = -1 * (Accel.Z - 128);
-            Accel *= 20;
-
-            OldbRun = ( (OldAccel & 64) != 0 );
-            OldbDoubleJump = ( (OldAccel & 32) != 0 );
-            NewbPressedJump = ( (OldAccel & 16) != 0 );
-            if ( NewbPressedJump )
-                bJumpStatus = NewbJumpStatus;
-            switch (OldAccel & 7)
-            {
-                case 0:
-                    OldDoubleClickMove = DCLICK_None;
-                    break;
-                case 1:
-                    OldDoubleClickMove = DCLICK_Left;
-                    break;
-                case 2:
-                    OldDoubleClickMove = DCLICK_Right;
-                    break;
-                case 3:
-                    OldDoubleClickMove = DCLICK_Forward;
-                    break;
-                case 4:
-                    OldDoubleClickMove = DCLICK_Back;
-                    break;
-            }
-            //log("Recovered move from "$OldTimeStamp$" acceleration "$Accel$" from "$OldAccel);
-            OldTimeStamp = FMin(OldTimeStamp, CurrentTimeStamp + MaxResponseTime);
-            MoveAutonomous(OldTimeStamp - CurrentTimeStamp, OldbRun, (bDuck == 1), NewbPressedJump, OldbDoubleJump, OldDoubleClickMove, Accel, rot(0,0,0));
-            CurrentTimeStamp = OldTimeStamp;
-        }
-    }
-
-    // View components
-    ViewPitch = View >>> 16;
-    ViewYaw = View & 0xFFFF;
-    // Make acceleration.
-    Accel = InAccel * 0.1;
-
-    NewbPressedJump = (bJumpStatus != NewbJumpStatus);
-    bJumpStatus = NewbJumpStatus;
-
-    // Save move parameters.
-    DeltaTime = FMin(MaxResponseTime,TimeStamp - CurrentTimeStamp);
-
-    if ( Pawn == None )
-    {
-        ResetTimeMargin();
-    }
-    else if ( !CheckSpeedHack(DeltaTime) )
-    {
-        bWasSpeedHack = true;
-        DeltaTime = 0;
-        Pawn.Velocity = vect(0,0,0);
-    }
-    else if ( bWasSpeedHack )
-    {
-        // if have had a speedhack detection, then modify deltatime if getting too far ahead again
-        if ( (TimeMargin > 0.5 * Level.MaxTimeMargin) && (Level.MaxTimeMargin > 0) )
-            DeltaTime *= 0.8;
-    }
-
-    CurrentTimeStamp = TimeStamp;
-    ServerTimeStamp = Level.TimeSeconds;
-    ViewRot.Pitch = ViewPitch;
-    ViewRot.Yaw = ViewYaw;
-    ViewRot.Roll = 0;
-
-    if ( NewbPressedJump || (InAccel != vect(0,0,0)) )
-        LastActiveTime = Level.TimeSeconds;
-
-    if ( Pawn == None || Pawn.bServerMoveSetPawnRot )
-        SetRotation(ViewRot);
-
-    if ( AcknowledgedPawn != Pawn )
-        return;
-
-    if ( (Pawn != None) && Pawn.bServerMoveSetPawnRot )
-    {
-        Rot.Roll = 256 * ClientRoll;
-        Rot.Yaw = ViewYaw;
-        if ( (Pawn.Physics == PHYS_Swimming) || (Pawn.Physics == PHYS_Flying) )
-            maxPitch = 2;
-        else
-            maxPitch = 0;
-        if ( (ViewPitch > maxPitch * RotationRate.Pitch) && (ViewPitch < 65536 - maxPitch * RotationRate.Pitch) )
-        {
-            If (ViewPitch < 32768)
-                Rot.Pitch = maxPitch * RotationRate.Pitch;
-            else
-                Rot.Pitch = 65536 - maxPitch * RotationRate.Pitch;
-        }
-        else
-            Rot.Pitch = ViewPitch;
-        DeltaRot = (Rotation - Rot);
-        Pawn.SetRotation(Rot);
-    }
-
-    // Perform actual movement
-    if ( (Level.Pauser == None) && (DeltaTime > 0) )
-        MoveAutonomous(DeltaTime, NewbRun, NewbDuck, NewbPressedJump, NewbDoubleJump, DoubleClickMove, Accel, DeltaRot);
-
-    // Accumulate movement error.
-    if ( ClientLoc == vect(0,0,0) )
-        return;     // first part of double servermove
-    else if ( Level.TimeSeconds - LastUpdateTime > 0.3 )
-        ClientErr = 10000;
-    else if ( Level.TimeSeconds - LastUpdateTime > 180.0/Player.CurrentNetSpeed )
-    {
-        if ( Pawn == None )
-            LocDiff = Location - ClientLoc;
-        else
-            LocDiff = Pawn.Location - ClientLoc;
-        ClientErr = LocDiff Dot LocDiff;
-    }
-
-    // If client has accumulated a noticeable positional error, correct him.
-    if ( ClientErr > 3 )
-    {
-        if ( Pawn == None )
-        {
-            PendingAdjustment.newPhysics = Physics;
-            PendingAdjustment.NewLoc = Location;
-            PendingAdjustment.NewVel = Velocity;
-        }
-        else
-        {
-            PendingAdjustment.newPhysics = Pawn.Physics;
-            PendingAdjustment.NewVel = Pawn.Velocity;
-            PendingAdjustment.NewBase = Pawn.Base;
-            if ( (Mover(Pawn.Base) != None) || (Vehicle(Pawn.Base) != None) )
-                PendingAdjustment.NewLoc = Pawn.Location - Pawn.Base.Location;
-            else
-                PendingAdjustment.NewLoc = Pawn.Location;
-            PendingAdjustment.NewFloor = Pawn.Floor;
-        }
-        //if ( (ClientErr != 10000) && (Pawn != None) )
-            //Log(" Client Error at "$TimeStamp$" is "$ClientErr$" with acceleration "$Accel$" LocDiff "$LocDiff$" Physics "$Pawn.Physics);
-        LastUpdateTime = Level.TimeSeconds;
-
-        PendingAdjustment.TimeStamp = TimeStamp;
-        PendingAdjustment.newState = GetStateName();
-    }
-    //log("Server moved stamp "$TimeStamp$" location "$Pawn.Location$" Acceleration "$Pawn.Acceleration$" Velocity "$Pawn.Velocity);
-}
-
-
-
-/* END UTCOMP movement */
 
 /* settings */
 
@@ -3108,7 +2548,6 @@ defaultproperties
      bConfigureNetSpeed=false
      ConfigureNetSpeedValue=15000
      bEnableWidescreenFix=false
-     DesiredNetUpdateRate=90.0
 
      bTeamColorRockets=false
      bTeamColorBio=false

@@ -301,7 +301,7 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 
 }
 	
-function ResetWeaponsToDefaults(bool bModifyShieldGun)
+function ResetWeaponsToDefaults(bool bModifyShieldGun,float ShieldGunSelfForceScale,float ShieldGunSelfDamageScale,int ShieldGunMinSelfDamage)
 {
     local int i;
     local class<Weapon> WeaponClass;
@@ -343,13 +343,13 @@ function ResetWeaponsToDefaults(bool bModifyShieldGun)
 
     if(bModifyShieldGun)
 	{
-		Class'XWeapons.ShieldFire'.default.SelfForceScale = 1;
-		Class'XWeapons.ShieldFire'.default.SelfDamageScale = 0.3;
-		Class'XWeapons.ShieldFire'.default.MinSelfDamage = 8;
+		Class'XWeapons.ShieldFire'.default.SelfForceScale = ShieldGunSelfForceScale;
+		Class'XWeapons.ShieldFire'.default.SelfDamageScale = ShieldGunSelfDamageScale;
+		Class'XWeapons.ShieldFire'.default.MinSelfDamage = ShieldGunMinSelfDamage;
         
-        class'WeaponFire_Shield'.default.SelfForceScale = 1;
-        class'WeaponFire_Shield'.default.SelfDamageScale = 0.3;
-        class'WeaponFire_Shield'.default.MinSelfDamage = 8;
+        class'WeaponFire_Shield'.default.SelfForceScale = ShieldGunSelfForceScale;
+        class'WeaponFire_Shield'.default.SelfDamageScale = ShieldGunSelfDamageScale;
+        class'WeaponFire_Shield'.default.MinSelfDamage = ShieldGunMinSelfDamage;
 	}
 
     class'FlakChunk'.default.MyDamageType = class'DamTypeFlakChunk';

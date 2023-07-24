@@ -16,6 +16,17 @@ simulated function PostNetBeginPlay()
     SetColors();
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 simulated function SetColors()
 {
     local Color color;
@@ -30,16 +41,19 @@ simulated function SetColors()
 
     if(class'Misc_Player'.default.bTeamColorBio)
     {
-        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-        if(TeamNum == 0 || TeamNum == 1)
+        if(CanUseColors())
         {
-            Skins[0] = WhiteSparks;
-            mColorRange[0].R=color.R;
-            mColorRange[0].G=color.G;
-            mColorRange[0].B=color.B;
-            mColorRange[1].R=color.R;
-            mColorRange[1].G=color.G;
-            mColorRange[1].B=color.B;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            if(TeamNum == 0 || TeamNum == 1)
+            {
+                Skins[0] = WhiteSparks;
+                mColorRange[0].R=color.R;
+                mColorRange[0].G=color.G;
+                mColorRange[0].B=color.B;
+                mColorRange[1].R=color.R;
+                mColorRange[1].G=color.G;
+                mColorRange[1].B=color.B;
+            }
         }
     }
 

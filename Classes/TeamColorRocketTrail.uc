@@ -16,6 +16,16 @@ simulated function PreBeginPlay()
 	super.PreBeginPlay();
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
 
 // get replicated team number from owner projectile and set texture
 function SetColors()
@@ -23,33 +33,36 @@ function SetColors()
     local Color color;
     if(class'Misc_Player'.default.bTeamColorRockets && !bColorSet)
     {
-        if(TeamColorRocketProj(Owner) != None)
-            TeamNum = TeamColorRocketProj(Owner).TeamNum;
-        else if(TeamColorSeekingRocketProj(Owner) != None)
-            TeamNum = TeamColorSeekingRocketProj(Owner).TeamNum;
+        if(CanUseColors())
+        {
+            if(TeamColorRocketProj(Owner) != None)
+                TeamNum = TeamColorRocketProj(Owner).TeamNum;
+            else if(TeamColorSeekingRocketProj(Owner) != None)
+                TeamNum = TeamColorSeekingRocketProj(Owner).TeamNum;
 
-        color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-        if(TeamNum == 0)
-        {
-            bHidden=false;
-            Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Red';
-            Emitters[1].ColorScale[0].Color=color;
-            Emitters[1].ColorScale[1].Color=color;
-            Emitters[1].ColorScale[2].Color=color;
-            Emitters[0].Reset();
-            Emitters[1].Reset();
-            bColorSet=true;
-        }
-        else if(TeamNum == 1)
-        {
-            bHidden=false;
-            Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Blue';
-            Emitters[1].ColorScale[0].Color=color;
-            Emitters[1].ColorScale[1].Color=color;
-            Emitters[1].ColorScale[2].Color=color;
-            Emitters[0].Reset();
-            Emitters[1].Reset();
-            bColorSet=true;
+            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+            if(TeamNum == 0)
+            {
+                bHidden=false;
+                Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Red';
+                Emitters[1].ColorScale[0].Color=color;
+                Emitters[1].ColorScale[1].Color=color;
+                Emitters[1].ColorScale[2].Color=color;
+                Emitters[0].Reset();
+                Emitters[1].Reset();
+                bColorSet=true;
+            }
+            else if(TeamNum == 1)
+            {
+                bHidden=false;
+                Emitters[0].Texture=Texture'AS_FX_TX.Trails.Trail_Blue';
+                Emitters[1].ColorScale[0].Color=color;
+                Emitters[1].ColorScale[1].Color=color;
+                Emitters[1].ColorScale[2].Color=color;
+                Emitters[0].Reset();
+                Emitters[1].Reset();
+                bColorSet=true;
+            }
         }
     }
 }
@@ -72,8 +85,6 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-
-
     Begin Object Class=TrailEmitter Name=TrailEmitter0
 		Opacity=0.67
         TrailLocation=PTTL_FollowEmitter

@@ -18,6 +18,16 @@ function SetupTeam()
     }
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
 
 //override PostBeginPlay so we can spawn team color effects
 simulated function PostBeginPlay()

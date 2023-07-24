@@ -11,6 +11,17 @@ replication
        TeamNum;
 }
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 simulated function SetupTeam()
 {
     if(Instigator != None && Instigator.Controller != None)
@@ -24,11 +35,14 @@ simulated function SetupColor()
     local Color c;
     if(class'Misc_Player'.default.bTeamColorRockets && !bColorSet && Level.NetMode != NM_DedicatedServer)
     {
-        if(TeamNum == 0 || TeamNum == 1)
+        if(CanUseColors())
         {
-            c = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-            LightHue=class'TeamColorManager'.static.GetHue(c);
-            bColorSet=true;
+            if(TeamNum == 0 || TeamNum == 1)
+            {
+                c = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+                LightHue=class'TeamColorManager'.static.GetHue(c);
+                bColorSet=true;
+            }
         }
     }
     //other stuff is done by corona and trails

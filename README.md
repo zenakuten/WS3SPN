@@ -1,6 +1,11 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.1
+- server config to enable/disable weapon colors (default is enabled)
+- add shield gun configs from 42109e 3spn
+- specator hit sounds / indicators
+
 v2.0
 - stats update
 

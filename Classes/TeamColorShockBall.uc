@@ -4,58 +4,72 @@ var int TeamNum;
 
 var bool bColorSet, bAlphaSet;
 
+simulated function bool CanUseColors()
+{
+    local Misc_BaseGRI GRI;
+
+    GRI = Misc_BaseGRI(level.GRI);
+    if(GRI != None)
+        return GRI.bAllowColorWeapons;
+
+    return false;
+}
+
 // get replicated team number from owner projectile and set texture
 function SetColors()
 {
     local Color color, altColor;
     if(class'Misc_Player'.default.bTeamColorShock)
     {
-        if(TeamColorShockProjectile(Owner) != None)
-            TeamNum = TeamColorShockProjectile(Owner).TeamNum;
-
-        if(TeamNum == 0 || TeamNum == 1 && !bColorSet)
+        if(CanUseColors())
         {
-            LightBrightness=210;
-            color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
-            LightHue = class'TeamColorManager'.static.GetHue(color);
+            if(TeamColorShockProjectile(Owner) != None)
+                TeamNum = TeamColorShockProjectile(Owner).TeamNum;
 
-            color.A=255;
-            altColor.R = Min(color.R+64,255);
-            altColor.G = Min(color.G+64,255);
-            altColor.B = Min(color.B+64,255);
-            altColor.A = 255;
+            if(TeamNum == 0 || TeamNum == 1 && !bColorSet)
+            {
+                LightBrightness=210;
+                color = class'TeamColorManager'.static.GetColor(TeamNum, Level.GetLocalPlayerController());
+                LightHue = class'TeamColorManager'.static.GetHue(color);
 
-            Emitters[0].UseColorScale=true;
-            Emitters[0].ColorScale[0].Color = color;
-            Emitters[0].ColorScale[1].Color = color;
+                color.A=255;
+                altColor.R = Min(color.R+64,255);
+                altColor.G = Min(color.G+64,255);
+                altColor.B = Min(color.B+64,255);
+                altColor.A = 255;
 
-            Emitters[1].UseColorScale=true;
-            Emitters[1].ColorScale[0].Color = color;
-            Emitters[1].ColorScale[1].Color = altColor;
+                Emitters[0].UseColorScale=true;
+                Emitters[0].ColorScale[0].Color = color;
+                Emitters[0].ColorScale[1].Color = color;
 
-            Emitters[2].UseColorScale=true;
-            Emitters[2].ColorScale[0].Color = color;
-            Emitters[2].ColorScale[1].Color = altColor;
+                Emitters[1].UseColorScale=true;
+                Emitters[1].ColorScale[0].Color = color;
+                Emitters[1].ColorScale[1].Color = altColor;
 
-            Emitters[3].UseColorScale=true;
-            Emitters[3].ColorScale[0].Color = color;
-            Emitters[3].ColorScale[1].Color = altColor;
+                Emitters[2].UseColorScale=true;
+                Emitters[2].ColorScale[0].Color = color;
+                Emitters[2].ColorScale[1].Color = altColor;
 
-            Emitters[0].Disabled=false;            
-            Emitters[1].Disabled=false;            
-            Emitters[2].Disabled=false;            
-            Emitters[3].Disabled=false;
+                Emitters[3].UseColorScale=true;
+                Emitters[3].ColorScale[0].Color = color;
+                Emitters[3].ColorScale[1].Color = altColor;
 
-            bColorSet=true;
+                Emitters[0].Disabled=false;            
+                Emitters[1].Disabled=false;            
+                Emitters[2].Disabled=false;            
+                Emitters[3].Disabled=false;
+
+                bColorSet=true;
+            }
+
+            Emitters[1].ParticlesPerSecond=2;
+            Emitters[1].InitialParticlesPerSecond=2;
+            Emitters[1].AllParticlesDead=false;
+
+            Emitters[3].ParticlesPerSecond=100;
+            Emitters[3].InitialParticlesPerSecond=100;
+            Emitters[3].AllParticlesDead=false;
         }
-
-        Emitters[1].ParticlesPerSecond=2;
-        Emitters[1].InitialParticlesPerSecond=2;
-        Emitters[1].AllParticlesDead=false;
-
-        Emitters[3].ParticlesPerSecond=100;
-        Emitters[3].InitialParticlesPerSecond=100;
-        Emitters[3].AllParticlesDead=false;
     }
 }
 
@@ -77,7 +91,6 @@ simulated function Tick(float DT)
 
 defaultproperties
 {
-
     Begin Object Class=SpriteEmitter Name=SpriteEmitter0
         UseColorScale=False
         ColorScale(0)=(Color=(B=130,G=20,R=91,A=255))
