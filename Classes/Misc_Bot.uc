@@ -2,17 +2,6 @@ class Misc_Bot extends xBot;
 
 var bool ActiveThisRound;
 
-var int HitDamage;
-var bool bHitContact;
-var Pawn HitPawn;
-var int LastDamage;
-
-replication
-{
-    reliable if(bNetDirty && Role == ROLE_Authority)
-        HitDamage, bHitContact, HitPawn;
-}
-
 function Reset()
 {
     local NavigationPoint P;
@@ -28,12 +17,6 @@ function Reset()
         Adrenaline = Adren;
     else
         Adrenaline = 0.1;
-}
-
-function Tick(float DT)
-{
-    super.Tick(DT);
-    LastDamage=HitDamage;
 }
 
 function SetPawnClass(string inClass, string inCharacter)

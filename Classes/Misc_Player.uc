@@ -71,10 +71,6 @@ var bool bFirstOpen;                    // used by the stat screen
 var float NewFriendlyDamage;            // friendly damage done
 var float NewEnemyDamage;               // enemy damage done
 
-var int HitDamage;
-var bool bHitContact;
-var Pawn HitPawn;
-
 var int LastDamage;
 
 var int SumDamage;
@@ -208,7 +204,7 @@ replication
         ReceiveAwardMessage, AbortNecro;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
-        HitDamage, bHitContact, HitPawn, bSeeInvis;
+        bSeeInvis;
 
     reliable if( Role==ROLE_Authority && !bDemoRecording )
         PlayCustomRewardAnnouncement, PlayStatusAnnouncementReliable;
@@ -434,6 +430,7 @@ function CheckInitialMenu()
 function PlayerTick(float DeltaTime)
 {
     local int Damage;
+    local Misc_Pawn MPawn;
     
     Super.PlayerTick(DeltaTime);
 
@@ -477,25 +474,31 @@ function PlayerTick(float DeltaTime)
 		return;
 	}
 
-    if(Pawn == None || !bUseHitSounds || HitDamage == LastDamage)
+    MPawn = Misc_Pawn(Pawn);
+    if(MPawn == None)
     {
-        LastDamage = HitDamage;
+        MPawn = Misc_Pawn(ViewTarget);
+    }
+
+    if(MPawn == None)
+    {
+        LastDamage = 0;
         return;
     }
 
-    if(HitDamage != LastDamage)
+    if(MPawn.HitDamage != LastDamage)
     {
-        Damage = HitDamage - LastDamage;
+        Damage = MPawn.HitDamage - LastDamage;
 
-        if(bHitContact)
+        if(MPawn.bHitContact && bUseHitsounds)
         {
-            if(HitDamage < LastDamage)
-                Pawn.PlaySound(soundHitFriendly,, soundHitVolume,,,(48 / (-Damage)), false);
+            if(MPawn.HitDamage < LastDamage)
+                MPawn.PlaySound(soundHitFriendly,, soundHitVolume,,,(48 / (-Damage)), false);
             else
-                Pawn.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
+                MPawn.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
         }
             
-        if(HitPawn != None && Misc_BaseGRI(GameReplicationInfo).bDamageIndicator)
+        if(MPawn.HitPawn != None && Misc_BaseGRI(GameReplicationInfo).bDamageIndicator)
         {
             if (DamageIndicatorType == 2)
             {
@@ -506,11 +509,11 @@ function PlayerTick(float DeltaTime)
             }
             
             if(DamageIndicatorType == 3)
-                class'Emitter_Damage'.static.ShowDamage(HitPawn, HitPawn.Location, Damage);        
+                class'Emitter_Damage'.static.ShowDamage(MPawn.HitPawn, MPawn.HitPawn.Location, Damage);        
         }        
+
+        LastDamage = MPawn.HitDamage;
     }
-    
-    LastDamage = HitDamage;
 }
 
 simulated function ClientAddCeremonyRanking(int PlayerIndex, Team_GameBase.SEndCeremonyInfo InEndCeremonyInfo)
@@ -977,11 +980,6 @@ function ServerViewNextPlayer()
     PlayerReplicationInfo.bOnlySpectator = true;
     RealTeam = PlayerReplicationInfo.Team;
 
-    HitDamage=0.0;
-    LastDamage=0.0;
-    HitPawn=None;
-    bHitContact=false;
-
     // view next player
     for ( C=Level.ControllerList; C!=None; C=C.NextController )
     {
@@ -1009,6 +1007,15 @@ function ServerViewNextPlayer()
 
     ClientSetBehindView(bBehindView);
     PlayerReplicationInfo.bOnlySpectator = bRealSpec;
+}
+
+event ClientSetViewTarget(Actor a)
+{
+    super.ClientSetViewTarget(a);
+    if(Misc_Pawn(A) != None)
+    {
+        LastDamage = Misc_Pawn(A).HitDamage;
+    }
 }
 /*
 state Dead
@@ -1059,75 +1066,6 @@ state Spectating
 	{
     	bFrozen = false;
 	}
-
-    function PlayerTick(float DeltaTime)
-    {
-        local int Damage;
-        local Pawn ViewPawn;
-
-        super.PlayerTick(DeltaTime);
-        
-        if (RepInfo==None)
-            foreach DynamicActors(Class'Misc_BaseGRI', RepInfo)
-                break;
-
-        if(ViewTarget == None)
-            return; 
-
-        ViewPawn = Pawn(ViewTarget);
-        if(ViewPawn == None)
-            return;
-
-        if(Misc_Player(ViewPawn.Controller) != None)
-        {
-            HitDamage = Misc_Player(ViewPawn.Controller).HitDamage;
-            LastDamage = Misc_Player(ViewPawn.Controller).LastDamage;
-            bHitContact = Misc_Player(ViewPawn.Controller).bHitContact;
-            HitPawn = Misc_Player(ViewPawn.Controller).HitPawn;
-        }
-        else if(Misc_Bot(ViewPawn.Controller) != None)
-        {
-            HitDamage = Misc_Bot(ViewPawn.Controller).HitDamage;
-            LastDamage = Misc_Bot(ViewPawn.Controller).LastDamage;
-            bHitContact = Misc_Bot(ViewPawn.Controller).bHitContact;
-            HitPawn = Misc_Bot(ViewPawn.Controller).HitPawn;
-        }
-
-
-        if(HitDamage == LastDamage)
-        {
-            LastDamage = HitDamage;
-            return;
-        }
-
-        if(HitDamage != LastDamage)
-        {
-            Damage = HitDamage - LastDamage;
-
-            if(bHitContact && bUseHitsounds)
-            {
-                if(HitDamage < LastDamage)
-                    ViewTarget.PlaySound(soundHitFriendly,, soundHitVolume,,,(48 / (-Damage)), false);
-                else
-                    ViewTarget.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
-            }
-                
-            if(HitPawn != None && RepInfo.bDamageIndicator)
-            {
-                if (DamageIndicatorType == 2)
-                {
-                    if ( (Level.TimeSeconds - SumDamageTime > 1) || (SumDamage > 0 ^^ Damage > 0) )
-                        SumDamage = 0;
-                    SumDamage += Damage;
-                    SumDamageTime = Level.TimeSeconds;
-                }
-                
-                if(DamageIndicatorType == 3)
-                    class'Emitter_Damage'.static.ShowDamage(HitPawn, HitPawn.Location, Damage);        
-            }        
-        }
-        LastDamage = HitDamage;
-    }
 	
     function BeginState()
     {

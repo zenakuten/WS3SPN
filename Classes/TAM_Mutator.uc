@@ -28,7 +28,7 @@ class TAM_Mutator extends DMMutator
     HideDropDown
     CacheExempt;
 
-#exec OBJ LOAD FILE=Textures\3SPNvSoLTex.utx PACKAGE=3SPNvSoL
+#exec OBJ LOAD FILE=Textures\3SPNTex.utx PACKAGE=3SPNvSoL
 
 /* weapons */
 struct WeaponData

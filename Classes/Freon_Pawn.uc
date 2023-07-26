@@ -456,7 +456,7 @@ simulated function ChunkUp( Rotator HitRotation, float ChunkPerterbation )
 	}
 
 	bTearOff = true;
-	//HitDamageType = class'Gibbed'; // make sure clients gib also
+    
 	if ( (Level.NetMode == NM_DedicatedServer) || (Level.NetMode == NM_ListenServer) )
 		GotoState('TimingOut');
 	if ( Level.NetMode == NM_DedicatedServer )

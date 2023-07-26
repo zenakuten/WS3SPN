@@ -1169,18 +1169,12 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                     }
 
                    EyeHeight.z = instigatedBy.EyeHeight;
-                    if(Misc_Player(instigatedBy.Controller) != None)
-                    {
-                        Misc_Player(instigatedBy.Controller).HitDamage -= Score;
-                        Misc_Player(instigatedBy.Controller).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                        Misc_Player(instigatedBy.Controller).HitPawn = injured;
-                    }
-                    else if(Misc_Bot(instigatedBy.Controller) != None)
-                    {
-                        Misc_Bot(instigatedBy.Controller).HitDamage -= Score;
-                        Misc_Bot(instigatedBy.Controller).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                        Misc_Bot(instigatedBy.Controller).HitPawn = injured;
-                    }
+                   if(Misc_Pawn(instigatedBy) != None)
+                   {
+                        Misc_Pawn(instigatedBy).HitDamage -= Score;
+                        Misc_Pawn(instigatedBy).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
+                        Misc_Pawn(instigatedBy).HitPawn = injured;
+                   }
                 }
 
                 if(Misc_Player(instigatedBy.Controller) != None)
@@ -1217,6 +1211,12 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             Score = NewDamage - OldDamage;
             if(Score > 0.0)
             {
+                if(Misc_Pawn(instigatedBy) != None)
+                {
+                    Misc_Pawn(instigatedBy).HitDamage += Score;
+                    Misc_Pawn(instigatedBy).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
+                    Misc_Pawn(instigatedBy).HitPawn = injured;
+                }
                 if(Misc_Player(instigatedBy.Controller) != None)
                 {
                     Misc_Player(instigatedBy.Controller).NewEnemyDamage += Score * 0.01;
@@ -1227,19 +1227,6 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                     }
 
                    EyeHeight.z = instigatedBy.EyeHeight;
-                    if(Misc_Player(instigatedBy.Controller) != None)
-                    {
-                        Misc_Player(instigatedBy.Controller).HitDamage += Score;
-                        Misc_Player(instigatedBy.Controller).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                        Misc_Player(instigatedBy.Controller).HitPawn = injured;
-                    }
-                }
-                else if(Misc_Bot(instigatedBy.Controller) != None)
-                {
-                    EyeHeight.z = instigatedBy.EyeHeight;
-                    Misc_Bot(instigatedBy.Controller).HitDamage += Score;
-                    Misc_Bot(instigatedBy.Controller).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                    Misc_Bot(instigatedBy.Controller).HitPawn = injured;
                 }
 
                 PRI.Score += Score * 0.01;

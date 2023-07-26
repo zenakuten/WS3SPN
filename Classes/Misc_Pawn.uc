@@ -37,13 +37,19 @@ var vector OldLocation;
 var float OldBaseEyeHeight;
 var int IgnoreZChangeTicks;
 var float EyeHeightOffset;
+
+var int HitDamage;
+var bool bHitContact;
+var Pawn HitPawn;
+
 replication
 {
     unreliable if(Role == ROLE_Authority)
         OverlayType;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
-        SpawnProtectionEnabled,SpawnedIcon;
+        SpawnProtectionEnabled,SpawnedIcon,
+        HitDamage, bHitContact, HitPawn;
 }
 
 function CreateInventory(string InventoryClassName)
