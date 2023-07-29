@@ -184,7 +184,6 @@ var config bool bTeamColorSniper;
 var config Color TeamColorRed, TeamColorBlue;
 var config bool bTeamColorUseTeam;
 
-
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
 delegate OnPlayerDataRemovedCallback(string PlayerName);
@@ -2013,6 +2012,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 	class'Misc_Player'.default.bShowCombos = Misc.bShowCombos;
 	class'Misc_Player'.default.bExtendedInfo = Misc.bExtendedInfo;
 	class'Misc_Pawn'.default.bPlayOwnFootsteps = Misc.bPlayOwnFootsteps;
+	class'Misc_Pawn'.default.bPlayOwnLandings = Misc.bPlayOwnLandings;
 	class'Misc_Player'.default.bAutoScreenShot = Misc.bAutoScreenShot;
 	class'Misc_Player'.default.bUseHitSounds = Misc.bUseHitSounds;
 	class'Misc_Player'.default.bEnableEnhancedNetCode = Misc.bEnableEnhancedNetCode;
@@ -2154,6 +2154,7 @@ function SaveSettings()
 	Misc.bShowCombos = class'Misc_Player'.default.bShowCombos;
 	Misc.bExtendedInfo = class'Misc_Player'.default.bExtendedInfo;
 	Misc.bPlayOwnFootsteps = class'Misc_Pawn'.default.bPlayOwnFootsteps;
+	Misc.bPlayOwnLandings = class'Misc_Pawn'.default.bPlayOwnLandings;
 	Misc.bAutoScreenShot = class'Misc_Player'.default.bAutoScreenShot;
 	Misc.bUseHitSounds = class'Misc_Player'.default.bUseHitSounds;
 	Misc.bEnableEnhancedNetCode = class'Misc_Player'.default.bEnableEnhancedNetCode;
@@ -2394,6 +2395,13 @@ state PlayerWalking
         bPressedJump = bSaveJump;
     }
 }
+
+// override these so they do nothing
+exec function PauseSounds() { }
+exec function UnPauseSounds() { }
+exec function StopSounds() { }
+
+
 
 /* settings */
 

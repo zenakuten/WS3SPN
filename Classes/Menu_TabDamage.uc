@@ -5,6 +5,7 @@ var automated moComboBox ReceiveAward;
 var automated moCheckBox ConfigureNetSpeed;
 var automated GUINumericEdit EditConfigureNetSpeedValue;
 var automated moCheckBox EnableWidescreenFixes;
+var automated moCheckBox PlayOwnLandings;
 var automated moComboBox AbortNecro;
 
 function bool AllowOpen(string MenuClass)
@@ -57,6 +58,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     AbortNecro.ReadOnly(true);
 	AbortNecro.SetIndex(class'Misc_Player'.default.AbortNecroSoundType);
 
+    PlayOwnLandings.Checked(class'Misc_Pawn'.default.bPlayOwnLandings);
+
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
 
@@ -91,6 +94,17 @@ function InternalOnChange( GUIComponent C )
 
 		case AbortNecro:
 			class'Misc_Player'.default.AbortNecroSoundType = AbortNecroSounds(AbortNecro.GetIndex());
+			break;
+
+		case PlayOwnLandings:
+            class'Misc_Pawn'.default.bPlayOwnLandings = PlayOwnLandings.IsChecked();
+            class'Misc_Pawn'.static.StaticSaveConfig();
+
+            if(Misc_Pawn(PlayerOwner().Pawn) != None)
+            {
+                Misc_Pawn(PlayerOwner().Pawn).bPlayOwnLandings = PlayOwnLandings.IsChecked();
+                Misc_Pawn(PlayerOwner().Pawn).SaveConfig();
+            }            
 			break;
     }
 	
@@ -158,4 +172,14 @@ defaultproperties
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      AbortNecro=moComboBox'3SPNvSoL.Menu_TabDamage.AbortNecroSoundTypesCombo'
+
+     Begin Object Class=moCheckBox Name=PlayOwnLandingsCheckBox
+         Caption="Play Own Landing Sounds:"
+         OnCreateComponent=PlayOwnLandingsCheckBox.InternalOnCreateComponent
+         WinTop=0.630000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     PlayOwnLandings=moCheckBox'3SPNvSoL.Menu_TabDamage.PlayOwnLandingsCheckBox'
 }

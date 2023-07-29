@@ -41,6 +41,7 @@ var float EyeHeightOffset;
 var int HitDamage;
 var bool bHitContact;
 var Pawn HitPawn;
+var config bool bPlayOwnLandings;
 
 replication
 {
@@ -950,10 +951,18 @@ event UpdateEyeHeight( float DeltaTime )
 
 event Landed(vector HitNormal)
 {
+    local bool bPlayLandingSound;
+    local Controller C;
+
     super(UnrealPawn).Landed( HitNormal );
     MultiJumpRemaining = MaxMultiJump;
 
-    if ( (Health > 0) && !bHidden && (Level.TimeSeconds - SplashTime > 0.25) && bPlayOwnFootsteps)
+    bPlayLandingSound = true;
+    C = Level.GetLocalPlayerController();
+    if(C != None && C == Controller)
+        bPlayLandingSound = bPlayOwnLandings;
+
+    if ( (Health > 0) && !bHidden && (Level.TimeSeconds - SplashTime > 0.25) && bPlayLandingSound)
         PlayOwnedSound(GetSound(EST_Land), SLOT_Interact, FMin(1,-0.3 * Velocity.Z/JumpZ));
 }
 
@@ -1013,6 +1022,7 @@ simulated function FootStepping(int Side)
 
 defaultproperties
 {
+     bPlayOwnLandings=true
      RedColor=(R=100)
      BlueColor=(B=100,G=25)
      OverlayColors(0)=(G=80,R=128,A=128)

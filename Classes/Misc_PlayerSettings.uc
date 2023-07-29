@@ -39,6 +39,7 @@ struct MiscSettings
 	var bool bShowCombos;
 	var bool bExtendedInfo;
 	var bool bPlayOwnFootsteps;
+	var bool bPlayOwnLandings;
 	var bool bAutoScreenShot;
 	var bool bUseHitSounds;
 	var bool bEnableEnhancedNetCode;
