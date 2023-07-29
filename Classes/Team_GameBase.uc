@@ -207,6 +207,7 @@ var config int FootstepRadius;
 var config bool ClearOldStats;
 
 var config bool bAllowColorWeapons;
+var config bool bKeepMomentumOnLanding;
 
 /*
 struct RestartInfo
@@ -286,6 +287,7 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).FootstepRadius = FootstepRadius;
 
     Misc_BaseGRI(GameReplicationInfo).bAllowColorWeapons = bAllowColorWeapons;
+    Misc_BaseGRI(GameReplicationInfo).bKeepMomentumOnLanding = bKeepMomentumOnLanding;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -439,6 +441,7 @@ static function FillPlayInfo(PlayInfo PI)
     //UFC
     Weight=1;
     PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, True);
 
 }
 
@@ -525,7 +528,9 @@ static event string GetDescriptionText(string PropName)
       case "FootstepVolume": return "Volume of player footstep sound";
       case "FootstepRadius": return "Radius of player footstep sound";
 
+      case "ClearOldStats": return "Clear stats after 24 hours";
       case "bAllowColorWeapons": return "Allow players to use colored weapons";
+      case "bKeepMomentumOnLanding": return "No slow down when landing from jump/dodge";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -3955,6 +3960,7 @@ defaultproperties
      FriendlyFireScale=0.500000
      ClearOldStats=false
      bAllowColorWeapons=true
+     bKeepMomentumOnLanding=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

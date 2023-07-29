@@ -2291,6 +2291,9 @@ state PlayerWalking
 {
     function bool NotifyLanded(vector HitNormal)
     {
+        if(RepInfo == None || (RepInfo != None && !RepInfo.bKeepMomentumOnLanding))
+            return super.NotifyLanded(HitNormal);
+
         if (DoubleClickDir == DCLICK_Active)
         {
             DoubleClickDir = DCLICK_Done;
@@ -2385,9 +2388,7 @@ state PlayerWalking
             bSaveJump = false;
 
         if ( Role < ROLE_Authority ) // then save this move and replicate it
-        {
             ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
-        }
         else
             ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;

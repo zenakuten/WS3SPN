@@ -61,6 +61,7 @@ var float FootstepVolume;
 var int FootstepRadius;
 
 var bool bAllowColorWeapons;
+var bool bKeepMomentumOnLanding;
 
 replication
 {
@@ -71,7 +72,7 @@ replication
         TimeOuts, Acronym, EnableNewNet, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
         SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
-        MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons;
+        MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -288,6 +289,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 2.1"
+     Version="SoL 2.3"
      EnableNewNet=True
 }
