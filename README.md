@@ -1,6 +1,15 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.5
+- Restore DesiredNetUpdateRate player config option from 1.9, changes how often movement updates are sent to the server
+- Add UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate to server config
+- Add LockRolloff and RollOffMinValue to server config
+- Make pawns always network relevant to help fix warp ins
+- Add Fractional Rotation updates from 3SPHorst
+- Stats fixes for LG, Shock, Link, Sniper, Assault, and Shield
+- Fix bio secondary not using newnet
+
 v2.4
 - new player config option 'Play Own Landing Sound' under extras menu
 - disable PauseSounds, UnPauseSounds, StopSounds commands
