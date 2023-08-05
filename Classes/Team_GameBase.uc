@@ -190,6 +190,10 @@ var config bool bCanBoostDodge;
 var config int MinNetSpeed;
 var config int MaxNetSpeed;
 
+var config bool UseNetUpdateRate;
+var config float MinNetUpdateRate;
+var config float MaxNetUpdateRate;
+
 var config int MinPlayersForStatsRecording;
 
 struct ControllerArray
@@ -208,6 +212,9 @@ var config bool ClearOldStats;
 
 var config bool bAllowColorWeapons;
 var config bool bKeepMomentumOnLanding;
+
+var config bool bLockRolloff;
+var config float RolloffMinValue;
 
 /*
 struct RestartInfo
@@ -278,6 +285,10 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).UseZAxisRadar = UseZAxisRadar;
     Misc_BaseGRI(GameReplicationInfo).ServerLinkStatus = ServerLinkStatus;
 
+    Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate = UseNetUpdateRate;
+    Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate = MinNetUpdateRate;
+    Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate = MaxNetUpdateRate;
+
     Misc_BaseGRI(GameReplicationInfo).bFastWeaponSwitching = bFastWeaponSwitching;
     Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
     Misc_BaseGRI(GameReplicationInfo).MinNetSpeed = MinNetSpeed;
@@ -288,6 +299,9 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).bAllowColorWeapons = bAllowColorWeapons;
     Misc_BaseGRI(GameReplicationInfo).bKeepMomentumOnLanding = bKeepMomentumOnLanding;
+
+    Misc_BaseGRI(GameReplicationInfo).bLockRolloff = bLockRolloff;
+    Misc_BaseGRI(GameReplicationInfo).RollOffMinValue = RollOffMinValue;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -413,7 +427,9 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
     PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
     PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
-
+    PI.AddSetting("3SPN", "UseNetUpdateRate", "Use UTComp movement update", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "MinNetUpdateRate", "Minimum net update rate for clients", 0, Weight++, "Text", "3;90:250");
+    PI.AddSetting("3SPN", "MaxNetUpdateRate", "Maximum net update rate for clients", 0, Weight++, "Text", "3;90:250");
 //    PI.AddSetting("3SPN", "MaxHealth", "Max Health", 0, Weight++, "Text", "8;1.0:2.0");
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
@@ -442,6 +458,8 @@ static function FillPlayInfo(PlayInfo PI)
     Weight=1;
     PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "LockRolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
 
 }
 
@@ -525,6 +543,11 @@ static event string GetDescriptionText(string PropName)
       case "bCanBoostDodge": return "UT2003 style boost dodging";
       case "MinNetSpeed": return "Minimum netspeed for clients";
       case "MaxNetSpeed": return "Maximum netspeed for clients";
+      
+      case "UseNetUpdateRate": return "Use UTComp movement update";
+      case "MinNetUpdateRate": return "Minimum net update rate for clients";
+      case "MaxNetUpdateRate": return "Maximum net update rate for clients";
+
       case "FootstepVolume": return "Volume of player footstep sound";
       case "FootstepRadius": return "Radius of player footstep sound";
 
@@ -1263,10 +1286,6 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             }
                 // overkill
 			
-			
-			
-			
-
             /* hitstats */
             // in order of most common
             if(DamageType == class'DamType_FlakChunk')
@@ -1284,7 +1303,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.Rockets.Hit++;
                 PRI.Rockets.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeSniperShot')
+            else if(DamageType == class'DamType_SniperShot')
             {
                 PRI.Sniper.Hit++;
                 PRI.Sniper.Damage += Damage;
@@ -1294,12 +1313,12 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.ClassicSniper.Hit++;
                 PRI.ClassicSniper.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeShockBeam')
+            else if(DamageType == class'DamType_ShockBeam')
             {
                 PRI.Shock.Primary.Hit++;
                 PRI.Shock.Primary.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeShockBall')
+            else if(DamageType == class'DamType_ShockBall')
             {
                 PRI.Shock.Secondary.Hit++;
                 PRI.Shock.Secondary.Damage += Damage;
@@ -1319,7 +1338,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.Mini.Secondary.Hit++;
                 PRI.Mini.Secondary.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeLinkPlasma')
+            else if(DamageType == class'DamType_LinkPlasma')
             {
                   PRI.Link.Primary.Hit++;
                   PRI.Link.Primary.Damage += Damage;
@@ -1335,8 +1354,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.Sniper.Hit++;
                 PRI.Sniper.Damage += Damage;
             }
-
-	    else if(DamageType == class'DamTypeClassicHeadShot')
+            else if(DamageType == class'DamType_ClassicHeadShot')
             {
                 PRI.HeadShots++;
                 PRI.ClassicSniper.Hit++;
@@ -1347,12 +1365,12 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.Bio.Hit++;
                 PRI.Bio.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeAssaultBullet')
+            else if(DamageType == class'DamType_AssaultBullet')
             {
                 PRI.Assault.Primary.Hit++;
                 PRI.Assault.Primary.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeAssaultGrenade')
+            else if(DamageType == class'DamType_AssaultGrenade')
             {
                 PRI.Assault.Secondary.Hit++;
                 PRI.Assault.Secondary.Damage += Damage;
@@ -1362,7 +1380,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 PRI.Rockets.Hit++;
                 PRI.Rockets.Damage += Damage;
             }
-            else if(DamageType == class'DamTypeShieldImpact')
+            else if(DamageType == class'DamType_ShieldImpact')
                 PRI.SGDamage += Damage;
             /* hitstats */
         }
@@ -3955,12 +3973,17 @@ defaultproperties
      MinPlayersForStatsRecording=2
      MinNetSpeed=9636
      MaxNetSpeed=100000
+     UseNetUpdateRate=True
+     MinNetUpdateRate=90.0
+     MaxNetUpdateRate=250.0     
      FootstepVolume=0.15
      FootstepRadius=400
      FriendlyFireScale=0.500000
      ClearOldStats=false
      bAllowColorWeapons=true
      bKeepMomentumOnLanding=true
+     bLockRolloff=true
+     RollOffMinValue=0.4
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

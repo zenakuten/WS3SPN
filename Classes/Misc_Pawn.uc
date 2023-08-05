@@ -978,10 +978,10 @@ simulated function FootStepping(int Side)
     Volume = 0.15;
     Radius = 400;
 
-    if(Misc_Player(Controller) != None && Misc_Player(Controller).RepInfo != None)
+    if(Misc_BaseGRI(Level.GRI) != None)
     {
-        Volume = Misc_Player(Controller).RepInfo.FootstepVolume;
-        Radius = Misc_Player(Controller).RepInfo.FootstepRadius;
+        Volume = Misc_BaseGRI(Level.GRI).FootstepVolume;
+        Radius = Misc_BaseGRI(Level.GRI).FootstepRadius;
     }
 
     SurfaceNum = 0;
@@ -1022,6 +1022,7 @@ simulated function FootStepping(int Side)
 
 defaultproperties
 {
+     bAlwaysRelevant=true
      bPlayOwnLandings=true
      RedColor=(R=100)
      BlueColor=(B=100,G=25)

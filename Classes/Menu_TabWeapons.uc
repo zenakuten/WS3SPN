@@ -24,7 +24,7 @@ simulated function bool CanUseColors()
 {
     local Misc_BaseGRI GRI;
 
-    GRI = Misc_Player(PlayerOwner()).RepInfo;
+    GRI = Misc_BaseGRI(PlayerOwner().GameReplicationInfo);
     if(GRI != None)
         return GRI.bAllowColorWeapons;
 

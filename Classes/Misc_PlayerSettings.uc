@@ -52,6 +52,7 @@ struct MiscSettings
     var bool bConfigureNetSpeed;
     var bool bEnableWidescreenFix;
     var int ConfigureNetSpeedValue;
+    var int DesiredNetUpdateRate;
 };
 
 struct WeaponSettings

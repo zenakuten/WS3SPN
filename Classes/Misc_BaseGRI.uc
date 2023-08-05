@@ -57,11 +57,17 @@ var Team_GameBase.EServerLinkStatus ServerLinkStatus; //enum type dependson Team
 var bool bCanBoostDodge;
 var int MinNetSpeed;
 var int MaxNetSpeed;
+var bool UseNetUpdateRate;
+var float MinNetUpdateRate;
+var float MaxNetUpdateRate;
 var float FootstepVolume;
 var int FootstepRadius;
 
 var bool bAllowColorWeapons;
 var bool bKeepMomentumOnLanding;
+
+var bool bLockRolloff;
+var float RolloffMinValue;
 
 replication
 {
@@ -72,7 +78,8 @@ replication
         TimeOuts, Acronym, EnableNewNet, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
         SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
-        MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding;
+        MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
+        UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -289,6 +296,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 2.4"
+     Version="SoL 2.5"
      EnableNewNet=True
 }
