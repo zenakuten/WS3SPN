@@ -1,6 +1,16 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.4
+- new player config option 'Play Own Landing Sound' under extras menu
+- disable PauseSounds, UnPauseSounds, StopSounds commands
+
+v2.3
+- fix weird glitch on landing
+
+v2.2
+- new config option bKeepMomentumOnLanding, if true, no slowdown when landing from dodge or jump
+
 v2.1
 - server config to enable/disable weapon colors (default is enabled)
 - add shield gun configs from 42109e 3spn
