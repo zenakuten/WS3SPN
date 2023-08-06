@@ -459,7 +459,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "LockRolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
+    PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
 
 }
 
@@ -554,6 +554,8 @@ static event string GetDescriptionText(string PropName)
       case "ClearOldStats": return "Clear stats after 24 hours";
       case "bAllowColorWeapons": return "Allow players to use colored weapons";
       case "bKeepMomentumOnLanding": return "No slow down when landing from jump/dodge";
+      case "bLockRolloff": return "Lock the sound rolloff value";
+      case "RolloffMinValue": return "Minimum value for sound rolloff (0.4)";
     }
 
     return Super.GetDescriptionText(PropName);
