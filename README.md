@@ -1,6 +1,10 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.6
+- fix the rest of stats
+- make fart sound for console commands client only
+
 v2.5
 - Restore DesiredNetUpdateRate player config option from 1.9, changes how often movement updates are sent to the server
 - Add UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate to server config

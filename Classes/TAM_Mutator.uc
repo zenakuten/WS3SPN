@@ -244,61 +244,71 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 		class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
     }
 	
+	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
+    class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
+	class'AssaultFire'.Default.DamageType = Class'DamType_AssaultBullet';
+    class'Grenade'.Default.MyDamageType = class'DamType_AssaultGrenade';
     class'BioGlob'.default.MyDamageType = class'DamType_BioGlob';
+	class'LinkFire'.Default.DamageType = Class'DamType_LinkShaft';
+    class'LinkProjectile'.Default.MyDamageType = Class'DamType_LinkPlasma';
+    class'MinigunFire'.Default.DamageType = Class'DamType_MinigunBullet';
+    class'MinigunAltFire'.Default.DamageType = Class'DamType_MinigunAlt';
     class'FlakChunk'.default.MyDamageType = class'DamType_FlakChunk';
     class'FlakShell'.default.MyDamageType = class'DamType_FlakShell';
 	class'RocketProj'.default.MyDamageType = class'DamType_Rocket';
 	class'SeekingRocketProj'.default.MyDamageType = class'DamType_RocketHoming';
-	class'LinkFire'.Default.DamageType = Class'DamType_LinkShaft';
-	class'AssaultFire'.Default.DamageType = Class'DamType_AssaultGrenade';
 	//class'ShieldGun'.Default.DamageType = Class'DamType_ShieldImpact';
-	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
-    class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
 
 	if(EnableNewNet)
 	{
+        class'NewNet_AssaultFire'.Default.DamageType = Class'DamType_AssaultBullet';
+        class'Grenade'.Default.MyDamageType = class'DamType_AssaultGrenade';
+        class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
+        class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
 		class'NewNet_BioGlob'.default.MyDamageType = class'DamType_BioGlob';
-		class'NewNet_FlakChunk'.default.MyDamageType = class'DamType_FlakChunk';
-		class'NewNet_FlakShell'.default.MyDamageType = class'DamType_FlakShell';
-		class'NewNet_RocketProj'.default.MyDamageType = class'DamType_Rocket';
-		class'NewNet_SeekingRocketProj'.default.MyDamageType = class'DamType_RocketHoming';
-		
-		
-        class'DamType_ShieldImpact'.default.WeaponClass = class'NewNet_ShieldGun';
-		class'DamTypeAssaultBullet'.default.WeaponClass = class'NewNet_AssaultRifle';
-		//class'DamTypeAssaultGrenade'.default.WeaponClass = class'DamType_AssaultGrenade';
-		class'DamType_BioGlob'.default.WeaponClass = class'NewNet_BioRifle';
-		class'DamType_FlakChunk'.default.WeaponClass = class'NewNet_FlakCannon';
-		class'DamType_FlakShell'.default.WeaponClass = class'NewNet_FlakCannon';
-		class'DamType_LinkPlasma'.default.WeaponClass = class'NewNet_LinkGun';
-		class'DamType_LinkShaft'.default.WeaponClass = class'NewNet_LinkGun';
-		class'DamType_MinigunAlt'.default.WeaponClass = class'NewNet_MiniGun';
-		class'DamType_MinigunBullet'.default.WeaponClass = class'NewNet_MiniGun';
-		class'DamType_Rocket'.default.WeaponClass = class'NewNet_RocketLauncher';
-		class'DamType_RocketHoming'.default.WeaponClass = class'NewNet_RocketLauncher';
-		class'DamTypeShockBall'.default.WeaponClass = class'NewNet_ShockRifle';
-		class'DamTypeShockBeam'.default.WeaponClass = class'NewNet_ShockRifle';
-		class'DamType_ShockCombo'.default.WeaponClass = class'NewNet_ShockRifle';
-		class'DamTypeSniperHeadShot'.default.WeaponClass = class'NewNet_SniperRifle';
-		class'DamTypeSniperShot'.default.WeaponClass = class'NewNet_SniperRifle';
-		class'DamType_ClassicSniperShot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';
-		class'DamType_ClassicHeadshot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';
-		class'DamType_LinkShaft'.Default.WeaponClass = Class'NewNet_LinkGun';
-		class'DamType_LinkPlasma'.Default.WeaponClass = Class'NewNet_LinkGun';
+        class'NewNet_ShockBeamFire'.Default.DamageType = class'DamType_ShockBeam';
+        class'NewNet_ShockProjectile'.Default.MyDamageType = class'DamType_ShockBall';
 		class'NewNet_LinkFire'.Default.DamageType = Class'DamType_LinkShaft';
 		class'NewNet_LinkProjectile'.Default.MyDamageType = Class'DamType_LinkPlasma';
 		class'NewNet_MiniGunFire'.Default.DamageType = Class'DamType_MinigunBullet';
 		class'NewNet_MiniGunAltFire'.Default.DamageType = Class'DamType_MinigunAlt';
-        class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
-        class'WeaponFire_Shield'.Default.DamageType = Class'DamType_ShieldImpact';
+		class'NewNet_FlakChunk'.default.MyDamageType = class'DamType_FlakChunk';
+		class'NewNet_FlakShell'.default.MyDamageType = class'DamType_FlakShell';
+		class'NewNet_RocketProj'.default.MyDamageType = class'DamType_Rocket';
+		class'NewNet_SeekingRocketProj'.default.MyDamageType = class'DamType_RocketHoming';
+		class'NewNet_SniperFire'.default.DamageType = class'DamType_SniperShot';
+		class'NewNet_SniperFire'.default.DamageTypeHeadshot = class'DamType_HeadShot';
+		class'NewNet_ClassicSniperFire'.default.DamageType = class'DamType_ClassicSniperShot';
+		class'NewNet_ClassicSniperFire'.default.DamageTypeHeadShot = class'DamType_ClassicHeadShot';
+
+		
+		
+        class'DamType_ShieldImpact'.default.WeaponClass = class'NewNet_ShieldGun';
+		class'DamType_AssaultBullet'.default.WeaponClass = class'NewNet_AssaultRifle';
+		class'DamType_AssaultGrenade'.default.WeaponClass = class'NewNet_AssaultRifle';
+		//class'DamTypeAssaultGrenade'.default.WeaponClass = class'DamType_AssaultGrenade';
+		class'DamType_BioGlob'.default.WeaponClass = class'NewNet_BioRifle';
+		class'DamType_ShockBall'.default.WeaponClass = class'NewNet_ShockRifle';
+		class'DamType_ShockBeam'.default.WeaponClass = class'NewNet_ShockRifle';
+		class'DamType_ShockCombo'.default.WeaponClass = class'NewNet_ShockRifle';
+		class'DamType_LinkShaft'.default.WeaponClass = class'NewNet_LinkGun';
+		class'DamType_LinkPlasma'.default.WeaponClass = class'NewNet_LinkGun';
+		class'DamType_MinigunAlt'.default.WeaponClass = class'NewNet_MiniGun';
+		class'DamType_MinigunBullet'.default.WeaponClass = class'NewNet_MiniGun';
+		class'DamType_FlakChunk'.default.WeaponClass = class'NewNet_FlakCannon';
+		class'DamType_FlakShell'.default.WeaponClass = class'NewNet_FlakCannon';
+		class'DamType_Rocket'.default.WeaponClass = class'NewNet_RocketLauncher';
+		class'DamType_RocketHoming'.default.WeaponClass = class'NewNet_RocketLauncher';
+		class'DamType_SniperShot'.default.WeaponClass = class'NewNet_SniperRifle';
+		class'DamType_HeadShot'.default.WeaponClass = class'NewNet_SniperRifle';
+		class'DamType_ClassicSniperShot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';
+		class'DamType_ClassicHeadshot'.default.WeaponClass = class'NewNet_ClassicSniperRifle';
 	}
 
     //snarf setup old weapons, these are used when newnet=false
     class'FlakFire'.default.ProjectileClass = class'TeamColorFlakChunk';
     class'FlakAltFire'.default.ProjectileClass = class'TeamColorFlakShell';
-
     class'ShockProjFire'.default.ProjectileClass = class'TeamColorShockProjectile';
-
 }
 	
 function ResetWeaponsToDefaults(bool bModifyShieldGun,float ShieldGunSelfForceScale,float ShieldGunSelfDamageScale,int ShieldGunMinSelfDamage)

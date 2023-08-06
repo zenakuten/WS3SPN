@@ -3039,25 +3039,18 @@ function ProxyCommand(string command)
 // override these so they do nothing
 exec function PauseSounds() 
 { 
-    ServerPlaySound(Sound'Fart', Pawn);
+    ClientPlaySound(Sound'Fart');
 }
 
 exec function UnPauseSounds() 
 { 
-    ServerPlaySound(Sound'Fart', Pawn);
+    ClientPlaySound(Sound'Fart');
 }
 
 exec function StopSounds() 
 { 
-    ServerPlaySound(Sound'Fart', Pawn);
+    ClientPlaySound(Sound'Fart');
 }
-
-/*
-exec function Rend(optional string param)
-{
-    ServerPlaySound(Sound'Fart', Pawn);
-}
-*/
 
 function int FractionCorrection(float in, out float fraction) {
     local int result;
@@ -3070,7 +3063,6 @@ function int FractionCorrection(float in, out float fraction) {
     return result;
 }
 
-/*
 function UpdateRotation(float DeltaTime, float maxPitch)
 {
     local rotator newRotation, ViewRotation;
@@ -3144,7 +3136,6 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     }
 
 }
-*/
 
 /* settings */
 
