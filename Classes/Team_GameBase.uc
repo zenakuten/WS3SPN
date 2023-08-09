@@ -469,7 +469,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bAllowUnPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bAllowPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, True);
 
 }
 
