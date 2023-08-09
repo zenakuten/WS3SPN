@@ -1,6 +1,14 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.8
+- server config to allow 'boosted alt shield jump' (tich).  
+- server config to allow pausing sounds
+
+v2.7
+- fix shock combo not working
+- fix log spamming for lock rolloff
+
 v2.6
 - fix the rest of stats
 - make fart sound for console commands client only

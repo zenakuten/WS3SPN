@@ -69,6 +69,9 @@ var bool bKeepMomentumOnLanding;
 var bool bLockRolloff;
 var float RolloffMinValue;
 
+var bool bBoostedAltShieldJump;
+var bool bAllowPauseSounds;
+
 replication
 {
     reliable if(bNetInitial && Role == ROLE_Authority)
@@ -79,7 +82,8 @@ replication
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
         SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
-        UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue;
+        UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue,
+        bBoostedAltShieldJump, bAllowPauseSounds;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -296,6 +300,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 2.7"
+     Version="SoL 2.8"
      EnableNewNet=True
 }

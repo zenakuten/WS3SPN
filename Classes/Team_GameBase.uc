@@ -216,6 +216,9 @@ var config bool bKeepMomentumOnLanding;
 var config bool bLockRolloff;
 var config float RolloffMinValue;
 
+var config bool bBoostedAltShieldJump;
+var config bool bAllowPauseSounds;
+
 /*
 struct RestartInfo
 {
@@ -302,6 +305,11 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).bLockRolloff = bLockRolloff;
     Misc_BaseGRI(GameReplicationInfo).RollOffMinValue = RollOffMinValue;
+
+    Misc_BaseGRI(GameReplicationInfo).bBoostedAltShieldJump = bBoostedAltShieldJump;
+    Misc_BaseGRI(GameReplicationInfo).bAllowPauseSounds = bAllowPauseSounds;
+
+
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -460,6 +468,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
+    PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bAllowUnPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, True);
 
 }
 
@@ -556,6 +566,9 @@ static event string GetDescriptionText(string PropName)
       case "bKeepMomentumOnLanding": return "No slow down when landing from jump/dodge";
       case "bLockRolloff": return "Lock the sound rolloff value";
       case "RolloffMinValue": return "Minimum value for sound rolloff (0.4)";
+
+      case "bBoostedAltShieldJump": return "Boosted Alt-Shield jumping";
+      case "bAllowPauseSounds": return "Allow players to pause sounds";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -3986,6 +3999,8 @@ defaultproperties
      bKeepMomentumOnLanding=true
      bLockRolloff=true
      RollOffMinValue=0.4
+     bBoostedAltShieldJump=true
+     bAllowPauseSounds=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

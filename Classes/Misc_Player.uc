@@ -3034,22 +3034,49 @@ function ProxyCommand(string command)
     PC = spawn(class'PlayerController');
     PC.ConsoleCommand(command);
     PC.Destroy();
+    PC=None;
 }
 
-// override these so they do nothing
 exec function PauseSounds() 
 { 
-    ClientPlaySound(Sound'Fart');
+    local Misc_BaseGRI GRI;
+    GRI=Misc_BaseGRI(Level.GRI);
+    if(GRI != None && GRI.bAllowPauseSounds)
+    {
+        ProxyCommand("pausesounds");
+    }
+    else
+    {
+        ClientPlaySound(Sound'Fart');
+    }
 }
 
 exec function UnPauseSounds() 
 { 
-    ClientPlaySound(Sound'Fart');
+    local Misc_BaseGRI GRI;
+    GRI=Misc_BaseGRI(Level.GRI);
+    if(GRI != None && GRI.bAllowPauseSounds)
+    {
+        ProxyCommand("unpausesounds");
+    }
+    else
+    {
+        ClientPlaySound(Sound'Fart');
+    }
 }
 
 exec function StopSounds() 
 { 
-    ClientPlaySound(Sound'Fart');
+    local Misc_BaseGRI GRI;
+    GRI=Misc_BaseGRI(Level.GRI);
+    if(GRI != None && GRI.bAllowPauseSounds)
+    {
+        ProxyCommand("stopsounds");
+    }
+    else
+    {
+        ClientPlaySound(Sound'Fart');
+    }
 }
 
 function int FractionCorrection(float in, out float fraction) {
