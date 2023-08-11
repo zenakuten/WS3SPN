@@ -69,6 +69,13 @@ function CreateInventory(string InventoryClassName)
 function SendAdrenReminder ()
 {
   local Controller C;
+  local Misc_BaseGRI GRI;
+  local bool bDisableNecroMessage;
+
+  bDisableNecroMessage = false;
+  GRI=Misc_BaseGRI(Level.GRI);
+  if(GRI != None)
+    bDisableNecroMessage = GRI.bDisableNecroMessage;
 
   C = Level.ControllerList;
   JL0014:
@@ -78,7 +85,10 @@ function SendAdrenReminder ()
     {
       if ( (C.Pawn != None) && (C.Pawn != self) && (C.Adrenaline >= 100) && (C.Pawn.Health >= 0) )
       {
-        Misc_Player(C).ReceiveLocalizedMessage(Class'Message_Adrenaline',1);
+        if(!bDisableNecroMessage)
+        {
+            Misc_Player(C).ReceiveLocalizedMessage(Class'Message_Adrenaline',1);
+        }
       }
     }
     C = C.nextController;

@@ -1008,6 +1008,8 @@ function SetupCombos()
             bDisable = (class'Misc_Player'.default.bDisableBerserk || GRI.bDisableBerserk);
         else if(ComboName ~= "xGame.ComboInvis")
             bDisable = (class'Misc_Player'.default.bDisableInvis || GRI.bDisableInvis);
+        else if(ComboName ~= "3SPNvSoL.NecroCombo")
+            bDisable = (GRI.bDisableNecro);
 
         if(bDisable)
             ComboName = "xGame.Combo";
@@ -1259,17 +1261,19 @@ function DoCombo(class<Combo> ComboClass)
 
 function bool CanDoCombo(class<Combo> ComboClass)
 {
-    if(TAM_GRI(GameReplicationInfo) == None)
+    if(Misc_BaseGRI(GameReplicationInfo) == None)
         return true;
 
     if(class<ComboSpeed>(ComboClass) != None)
-        return (!TAM_GRI(GameReplicationInfo).bDisableSpeed);
+        return (!Misc_BaseGRI(GameReplicationInfo).bDisableSpeed);
     if(class<ComboDefensive>(ComboClass) != None)
-        return (!TAM_GRI(GameReplicationInfo).bDisableBooster);
+        return (!Misc_BaseGRI(GameReplicationInfo).bDisableBooster);
     if(class<ComboInvis>(ComboClass) != None)
-        return (!TAM_GRI(GameReplicationInfo).bDisableInvis);
+        return (!Misc_BaseGRI(GameReplicationInfo).bDisableInvis);
     if(class<ComboBerserk>(ComboClass) != None)
-        return (!TAM_GRI(GameReplicationInfo).bDisableBerserk);
+        return (!Misc_BaseGRI(GameReplicationInfo).bDisableBerserk);
+    if(class<NecroCombo>(ComboClass) != None)
+        return (!Misc_BaseGRI(GameReplicationInfo).bDisableNecro);
 
     return true;
 }

@@ -32,6 +32,8 @@ var bool bDisableSpeed;
 var bool bDisableBooster;
 var bool bDisableInvis;
 var bool bDisableBerserk;
+var bool bDisableNecro;
+var bool bDisableNecroMessage;
 
 var int  TimeOuts;
 
@@ -83,7 +85,7 @@ replication
         SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue,
-        bBoostedAltShieldJump, bAllowPauseSounds;
+        bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -300,6 +302,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 2.8"
+     Version="SoL 2.9"
      EnableNewNet=True
 }

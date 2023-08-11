@@ -12,6 +12,8 @@ var config bool     bDisableSpeed;
 var config bool     bDisableBooster;
 var config bool     bDisableInvis;
 var config bool     bDisableBerserk;
+var config bool     bDisableNecro;
+var config bool     bDisableNecroMessage;
 var array<string>   EnabledCombos;
 
 var config bool     bChallengeMode;
@@ -149,6 +151,8 @@ function InitGameReplicationInfo()
     TAM_GRI(GameReplicationInfo).bDisableInvis = bDisableInvis;
     TAM_GRI(GameReplicationInfo).bDisableBooster = bDisableBooster;
     TAM_GRI(GameReplicationInfo).bDisableBerserk = bDisableBerserk;
+    TAM_GRI(GameReplicationInfo).bDisableNecro = bDisableNecro;
+    TAM_GRI(GameReplicationInfo).bDisableNecroMessage = bDisableNecroMessage;
 
     TAM_GRI(GameReplicationInfo).bForceRUP = bForceRUP;
     TAM_GRI(GameReplicationInfo).ForceRUPMinPlayers = ForceRUPMinPlayers;
@@ -204,6 +208,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bDisableInvis", "Disable Invis", 0, 52, "Check");
     PI.AddSetting("3SPN", "bDisableBerserk", "Disable Berserk", 0, 53, "Check");
     PI.AddSetting("3SPN", "bDisableBooster", "Disable Booster", 0, 54, "Check");
+    PI.AddSetting("3SPN", "bDisableNecro", "Disable Necro", 0, 54, "Check");
+    PI.AddSetting("3SPN", "bDisableNecroMessage", "Disable 'Mate out RES' message", 0, 54, "Check");
 
     PI.AddSetting("3SPN", "bModifyShieldGun", "Use Modified Shield Gun", 0, 60, "Check",,, True);
     PI.AddSetting("3SPN", "ShieldGunSelfForceScale", "Modified Shield Gun Self Force Scale", 0, 61, "Text", "8;0.0:10.0");
@@ -244,6 +250,8 @@ static event string GetDescriptionText(string PropName)
         case "bDisableInvis":       return "Disable the Invisibility adrenaline combo.";        
         case "bDisableBooster":     return "Disable the Booster adrenaline combo.";
         case "bDisableBerserk":     return "Disable the Berserk adrenaline combo.";
+        case "bDisableNecro":       return "Disable the Necro adrenaline combo.";
+        case "bDisableNecroMessage":return "Disable the 'Mate out rez' message.";
 
         case "bForceRUP":           return "Force players to ready up after 45 seconds.";
         case "ForceRUPMinPlayers":  return "Force players to ready only when at least this many players present.";
@@ -334,6 +342,14 @@ function ParseOptions(string Options)
     InOpt = ParseOption(Options, "DisableBerserk");
     if(InOpt != "")
         bDisableBerserk = bool(InOpt);
+
+    InOpt = ParseOption(Options, "DisableNecro");
+    if(InOpt != "")
+        bDisableNecro = bool(InOpt);
+
+    InOpt = ParseOption(Options, "DisableNecroMessage");
+    if(InOpt != "")
+        bDisableNecroMessage = bool(InOpt);
 
     InOpt = ParseOption(Options, "DisableBooster");
     if(InOpt != "")
@@ -502,6 +518,9 @@ event InitGame(string Options, out string Error)
 
     if(!bDisableInvis)
         EnabledCombos[EnabledCombos.Length] = "xGame.ComboInvis";
+
+    if(!bDisableNecro)
+        EnabledCombos[EnabledCombos.Length] = "3SPNvSoL.NecroCombo";
     /* combo related */
 
 	/*if(ServerLinkEnabled)
@@ -1889,6 +1908,8 @@ defaultproperties
      ShowServerName=True
      FlagTextureEnabled=True
      FlagTextureShowAcronym=True
+     bDisableNecro=true
+     bDisableNecroMessage=true
      OvertimeSound=Sound'3SPNvSoL.Sounds.overtime'
      ADR_MinorError=-5.000000
      LoginMenuClass="3SPNvSoL.Menu_TAMLoginMenu"

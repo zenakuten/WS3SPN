@@ -19,6 +19,8 @@ var config bool     bDisableSpeed;
 var config bool     bDisableBooster;
 var config bool     bDisableInvis;
 var config bool     bDisableBerserk;
+var config bool     bDisableNecro;
+var config bool     bDisableNecroMessage;
 var array<string>   EnabledCombos;
 var bool NoStatsForThisMatch;
 var config bool     bForceRUP;              // force players to ready up after...
@@ -262,6 +264,7 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bDisableInvis = bDisableInvis;
     Misc_BaseGRI(GameReplicationInfo).bDisableBooster = bDisableBooster;
     Misc_BaseGRI(GameReplicationInfo).bDisableBerserk = bDisableBerserk;
+    Misc_BaseGRI(GameReplicationInfo).bDisableNecro = bDisableNecro;
 
     Misc_BaseGRI(GameReplicationInfo).bForceRUP = bForceRUP;
     Misc_BaseGRI(GameReplicationInfo).ForceRUPMinPlayers = ForceRUPMinPlayers;
@@ -392,6 +395,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bDisableInvis", "Disable Invis", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bDisableBerserk", "Disable Berserk", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bDisableBooster", "Disable Booster", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "bDisableNecro", "Disable Necro", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "bDisableNecroMessage", "Disable 'Mate out res' message", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "Timeouts", "TimeOuts Per Team", 0, Weight++, "Text", "3;0:999",, True);
     PI.AddSetting("3SPN", "TimeOutDuration", "Time Out Duration", 0, Weight++, "Text", "3;0:999",, True);
 
@@ -494,6 +499,8 @@ static event string GetDescriptionText(string PropName)
       case "bDisableInvis":       return "Disable the Invisibility adrenaline combo.";
       case "bDisableBooster":     return "Disable the Booster adrenaline combo.";
       case "bDisableBerserk":     return "Disable the Berserk adrenaline combo.";
+      case "bDisableNecro":       return "Disable the Necro adrenaline combo.";
+      case "bDisableNecroMessage":return "Disable 'Mate out rez' message.";
 
       case "bForceRUP":           return "Force players to ready up after a set amount of time";
       case "ForceRUPMinPlayers":  return "Force players to ready only when at least this many players present.";
@@ -641,6 +648,14 @@ function ParseOptions(string Options)
     InOpt = ParseOption(Options, "DisableBooster");
     if(InOpt != "")
         bDisableBooster = bool(InOpt);
+
+    InOpt = ParseOption(Options, "DisableNecro");
+    if(InOpt != "")
+        bDisableNecro = bool(InOpt);
+
+    InOpt = ParseOption(Options, "DisableNecroMessage");
+    if(InOpt != "")
+        bDisableNecroMessage = bool(InOpt);
 
     InOpt = ParseOption(Options, "Timeouts");
     if(InOpt != "")
@@ -4001,6 +4016,8 @@ defaultproperties
      RollOffMinValue=0.4
      bBoostedAltShieldJump=true
      bAllowPauseSounds=true
+     bDisableNecro=false
+     bDisableNecroMessage=false
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

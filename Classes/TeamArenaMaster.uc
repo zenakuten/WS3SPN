@@ -320,6 +320,8 @@ function StartNewRound()
 
 defaultproperties
 {
+     bDisableNecro=True
+     bDisableNecroMessage=True
      bDisableTeamCombos=True
      StartingArmor=100
      MaxHealth=1.250000

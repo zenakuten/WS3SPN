@@ -1,6 +1,10 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v2.9
+- server config to disable necro combo
+- server config to disable necro 'Mate out RES' message
+
 v2.8
 - server config to allow 'boosted alt shield jump' (tich).  
 - server config to allow pausing sounds
