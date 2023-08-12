@@ -72,10 +72,15 @@ function SendAdrenReminder ()
   local Misc_BaseGRI GRI;
   local bool bDisableNecroMessage;
 
+  // not sure if we need to check both Level.GRI and each 
+  // controller but just in case
   bDisableNecroMessage = false;
   GRI=Misc_BaseGRI(Level.GRI);
   if(GRI != None)
     bDisableNecroMessage = GRI.bDisableNecroMessage;
+
+  if(bDisableNecroMessage)
+    return;
 
   C = Level.ControllerList;
   JL0014:
@@ -83,6 +88,11 @@ function SendAdrenReminder ()
   {
     if ( (Misc_Player(C) != None) && (C.PlayerReplicationInfo != None) && (C.PlayerReplicationInfo.Team != None) && (C.PlayerReplicationInfo.Team == PlayerReplicationInfo.Team) )
     {
+        bDisableNecroMessage = false;
+        GRI=Misc_BaseGRI(Misc_Player(C).GameReplicationInfo);
+        if(GRI != None)
+            bDisableNecroMessage = GRI.bDisableNecroMessage;
+
       if ( (C.Pawn != None) && (C.Pawn != self) && (C.Adrenaline >= 100) && (C.Pawn.Health >= 0) )
       {
         if(!bDisableNecroMessage)
@@ -137,8 +147,8 @@ event PostBeginPlay()
 	
     ActivateSpawnProtection();
 
-    if(Misc_BaseGRI(Level.Game.GameReplicationInfo) != None)
-        bCanBoostDodge=Misc_BaseGRI(Level.Game.GameReplicationInfo).bCanBoostDodge;
+    if(Misc_BaseGRI(Level.GRI) != None)
+        bCanBoostDodge=Misc_BaseGRI(Level.GRI).bCanBoostDodge;
 }
 
 simulated event PostNetBeginPlay()

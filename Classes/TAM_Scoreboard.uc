@@ -215,6 +215,11 @@ simulated function DrawResWarningIcon (Canvas C)
   {
     return;
   }
+  if(Misc_BaseGRI(GRI) != None && Misc_BaseGRI(GRI).bDisableNecroMessage)
+  {
+      return;
+  }
+
   if ( (Misc_BaseGRI(GRI).NextWhoToRes[0] == PlayerController(Owner).PlayerReplicationInfo) || (Misc_BaseGRI(GRI).NextWhoToRes[1] == PlayerController(Owner).PlayerReplicationInfo) )
   {
     Class'Message_Grave'.static.RenderComplexMessage(C,XL,YL,,1,PlayerController(Owner).PlayerReplicationInfo);
