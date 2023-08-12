@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.0
+- fix necro message bug for TAM
+
 v2.9
 - server config to disable necro combo
 - server config to disable necro 'Mate out RES' message
