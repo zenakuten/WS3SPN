@@ -20,8 +20,10 @@ var config bool     bChallengeMode;
 var config bool     bForceRUP;
 var config int      ForceRUPMinPlayers;
 
-var config bool     bRandomPickups;
-var Misc_PickupBase Bases[3];               // random pickup bases
+var config bool        bRandomPickups;  // Obsolete, replaced by PickupMode
+var config int         PickupMode;
+var string             PickupModeText;
+var Misc_PickupSpawner PickupSpawner;
 
 var string          NextMapString;          // used to save mid-game admin changes in the menu
 
@@ -156,7 +158,7 @@ function InitGameReplicationInfo()
 
     TAM_GRI(GameReplicationInfo).bForceRUP = bForceRUP;
     TAM_GRI(GameReplicationInfo).ForceRUPMinPlayers = ForceRUPMinPlayers;
-    TAM_GRI(GameReplicationInfo).bRandomPickups = bRandomPickups;
+    TAM_GRI(GameReplicationInfo).PickupMode = PickupMode;
 
     TAM_GRI(GameReplicationInfo).GoalScore = RoundsToWin;
 
@@ -179,7 +181,7 @@ function GetServerDetails(out ServerResponseLine ServerState)
 
     AddServerDetail(ServerState, "3SPN Version", class'TAM_GRI'.default.Version);
     AddServerDetail(ServerState, "Challenge Mode", bChallengeMode);
-    AddServerDetail(ServerState, "Random Pickups", bRandomPickups);
+    AddServerDetail(ServerState, "Pickup Mode", PickupModeDescription(PickupMode));
 }
 
 static function FillPlayInfo(PlayInfo PI)
@@ -203,7 +205,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bForceRUP", "Force Ready", 0, 40, "Check",,, True);
     PI.AddSetting("3SPN", "ForceRUPMinPlayers", "Force Ready Min Players", 0, 41, "Text", "3;0;999",, True);
     
-    PI.AddSetting("3SPN", "bRandomPickups", "Random Pickups", 0, 50, "Check");
+    PI.AddSetting("3SPN", "PickupMode", "Spawn Pickup Mode", 0, 50, "Select", default.PickupModeText);
     PI.AddSetting("3SPN", "bDisableSpeed", "Disable Speed", 0, 51, "Check");
     PI.AddSetting("3SPN", "bDisableInvis", "Disable Invis", 0, 52, "Check");
     PI.AddSetting("3SPN", "bDisableBerserk", "Disable Berserk", 0, 53, "Check");
@@ -256,7 +258,7 @@ static event string GetDescriptionText(string PropName)
         case "bForceRUP":           return "Force players to ready up after 45 seconds.";
         case "ForceRUPMinPlayers":  return "Force players to ready only when at least this many players present.";
         
-        case "bRandomPickups":      return "Spawns three pickups which give random effect when picked up: Health +15, Shield +15 or Adren +10";
+        case "PickupMode":          return "Pickup mode to spawn three pickups which give random effect when picked up: Health +10/20, Shield +10/20 or Adren +10";
 
         case "bModifyShieldGun":    return "The Shield Gun will have more kick back for higher shield jumps";
         case "ShieldGunSelfForceScale":    return "Self force multiplier applied to the Shield Gun (default = 1.0)";
@@ -355,9 +357,9 @@ function ParseOptions(string Options)
     if(InOpt != "")
         bDisableBooster = bool(InOpt);
 
-    InOpt = ParseOption(Options, "RandomPickups");
+    InOpt = ParseOption(Options, "PickupMode");
     if(InOpt != "")
-        bRandomPickups = bool(InOpt);
+        PickupMode = ParsePickupMode(InOpt);
 		
 		InOpt = ParseOption(Options, "AssaultAmmo");
     if(InOpt != "")
@@ -401,74 +403,45 @@ function ParseOptions(string Options)
         ClassicSniperAmmo = int(InOpt);  								   
 }
 
+function int ParsePickupMode(coerce string Opt)
+{
+    if (Opt ~= "Random")
+        return 1;
+
+    if (Opt ~= "Optimal")
+        return 2;
+
+    return 0;
+}
+
+function string PickupModeDescription(int Mode)
+{
+    if (Mode == 1)
+        return "Random";
+
+    if (Mode == 2)
+        return "Optimal";
+
+    return "Off";
+}
+
 function SpawnRandomPickupBases()
 {
-    local float Score[3];
-    local float eval;
-    local NavigationPoint Best[3];
-    local NavigationPoint N;
+    local class<Misc_PickupSpawner> PickupSpawnerClass;
 
-    for(N = Level.NavigationPointList; N != None; N = N.NextNavigationPoint)
-    {
-        if(InventorySpot(N) == None || InventorySpot(N).myPickupBase == None)
-            continue;
+    if (PickupMode == 1)
+        PickupSpawnerClass = class'Misc_RandomPickupSpawner';
 
-        eval = FRand() * 5000.0;
+    if (PickupMode == 2)
+        PickupSpawnerClass = class'Misc_OptimalPickupSpawner';
 
-        if(Best[0] != None)
-            eval += VSize(Best[0].Location - N.Location) * (FRand() * 4.0 - 2.0);
-        if(Best[1] != None)
-            eval += VSize(Best[1].Location - N.Location) * (FRand() * 3.5 - 1.75);
-        if(Best[2] != None)
-            eval += VSize(Best[2].Location - N.Location) * (FRand() * 3.0 - 1.5);
+    if (PickupSpawnerClass == None)
+        return;
 
-        if(Best[0] == N)
-            eval = 0;
-        if(Best[1] == N)
-            eval = 0;
-        if(Best[2] == N)
-            eval = 0;
-            
-        if(eval > Score[0])
-        {
-            Score[2] = Score[1];
-            Score[1] = Score[0];
-            Score[0] = eval;
+    if (PickupSpawner == None)
+        PickupSpawner = Spawn(PickupSpawnerClass);
 
-            Best[2] = Best[1];
-            Best[1] = Best[0];
-            Best[0] = N;
-        }
-        else if(eval > Score[1])
-        {
-            Score[2] = Score[1];
-            Score[1] = eval;
-
-            Best[2] = Best[1];
-            Best[1] = N;
-        }
-        else if(eval > Score[2])
-        {
-            Score[2] = eval;
-            Best[2] = N;
-        }
-    }
-
-    if(Best[0] != None)
-    {
-        Bases[0] = Spawn(class'Misc_PickupBase',,, Best[0].Location, Best[0].Rotation);
-        Bases[0].MyMarker = InventorySpot(Best[0]);
-    }
-    if(Best[1] != None)
-    {
-        Bases[1] = Spawn(class'Misc_PickupBase',,, Best[1].Location, Best[1].Rotation);
-        Bases[1].MyMarker = InventorySpot(Best[1]);
-    }
-    if(Best[2] != None)
-    {
-        Bases[2] = Spawn(class'Misc_PickupBase',,, Best[2].Location, Best[2].Rotation);
-        Bases[2].MyMarker = InventorySpot(Best[2]);
-    }
+    PickupSpawner.SpawnPickups();
 }
 
 event InitGame(string Options, out string Error)
@@ -490,7 +463,15 @@ event InitGame(string Options, out string Error)
     bForceRespawn = true;
     bAllowWeaponThrowing = true;//false;
 
-    if(bRandomPickups)
+    if (bRandomPickups && PickupMode == 0)
+    {
+        // Migrate old configurations to use PickupMode instead
+        bRandomPickups = false;
+        PickupMode = 1;
+        SaveConfig();
+    }
+
+    if(PickupMode != 0)
         SpawnRandomPickupBases();
 
 	MutTAM.InitWeapons(AssaultAmmo,AssaultGrenades,BioAmmo,ShockAmmo,LinkAmmo,MiniAmmo,FlakAmmo,RocketAmmo,LightningAmmo,ClassicSniperAmmo);
@@ -1928,4 +1909,6 @@ defaultproperties
      GameName="ArenaMaster"
      Description="One life per round. Don't waste it"
      Acronym="AM"
+     PickupMode=0
+     PickupModeText="0;Off;1;Random;2;Optimal"
 }

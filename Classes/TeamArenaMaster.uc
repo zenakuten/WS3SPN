@@ -5,8 +5,10 @@ class TeamArenaMaster extends Team_GameBase
 var config bool     bDisableTeamCombos;
 var config bool     bChallengeMode;
 
-var config bool     bRandomPickups;
-var Misc_PickupBase Bases[3];           // random pickup bases
+var config bool        bRandomPickups;  // Obsolete, replaced by PickupMode
+var config int         PickupMode;
+var string             PickupModeText;
+var Misc_PickupSpawner PickupSpawner;
 
 var config bool     bPureRFF;
 /* general and misc */
@@ -20,7 +22,7 @@ function InitGameReplicationInfo()
 
     TAM_GRI(GameReplicationInfo).bChallengeMode = bChallengeMode;
     TAM_GRI(GameReplicationInfo).bDisableTeamCombos = bDisableTeamCombos;
-    TAM_GRI(GameReplicationInfo).bRandomPickups = bRandomPickups;
+    TAM_GRI(GameReplicationInfo).PickupMode = PickupMode;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -29,7 +31,7 @@ function GetServerDetails(out ServerResponseLine ServerState)
 
     AddServerDetail(ServerState, "Team Combos", !bDisableTeamCombos);
     AddServerDetail(ServerState, "Challenge Mode", bChallengeMode);
-    AddServerDetail(ServerState, "Random Pickups", bRandomPickups);
+    AddServerDetail(ServerState, "Pickup Mode", PickupModeDescription(PickupMode));
 }
 
 static function FillPlayInfo(PlayInfo PI)
@@ -38,7 +40,7 @@ static function FillPlayInfo(PlayInfo PI)
 
     // weight is a byte value (max 127?)
     PI.AddSetting("3SPN", "bChallengeMode", "Challenge Mode", 0, 110, "Check");
-    PI.AddSetting("3SPN", "bRandomPickups", "Random Pickups", 0, 111, "Check");
+    PI.AddSetting("3SPN", "PickupMode", "Spawn Pickup Mode", 0, 111, "Select", default.PickupModeText);
     PI.AddSetting("3SPN", "bDisableTeamCombos", "No Team Combos", 0, 112, "Check");
     PI.AddSetting("3SPN", "bPureRFF", "2.57 style RFF", 0, 113, "Check");
 }
@@ -49,7 +51,7 @@ static event string GetDescriptionText(string PropName)
     {
         case "bChallengeMode":      return "Round winners take a health/armor penalty.";
         case "bDisableTeamCombos":  return "Turns off team combos. Only the user gets the combo.";
-        case "bRandomPickups":      return "Spawns three pickups which give random effect when picked up: Health +10/20, Shield +10/20 or Adren +10";
+        case "PickupMode":          return "Pickup mode to spawn three pickups which give random effect when picked up: Health +10/20, Shield +10/20 or Adren +10";
         case "bPureRFF":            return "All teammate damage is reflected back.";
     }
 
@@ -84,76 +86,54 @@ function ParseOptions(string Options)
     if(InOpt != "")
         bDisableTeamCombos = bool(InOpt);
 
-    InOpt = ParseOption(Options, "RandomPickups");
+    InOpt = ParseOption(Options, "PickupMode");
     if(InOpt != "")
-        bRandomPickups = bool(InOpt);
+        PickupMode = ParsePickupMode(InOpt);
 
     InOpt = ParseOption(Options, "PureRFF");
     if(InOpt != "")
         bPureRFF = bool(InOpt);
 }
 
+function int ParsePickupMode(coerce string Opt)
+{
+    if (Opt ~= "Random")
+        return 1;
+
+    if (Opt ~= "Optimal")
+        return 2;
+
+    return 0;
+}
+
+function string PickupModeDescription(int Mode)
+{
+    if (Mode == 1)
+        return "Random";
+
+    if (Mode == 2)
+        return "Optimal";
+
+    return "Off";
+}
+
 function SpawnRandomPickupBases()
 {
-    local int i;
-    local float Score[3];
-    local float eval;
-    local NavigationPoint Best[3];
-    local NavigationPoint N;
+    local class<Misc_PickupSpawner> PickupSpawnerClass;
 
-    for(i = 0; i < 100; i++)
-        FRand();
+    if (PickupMode == 1)
+        PickupSpawnerClass = class'Misc_RandomPickupSpawner';
 
-    for(i = 0; i < 3; i++)
-    {
-        for(N = Level.NavigationPointList; N != None; N = N.NextNavigationPoint)
-        {
-            if(InventorySpot(N) == None || InventorySpot(N).myPickupBase == None)
-                continue;
+    if (PickupMode == 2)
+        PickupSpawnerClass = class'Misc_OptimalPickupSpawner';
 
-            eval = 0;
+    if (PickupSpawnerClass == None)
+        return;
 
-            if(i == 0)
-                eval = FRand() * 5000.0;
-            else
-            {
-                if(Best[0] != None)
-                    eval = VSize(Best[0].Location - N.Location) * (0.8 + FRand() * 1.2);
+    if (PickupSpawner == None)
+        PickupSpawner = Spawn(PickupSpawnerClass);
 
-                if(i > 1 && Best[1] != None)
-                    eval += VSize(Best[1].Location - N.Location) * (1.5 + FRand() * 0.5);
-            }
-
-            if(Best[0] == N)
-                eval = 0;
-            if(Best[1] == N)
-                eval = 0;
-            if(Best[2] == N)
-                eval = 0;
-
-            if(Score[i] < eval)
-            {
-                Score[i] = eval;
-                Best[i] = N;
-            }
-        }
-    }
-
-    if(Best[0] != None)
-    {
-        Bases[0] = Spawn(class'Misc_PickupBase',,, Best[0].Location, Best[0].Rotation);
-        Bases[0].MyMarker = InventorySpot(Best[0]);
-    }
-    if(Best[1] != None)
-    {
-        Bases[1] = Spawn(class'Misc_PickupBase',,, Best[1].Location, Best[1].Rotation);
-        Bases[1].MyMarker = InventorySpot(Best[1]);
-    }
-    if(Best[2] != None)
-    {
-        Bases[2] = Spawn(class'Misc_PickupBase',,, Best[2].Location, Best[2].Rotation);
-        Bases[2].MyMarker = InventorySpot(Best[2]);
-    }
+    PickupSpawner.SpawnPickups();
 }
 
 event InitGame(string Options, out string Error)
@@ -165,7 +145,15 @@ event InitGame(string Options, out string Error)
 
     Super.InitGame(Options, Error);
 
-    if(bRandomPickups)
+    if (bRandomPickups && PickupMode == 0)
+    {
+        // Migrate old configurations to use PickupMode instead
+        bRandomPickups = false;
+        PickupMode = 1;
+        SaveConfig();
+    }
+
+    if(PickupMode != 0)
     {
         for(mut = BaseMutator; mut != None; mut = mut.NextMutator)
         {
@@ -185,7 +173,7 @@ event InitGame(string Options, out string Error)
 
     // setup adren amounts
     AdrenalinePerDamage = 1.00;
-    if(bRandomPickups)
+    if(PickupMode != 0)
         AdrenalinePerDamage -= 0.25;
     if(!bDisableTeamCombos)
         AdrenalinePerDamage += 0.25;
@@ -331,4 +319,6 @@ defaultproperties
      GameReplicationInfoClass=Class'3SPNvSoL.TAM_GRI'
      GameName="TeamArenaMaster"
      Acronym="TAM"
+     PickupMode=0
+     PickupModeText="0;Off;1;Random;2;Optimal"
 }
