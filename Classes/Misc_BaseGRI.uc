@@ -302,6 +302,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 3.0"
+     Version="SoL 3.1"
      EnableNewNet=True
 }
