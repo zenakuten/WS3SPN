@@ -3,6 +3,7 @@ class Menu_TabTAMAdmin extends UT2k3TabPanel;
 var bool bAdmin;
 
 var moComboBox MapList;
+var moComboBox PickupModeList;
 var string MapName;
 var array<string> Maps;
 
@@ -36,7 +37,12 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     moEditBox(Controls[17]).SetText(string(TAM_GRI(PlayerOwner().Level.GRI).CampThreshold));  
 
     moCheckBox(Controls[18]).Checked(TAM_GRI(PlayerOwner().Level.GRI).bForceRUP);
-    moCheckBox(Controls[19]).Checked(TAM_GRI(PlayerOwner().Level.GRI).bRandomPickups);
+
+    PickupModeList = moComboBox(Controls[19]);
+    PickupModeList.AddItem("Off");
+    PickupModeList.AddItem("Random");
+    PickupModeList.AddItem("Optimal");
+    PickupModeList.SilentSetIndex(TAM_GRI(PlayerOwner().Level.GRI).PickupMode);
 
     MapName = Left(string(PlayerOwner().Level), InStr(string(PlayerOwner().Level), "."));
 
@@ -105,7 +111,7 @@ function bool OnClick(GUIComponent C)
         s = s$"?CampThreshold="$moEditBox(Controls[17]).GetText();
         
         s = s$"?ForceRUP="$moCheckBox(Controls[18]).IsChecked();
-        s = s$"?RandomPickups="$moCheckBox(Controls[19]).IsChecked();
+        s = s$"?PickupMode="$PickupModeList.GetText();
 
         if(Misc_Player(PlayerOwner())  != None)
         {
@@ -361,15 +367,16 @@ defaultproperties
      End Object
      Controls(18)=moCheckBox'3SPNvSoL.Menu_TabTAMAdmin.ForceCheck'
 
-     Begin Object Class=moCheckBox Name=PickupCheck
-         Caption="Random Pickups"
-         OnCreateComponent=PickupCheck.InternalOnCreateComponent
+     Begin Object Class=moComboBox Name=PickupModeBox
+         CaptionWidth=0.600000
+         Caption="Pickup Mode:"
+         OnCreateComponent=PickupModeBox.InternalOnCreateComponent
          WinTop=0.700000
          WinLeft=0.550000
          WinWidth=0.400000
-         OnChange=Menu_TabTAMAdmin.OnChange
+         WinHeight=0.060000
      End Object
-     Controls(19)=moCheckBox'3SPNvSoL.Menu_TabTAMAdmin.PickupCheck'
+     Controls(19)=moComboBox'3SPNvSoL.Menu_TabTAMAdmin.PickupModeBox'
 
      Begin Object Class=moEditBox Name=TOBox
          CaptionWidth=0.600000

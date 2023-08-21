@@ -1,6 +1,12 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.1
+- Implement an optimal pickup spawn strategy. Pickup spawns are now govern by the `PickupMode` configuration option.
+  - `Off (0)` - No pickups will spawn, same as setting `bRandomPickups` to `false`.
+  - `Random (1)` - Original pickup spawn strategy, same as setting `bRandomPickups` to `true`.
+  - `Optimal (2)` - New pickup spawn strategy.
+
 v3.0
 - fix necro message bug for TAM
 
