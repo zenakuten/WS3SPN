@@ -1,4 +1,4 @@
-class Misc_Player extends xPlayer dependson(Misc_PlayerSettings) dependson(TAM_Mutator);
+class Misc_Player extends ModernPlayer dependson(Misc_PlayerSettings) dependson(TAM_Mutator);
 
 #exec AUDIO IMPORT FILE=Sounds\alone.wav     	    GROUP=Sounds
 #exec AUDIO IMPORT FILE=Sounds\hitsound.wav         GROUP=Sounds
@@ -2544,7 +2544,7 @@ function UTComp_ReplicateMove(
         }
     }
     // Get a SavedMove actor to store the movement in.
-    NewMove = GetFreeMove();
+    NewMove = GetFreeMoveEx();
     if ( NewMove == None )
         return;
     NewMove.SetMoveFor(self, DeltaTime, NewAccel, DoubleClickMove);
