@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.3
+- Add dodge fix from https://github.com/EliteTrials/ElitePatch 
+
 v3.2
 - Fix rubberbanding issue when there is high fps or high ping (thanks kokuei!)
 
