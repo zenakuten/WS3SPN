@@ -185,10 +185,14 @@ var config bool bTeamColorSniper;
 var config Color TeamColorRed, TeamColorBlue;
 var config bool bTeamColorUseTeam;
 
+var config bool bEnableDodgeFix;
+
 var transient float PitchFraction, YawFraction;
 var AudioSubsystem AudioSubsystem;
 var int LastNetSpeed;
 
+var float BufferedClickTimer; 
+var Actor.eDoubleClickDir BufferedClickDir;
 
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
@@ -2009,6 +2013,7 @@ simulated function ReloadDefaults()
     TeamColorBlue = class'Misc_Player'.default.TeamColorBlue;
 
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
+    bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
 }
 
 /* settings */
@@ -2084,6 +2089,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
     class'Misc_Player'.default.ConfigureNetSpeedValue = Misc.ConfigureNetSpeedValue;
     class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
 	Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
+	Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
 	
 	ReloadDefaults();
 	SetupCombos();
@@ -2218,8 +2224,8 @@ function SaveSettings()
     Misc.ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
     Misc.bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     Misc.ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
-    Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
 	Misc.DesiredNetUpdateRate = class'Misc_Player'.default.DesiredNetUpdateRate;
+    Misc.bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
 
     Weapons.bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
 
@@ -2322,7 +2328,7 @@ simulated function AbortNecro()
     ClientPlaySound(soundToPlay, false, 300.0, SLOT_None);
 }
 
-/* UTCOMP movement */
+// UTCOMP movement
 function FindPlayerInput() {
     local PlayerInput PIn;
     local PlayerInput PInAlt;
@@ -2334,7 +2340,6 @@ function FindPlayerInput() {
             if (InStr(PIn, ".PlayerInput") < 0)
                 PlayerInput2 = PIn;
         }
-
     if (PlayerInput2 == none)
         PlayerInput2 = PInAlt;
 }
@@ -2429,7 +2434,12 @@ state PlayerWalking
         if (PlayerInput2 == none || PlayerInput2.Outer != self) {
             FindPlayerInput();
         }
-        DoubleClickMove = PlayerInput2.CheckForDoubleClickMove(1.1*DeltaTime/Level.TimeDilation);
+
+        if(class'Misc_Player'.default.bEnableDodgeFix)
+            DoubleClickMove = CheckForDoubleClickMove(PlayerInput2, 1.1*DeltaTime/Level.TimeDilation);
+        else
+            DoubleClickMove = PlayerInput2.CheckForDoubleClickMove(1.1*DeltaTime/Level.TimeDilation);
+
         GroundPitch = 0;
         ViewRotation = Rotation;
         if ( Pawn.Physics == PHYS_Walking )
@@ -3168,6 +3178,112 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 
 }
 
+// from  https://github.com/EliteTrials/ElitePatch
+// refactored to work with UTComp style movement override
+function Actor.eDoubleClickDir CheckForDoubleClickMove(PlayerInput PI, float DeltaTime)
+{
+	local Actor.eDoubleClickDir DoubleClickMove, OldDoubleClickDir;
+
+    if (!PI.bEnableDodging)
+    {
+        DoubleClickMove = DCLICK_None;
+        return DoubleClickMove;
+    }
+
+    if ( PI.DoubleClickDir == DCLICK_Active )
+		DoubleClickMove = DCLICK_Active;
+	else
+		DoubleClickMove = DCLICK_None;
+	if (PI.DoubleClickTime > 0.0)
+	{
+		if ( PI.DoubleClickDir == DCLICK_Active )
+		{
+			if ( (PI.Pawn != None) && (PI.Pawn.Physics == PHYS_Walking) )
+			{
+				PI.DoubleClickTimer = 0.0 - DeltaTime;
+				PI.DoubleClickDir = DCLICK_Done;
+			}
+		}
+        // @PATCH check for buffered click
+		else if ( PI.DoubleClickDir != DCLICK_Done )
+		{
+        processNextClickNow:
+            OldDoubleClickDir = PI.DoubleClickDir;
+			PI.DoubleClickDir = DCLICK_None;
+
+			if (PI.bEdgeForward && (PI.bWasForward || BufferedClickDir == DCLICK_Forward))
+				PI.DoubleClickDir = DCLICK_Forward;
+			else if (PI.bEdgeBack && (PI.bWasBack || BufferedClickDir == DCLICK_Back))
+				PI.DoubleClickDir = DCLICK_Back;
+			else if (PI.bEdgeLeft && (PI.bWasLeft || BufferedClickDir == DCLICK_Left))
+				PI.DoubleClickDir = DCLICK_Left;
+			else if (PI.bEdgeRight && (PI.bWasRight || BufferedClickDir == DCLICK_Right))
+				PI.DoubleClickDir = DCLICK_Right;
+
+			if ( PI.DoubleClickDir == DCLICK_None)
+				PI.DoubleClickDir = OldDoubleClickDir;
+			else if ( PI.DoubleClickDir != OldDoubleClickDir )
+            {
+				// DoubleClickTimer = DoubleClickTime + 0.5 * DeltaTime;
+				PI.DoubleClickTimer = PI.DoubleClickTime; // @PATCH
+            }
+			else 
+            {
+                DoubleClickMove = PI.DoubleClickDir;
+            }
+		}
+
+        // @PATCH
+        BufferedClickTimer -= DeltaTime;
+        if (BufferedClickTimer <= -0.5 && BufferedClickDir != DCLICK_None) {
+            BufferedClickDir = DCLICK_None;
+            // ClientMessage("Reseting buffered click");
+        }
+
+		if (PI.DoubleClickDir == DCLICK_Done)
+		{
+            OldDoubleClickDir = BufferedClickDir;
+            // @PATCH let's buffer double clicks as soon as the interval timer has occurred (i.e. after landing from a dodge)
+            if (PI.bEdgeForward)
+                BufferedClickDir = DCLICK_Forward;
+            else if (PI.bEdgeBack)
+                BufferedClickDir = DCLICK_Back;
+            else if (PI.bEdgeLeft)
+                BufferedClickDir = DCLICK_Left;
+            else if (PI.bEdgeRight)
+                BufferedClickDir = DCLICK_Right;
+
+            if (OldDoubleClickDir != BufferedClickDir) {
+                BufferedClickTimer = 0.0;
+                // ClientMessage("Buffering click" @ OldDoubleClickDir);
+            }
+
+			PI.DoubleClickTimer = FMin(PI.DoubleClickTimer-DeltaTime,0.0);
+			if (PI.DoubleClickTimer <= -0.35)
+			{
+				PI.DoubleClickDir = DCLICK_None;
+				PI.DoubleClickTimer = PI.DoubleClickTime;
+
+                // @PATCH let's not wait for the next tick, process the dbl click as soon as possible.
+                goto processNextClickNow;
+			}
+		}
+		else if ((PI.DoubleClickDir != DCLICK_None) && (PI.DoubleClickDir != DCLICK_Active))
+		{
+			PI.DoubleClickTimer -= DeltaTime;
+			if (PI.DoubleClickTimer <= 0.0)
+			{
+				PI.DoubleClickDir = DCLICK_None;
+				PI.DoubleClickTimer = PI.DoubleClickTime;
+
+                goto processNextClickNow;
+			}
+		}
+	}
+	return DoubleClickMove;
+}
+
+
 /* settings */
 
 defaultproperties
@@ -3260,6 +3376,7 @@ defaultproperties
      bConfigureNetSpeed=false
      ConfigureNetSpeedValue=15000
      bEnableWidescreenFix=false
+     bEnableDodgeFix=false
 
      DesiredNetUpdateRate=90.0
      TimeBetweenUpdates=0.011111

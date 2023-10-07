@@ -8,6 +8,7 @@ var automated moCheckBox EnableWidescreenFixes;
 var automated moCheckBox PlayOwnLandings;
 var automated moComboBox AbortNecro;
 var automated moNumericEdit EditNetUpdateRate;
+var automated moCheckBox EnableDodgeFix;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -77,6 +78,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	AbortNecro.SetIndex(class'Misc_Player'.default.AbortNecroSoundType);
 
     PlayOwnLandings.Checked(class'Misc_Pawn'.default.bPlayOwnLandings);
+    EnableDodgeFix.Checked(class'Misc_Player'.default.bEnableDodgeFix);
 
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
@@ -128,6 +130,10 @@ function InternalOnChange( GUIComponent C )
                 Misc_Pawn(PlayerOwner().Pawn).bPlayOwnLandings = PlayOwnLandings.IsChecked();
                 Misc_Pawn(PlayerOwner().Pawn).SaveConfig();
             }            
+			break;
+
+		case EnableDodgeFix:
+			class'Misc_Player'.default.bEnableDodgeFix = EnableDodgeFix.IsChecked();
 			break;
     }
 	
@@ -214,4 +220,14 @@ defaultproperties
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      EditNetUpdateRate=moNumericEdit'3SPNvSoL.Menu_TabDamage.InputNetUpdateRate'
+
+     Begin Object Class=moCheckBox Name=EnableDodgeFixCheckBox
+         Caption="Enable Dodge Fix:"
+         OnCreateComponent=EnableDodgeFixCheckBox.InternalOnCreateComponent
+         WinTop=0.730000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     EnableDodgeFix=moCheckBox'3SPNvSoL.Menu_TabDamage.EnableDodgeFixCheckBox'
 }
