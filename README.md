@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.2
+- Fix rubberbanding issue when there is high fps or high ping (thanks kokuei!)
+
 v3.1
 - Implement an optimal pickup spawn strategy. Pickup spawns are now govern by the `PickupMode` configuration option.
   - `Off (0)` - No pickups will spawn, same as setting `bRandomPickups` to `false`.
