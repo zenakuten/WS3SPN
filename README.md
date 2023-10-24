@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.4
+- remove random saveconfigs that broke bandwidthfix 
+
 v3.3
 - Add dodge fix from https://github.com/EliteTrials/ElitePatch 
 

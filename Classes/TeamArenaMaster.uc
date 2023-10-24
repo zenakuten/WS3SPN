@@ -150,7 +150,7 @@ event InitGame(string Options, out string Error)
         // Migrate old configurations to use PickupMode instead
         bRandomPickups = false;
         PickupMode = 1;
-        SaveConfig();
+        // SaveConfig();
     }
 
     if(PickupMode != 0)

@@ -802,9 +802,9 @@ event InitGame(string Options, out string Error)
   LastWinTeamIndex = -1;
   TeamScoreDelta[0] = 0;
   TeamScoreDelta[1] = 0;
-  SaveConfig();
+  //SaveConfig();
 
-    SaveConfig();
+  //SaveConfig();
 }
 
 static function bool AllowMutator(string MutatorClassName)
@@ -3938,7 +3938,7 @@ function ResetDefaults()
     if(NextMapString != "")
     {
         ParseOptions(NextMapString);
-        saveconfig();
+        //saveconfig();
         NextMapString = "";
     }
 }
