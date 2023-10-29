@@ -3207,7 +3207,6 @@ function Actor.eDoubleClickDir CheckForDoubleClickMove(PlayerInput PI, float Del
         // @PATCH check for buffered click
 		else if ( PI.DoubleClickDir != DCLICK_Done )
 		{
-        processNextClickNow:
             OldDoubleClickDir = PI.DoubleClickDir;
 			PI.DoubleClickDir = DCLICK_None;
 
@@ -3263,9 +3262,6 @@ function Actor.eDoubleClickDir CheckForDoubleClickMove(PlayerInput PI, float Del
 			{
 				PI.DoubleClickDir = DCLICK_None;
 				PI.DoubleClickTimer = PI.DoubleClickTime;
-
-                // @PATCH let's not wait for the next tick, process the dbl click as soon as possible.
-                goto processNextClickNow;
 			}
 		}
 		else if ((PI.DoubleClickDir != DCLICK_None) && (PI.DoubleClickDir != DCLICK_Active))
@@ -3275,8 +3271,6 @@ function Actor.eDoubleClickDir CheckForDoubleClickMove(PlayerInput PI, float Del
 			{
 				PI.DoubleClickDir = DCLICK_None;
 				PI.DoubleClickTimer = PI.DoubleClickTime;
-
-                goto processNextClickNow;
 			}
 		}
 	}
