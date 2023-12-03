@@ -73,6 +73,9 @@ var float RolloffMinValue;
 
 var bool bBoostedAltShieldJump;
 var bool bAllowPauseSounds;
+var bool bAllowSetBehindView;
+var bool bForceDeadToSpectate;
+var float ForceDeadSpectateDelay;
 
 replication
 {
@@ -85,7 +88,8 @@ replication
         SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue,
-        bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage;
+        bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
+        bForceDeadToSpectate, ForceDeadSpectateDelay;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -302,6 +306,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 3.5"
+     Version="SoL 3.6"
      EnableNewNet=True
 }

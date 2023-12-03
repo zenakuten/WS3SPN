@@ -104,7 +104,7 @@ function Freeze()
 
     FrozenPawn = Freon_Pawn(Pawn);
 
-    bBehindView = true;
+    bBehindView = Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView;
     LastKillTime = -5.0;
     EndZoom();
 
@@ -158,6 +158,9 @@ function ServerViewNextPlayer()
     if(!bWasSpec)
         bBehindView = false;
 
+    if((bRealSpec || bWasSpec) && !Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+        bBehindView = false;
+
     ClientSetBehindView(bBehindView);
     PlayerReplicationInfo.bOnlySpectator = bRealSpec;
 }
@@ -169,14 +172,17 @@ function ServerViewSelf()
     {
         if(PlayerReplicationInfo.bOnlySpectator)
         {
+            if(!Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+                bBehindView = false;
+
             Super.ServerViewSelf();
         }
         else if(FrozenPawn != None)
         {
             SetViewTarget(FrozenPawn);
             ClientSetViewTarget(FrozenPawn);
-            bBehindView = true;
-            ClientSetBehindView(true);
+            bBehindView = Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView;
+            ClientSetBehindView(bBehindView);
             ClientMessage(OwnCamera, 'Event');
         }
         else
@@ -188,6 +194,8 @@ function ServerViewSelf()
             else
             {
                 bBehindView = !bBehindView;
+                if(!Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+                   bBehindView = false;                
                 ClientSetBehindView(bBehindView);
             }
         }

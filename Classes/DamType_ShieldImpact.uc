@@ -13,10 +13,10 @@ static function IncrementKills(Controller Killer)
 	if(xPRI != None)
 	{
 		++xPRI.ShieldCount;
-		if((xPRI.ShieldCount == default.AwardLevel) && (Misc_Player(Killer) != None))
+		if((xPRI.ShieldCount >= default.AwardLevel) && (Misc_Player(Killer) != None))
 			Misc_Player(Killer).BroadcastAward(class'Message_Shield');
 
-		if((xPRI.ShieldCount == default.AwardLevel) && (Misc_Bot(Killer) != None))
+		if((xPRI.ShieldCount >= default.AwardLevel) && (Misc_Bot(Killer) != None))
 			Misc_Bot(Killer).BroadcastAward(class'Message_Shield');
 	} 
 }

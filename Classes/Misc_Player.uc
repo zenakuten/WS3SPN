@@ -1060,8 +1060,19 @@ function ServerViewNextPlayer()
     if(!bWasSpec)
         bBehindView = false;
 
+    if((bRealSpec || bWasSpec) && !Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+        bBehindView = false;        
+
     ClientSetBehindView(bBehindView);
     PlayerReplicationInfo.bOnlySpectator = bRealSpec;
+}
+
+function ClientSetBehindView(bool B)
+{
+    if(Misc_BaseGRI(Level.GRI) != None && !Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView && Vehicle(Pawn) == None)
+        B = false;
+
+    super.ClientSetBehindView(B);
 }
 
 event ClientSetViewTarget(Actor a)
@@ -1072,16 +1083,26 @@ event ClientSetViewTarget(Actor a)
         LastDamage = Misc_Pawn(A).HitDamage;
     }
 }
-/*
+
 state Dead
 {
 ignores SeePlayer, HearNoise, KilledBy, SwitchWeapon;
 
+    /*
 	exec function Fire( optional float F )
 	{
 	}
+    */
+    function BeginState()
+    {
+    }
+Begin:
+    if(Misc_BaseGRI(GameReplicationInfo).bForceDeadToSpectate)
+    {
+        Sleep(Misc_BaseGRI(GameReplicationInfo).ForceDeadSpectateDelay);
+        ServerViewNextPlayer();
+    }
 }
-*/
 
 state Spectating
 {
@@ -1107,8 +1128,10 @@ state Spectating
         {
             if(ViewTarget == None)
                 Fire();
-            else
+            else if(Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+            {
 		        ToggleBehindView();
+            }
         }
 	    else
 	    {
@@ -1595,8 +1618,10 @@ exec function ToggleTeamInfo()
 
 exec function BehindView(bool b)
 {
-	if(PlayerReplicationInfo.bOnlySpectator || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
-        || PlayerReplicationInfo.bAdmin || Level.NetMode == NM_Standalone)
+	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView) 
+        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
+        || PlayerReplicationInfo.bAdmin 
+        || Level.NetMode == NM_Standalone)
 		Super.BehindView(b);
 	else
 		Super.BehindView(false);
@@ -1604,8 +1629,10 @@ exec function BehindView(bool b)
 
 exec function ToggleBehindView()
 {
-	if(PlayerReplicationInfo.bOnlySpectator || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
-        || PlayerReplicationInfo.bAdmin || Level.NetMode == NM_Standalone)
+	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView) 
+        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
+        || PlayerReplicationInfo.bAdmin 
+        || Level.NetMode == NM_Standalone)
 		Super.ToggleBehindView();
 	else
 		Super.BehindView(false);

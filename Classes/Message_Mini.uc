@@ -3,7 +3,8 @@
 //================================================================================
 
 class Message_Mini extends LocalMessage;
-#exec AUDIO IMPORT FILE=Sounds\guun.wav GROUP=Sounds
+//#exec AUDIO IMPORT FILE=Sounds\guun.wav GROUP=Sounds
+#exec AUDIO IMPORT FILE=Sounds\getsome.wav GROUP=Sounds
 
 
 var Sound MiniSound;
@@ -31,7 +32,7 @@ static simulated function ClientReceive (PlayerController P, optional int Switch
 
 defaultproperties
 {
-     MiniSound=Sound'3SPNvSoL.Sounds.guun'
+     MiniSound=Sound'3SPNvSoL.Sounds.getsome'
      YouAreGatling="M I N I G U N    K I N G"
      PlayerIsGatling="Is a M I N I G U N    K I N G"
      bIsUnique=True

@@ -221,6 +221,10 @@ var config float RolloffMinValue;
 var config bool bBoostedAltShieldJump;
 var config bool bAllowPauseSounds;
 
+var config bool bAllowSetBehindView;
+var config bool bForceDeadToSpectate;
+var config float ForceDeadSpectateDelay;
+
 /*
 struct RestartInfo
 {
@@ -311,6 +315,10 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).bBoostedAltShieldJump = bBoostedAltShieldJump;
     Misc_BaseGRI(GameReplicationInfo).bAllowPauseSounds = bAllowPauseSounds;
+
+    Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView = bAllowSetBehindView;
+    Misc_BaseGRI(GameReplicationInfo).bForceDeadToSpectate = bForceDeadToSpectate;
+    Misc_BaseGRI(GameReplicationInfo).ForceDeadSpectateDelay = ForceDeadSpectateDelay;
 
 
 }
@@ -475,7 +483,9 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bAllowPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, True);
-
+    PI.AddSetting("3SPN", "bAllowSetBehindView", "Allow players to set behind view", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bForceDeadToSpectate", "Force dead players to spectate", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "ForceDeadSpectateDelay", "Delay before dead spectate next player", 0, Weight++, "Text", "8;0.0:10.0");
 }
 
 static event string GetDescriptionText(string PropName)
@@ -576,6 +586,9 @@ static event string GetDescriptionText(string PropName)
 
       case "bBoostedAltShieldJump": return "Boosted Alt-Shield jumping";
       case "bAllowPauseSounds": return "Allow players to pause sounds";
+      case "bAllowSetBehindView": return "Allow players to use behind view";
+      case "bForceDeadToSpectate": return "Force dead players to spectate";
+      case "ForceDeadSpectateDelay": return "Delay before dead spectate next player";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -4018,6 +4031,9 @@ defaultproperties
      bAllowPauseSounds=true
      bDisableNecro=false
      bDisableNecroMessage=false
+     bAllowSetBehindView=true
+     bForceDeadToSpectate=false
+     ForceDeadSpectateDelay=1.0
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

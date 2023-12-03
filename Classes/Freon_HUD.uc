@@ -1,8 +1,10 @@
 class Freon_HUD extends TAM_HUD;
 
 #exec TEXTURE IMPORT NAME=Flake FILE=Textures\flake.dds GROUP=Textures MIPS=On ALPHA=1 DXT=5
+#exec TEXTURE IMPORT NAME=Cross FILE=Textures\cross.dds GROUP=Textures MIPS=On ALPHA=1 DXT=5
 
 var Texture FrozenBeacon;
+var Texture CrossBeacon;
 
 var float ThawBarWidth;
 var float ThawBarHeight;
@@ -68,6 +70,7 @@ function DrawCustomBeacon(Canvas C, Pawn P, float ScreenLocX, float ScreenLocY)
     local byte pawnTeam, ownerTeam;
     local string info;
     local string name;
+    local Texture Beacon;
 
     if((FrozenBeacon == None) || (P.PlayerReplicationInfo == None) || P.PlayerReplicationInfo.Team == None)
         return;
@@ -118,13 +121,31 @@ function DrawCustomBeacon(Canvas C, Pawn P, float ScreenLocX, float ScreenLocY)
     }
 
     C.SetPos(ScreenLoc.X - 0.125 * FrozenBeacon.USize * scale, ScreenLoc.Y - 0.125 * FrozenBeacon.VSize * scale);
-    C.DrawTile(FrozenBeacon,
-        FrozenBeacon.USize * scale,
-        FrozenBeacon.VSize * scale,
+
+    Beacon = FrozenBeacon;
+    if(IsNextToRes(P) && CrossBeacon != None)
+        Beacon = CrossBeacon;
+
+    C.DrawTile(Beacon,
+        Beacon.USize * scale,
+        Beacon.VSize * scale,
         0.0,
         0.0,
-        FrozenBeacon.USize,
-        FrozenBeacon.VSize);
+        Beacon.USize,
+        Beacon.VSize);
+}
+
+function bool IsNextToRes(Pawn P)
+{
+
+    if(P.PlayerReplicationInfo != None)
+    {
+        if ( (Misc_BaseGRI(Level.GRI).NextWhoToRes[0] == P.PlayerReplicationInfo) 
+          || (Misc_BaseGRI(Level.GRI).NextWhoToRes[1] == P.PlayerReplicationInfo))
+           return true;
+    }
+
+    return false;
 }
 
 /*
@@ -1060,6 +1081,7 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
 defaultproperties
 {
      FrozenBeacon=Texture'3SPNvSoL.textures.Flake'
+     CrossBeacon=Texture'3SPNvSoL.textures.Cross'
      ThawBarWidth=50.000000
      ThawBarHeight=10.000000
      ThawBackMat=Texture'InterfaceContent.Menu.BorderBoxD'
