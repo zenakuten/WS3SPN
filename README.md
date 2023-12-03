@@ -1,6 +1,15 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.6
+- Add allow behind view option
+- Add force dead to spectate option
+- awards updates
+- Add cross icon to frozen players that are next to res
+
+v3.5
+- remove goto statement in dodge fix
+
 v3.4
 - remove random saveconfigs that broke bandwidthfix 
 
