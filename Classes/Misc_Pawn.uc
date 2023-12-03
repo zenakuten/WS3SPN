@@ -646,6 +646,11 @@ simulated function Tick(float DeltaTime)
     if(Level.NetMode == NM_DedicatedServer)
         return;
 
+    // Trick the client the pawn is still on screen so it continues to update
+    // movement animations and preserve footsteps sounds.
+    if(PlayerController(Controller) == None)
+        LastRenderTime = Level.TimeSeconds;
+
     if(MyOwner == None)
         MyOwner = Misc_Player(Level.GetLocalPlayerController());
 	if ( Level.NetMode == 1 )
