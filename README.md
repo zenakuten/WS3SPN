@@ -1,6 +1,12 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.7
+- fix 1st person dead issue
+- impressive award for certain combos
+- minigun scrub anti-award
+- brighter cross icon
+
 v3.6
 - Add allow behind view option
 - Add force dead to spectate option

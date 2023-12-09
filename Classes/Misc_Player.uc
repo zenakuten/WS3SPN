@@ -1088,14 +1088,6 @@ state Dead
 {
 ignores SeePlayer, HearNoise, KilledBy, SwitchWeapon;
 
-    /*
-	exec function Fire( optional float F )
-	{
-	}
-    */
-    function BeginState()
-    {
-    }
 Begin:
     if(Misc_BaseGRI(GameReplicationInfo).bForceDeadToSpectate)
     {
@@ -1127,7 +1119,9 @@ state Spectating
 	    if(!PlayerReplicationInfo.bOnlySpectator && !PlayerReplicationInfo.bAdmin && Level.NetMode != NM_Standalone && GameReplicationInfo.bTeamGame)
         {
             if(ViewTarget == None)
+            {
                 Fire();
+            }
             else if(Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
             {
 		        ToggleBehindView();
