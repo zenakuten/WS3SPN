@@ -109,7 +109,9 @@ function SuperExplosion()
         }
 	}
 
-    if(bKilledPlayer)
+    if(bKilledPlayer 
+        && Misc_BaseGRI(Level.GRI) != None 
+        && Misc_BaseGRI(Level.GRI).bEnableExtraAwards)
     {
         bIsImpressive=false;
         Dir=Normal(Velocity);

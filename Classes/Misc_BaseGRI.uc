@@ -77,6 +77,9 @@ var bool bAllowSetBehindView;
 var bool bForceDeadToSpectate;
 var float ForceDeadSpectateDelay;
 
+var bool bEnableAntiAwards;
+var bool bEnableExtraAwards;
+
 replication
 {
     reliable if(bNetInitial && Role == ROLE_Authority)
@@ -89,7 +92,7 @@ replication
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
-        bForceDeadToSpectate, ForceDeadSpectateDelay;
+        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;

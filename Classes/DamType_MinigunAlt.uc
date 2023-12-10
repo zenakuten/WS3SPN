@@ -23,11 +23,11 @@ static function IncrementKills(Controller Killer)
         if((xPRI.MinigunCount == default.AwardLevel) && Misc_Bot(Killer) != none)
             Misc_Bot(Killer).BroadcastAward(class'Message_Mini');
 
-        if((xPRI.MinigunCount == default.Scrublevel) && Misc_Player(Killer) != none)
+        if((xPRI.MinigunCount == default.Scrublevel) 
+            && Misc_Player(Killer) != none 
+            && Misc_BaseGRI(Misc_Player(Killer).GameReplicationInfo) != None
+            && Misc_BaseGRI(Misc_Player(Killer).GameReplicationInfo).bEnableAntiAwards)
             Misc_Player(Killer).BroadcastAward(class'Message_MiniScrub');
-
-        if((xPRI.MinigunCount == default.Scrublevel) && Misc_Bot(Killer) != none)
-            Misc_Bot(Killer).BroadcastAward(class'Message_MiniScrub');
     }
 }
 
