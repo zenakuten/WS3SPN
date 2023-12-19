@@ -7,6 +7,7 @@ v3.8
 - add small delay before playing extra award sound
 - 'air rocket' extra award
 - 'rocket science' award
+- 'bio hazard' award
 
 v3.7
 - fix 1st person dead issue
