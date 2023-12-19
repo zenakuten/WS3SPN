@@ -194,6 +194,9 @@ var int LastNetSpeed;
 var float BufferedClickTimer; 
 var Actor.eDoubleClickDir BufferedClickDir;
 
+//used by hud menu
+var EmoticonsReplicationInfo EmoteInfo;
+
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
 delegate OnPlayerDataRemovedCallback(string PlayerName);
@@ -210,7 +213,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, TimeBetweenUpdates;
+        ReceiveAwardMessage, AbortNecro, TimeBetweenUpdates, EmoteInfo;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         bSeeInvis;

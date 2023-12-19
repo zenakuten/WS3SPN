@@ -6,6 +6,9 @@ class WeaponFire_ShockCombo extends TeamColorShockProjectile;
 
 var Sound ImpressiveSound;
 var Sound MostImpressiveSound;
+var bool bIsImpressive;
+var bool bMostImpressive;
+var PlayerController Awarded;
 
 // copy from projectile -> hurt radius, return true if anybody killed
 simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
@@ -88,8 +91,6 @@ function SuperExplosion()
     local Vector Dir, InstDir;
     local float dot;
     local bool bKilledPlayer;
-    local bool bIsImpressive;
-    local bool bMostImpressive;
 
 	bKilledPlayer = HurtRadiusEx(ComboDamage, ComboRadius, class'DamType_ShockCombo', ComboMomentumTransfer, Location );
 
@@ -114,6 +115,7 @@ function SuperExplosion()
         && Misc_BaseGRI(Level.GRI).bEnableExtraAwards)
     {
         bIsImpressive=false;
+        bMostImpressive=false;
         Dir=Normal(Velocity);
         InstDir=Vector(Instigator.Controller.Rotation);
         dot = InstDir Dot Dir;
@@ -133,16 +135,25 @@ function SuperExplosion()
     
         if(PlayerController(Instigator.Controller) != None)
         {
-            if(bMostImpressive)
-                PlayerController(Instigator.Controller).ClientPlaySound(MostImpressiveSound);
-            else if(bIsImpressive)
-                PlayerController(Instigator.Controller).ClientPlaySound(ImpressiveSound);
+            Awarded = PlayerController(Instigator.Controller);
+            SetTimer(0.3,false);
         }
     }
 
 	PlaySound(ComboSound, SLOT_None,1.0,,800);
     DestroyTrails();
     Destroy();
+}
+
+function Timer()
+{
+    if(Awarded != None)
+    {
+        if(bMostImpressive)
+            Awarded.ClientPlaySound(MostImpressiveSound);
+        else if(bIsImpressive)
+            Awarded.ClientPlaySound(ImpressiveSound);
+    }
 }
 
 event TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)

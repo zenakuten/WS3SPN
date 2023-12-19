@@ -10,6 +10,7 @@ var Menu_TabRanks StatsTab;
 var UT2k3TabPanel AdminTab;
 var Menu_TabTournamentAdmin TournamentAdminTab;
 var Menu_TabWeapons WeaponsTab;
+var Menu_TabEmoticons EmoticonsTab;
 
 var bool DefaultToInfoTab;
 var bool SettingsDirty;
@@ -31,11 +32,16 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     TabC = GUITabControl(Controls[2]);
 	InfoTab = Menu_TabInfo(TabC.AddTab("Info", "3SPNvSoL.Menu_TabInfo",, "General Information", DefaultToInfoTab));
 	StatsTab = Menu_TabRanks(TabC.AddTab("Ranks", "3SPNvSoL.Menu_TabRanks",, "Ranks", false));
-    MiscTab = Menu_TabMisc(TabC.AddTab("Miscellaneous", "3SPNvSoL.Menu_TabMisc",, "Miscellaneous player options", !DefaultToInfoTab));
+    MiscTab = Menu_TabMisc(TabC.AddTab("Misc", "3SPNvSoL.Menu_TabMisc",, "Miscellaneous player options", !DefaultToInfoTab));
     DamageTab = Menu_TabDamage(TabC.AddTab("Extra", "3SPNvSoL.Menu_TabDamage",, "Extra configuration", false));
     BSTab = Menu_TabBrightskins(TabC.AddTab("Brightskins & Models", "3SPNvSoL.Menu_TabBrightskins",, "Brightskins configuration", false));
 	NamesTab = Menu_TabColoredNames(TabC.AddTab("Colored Names", "3SPNvSoL.Menu_TabColoredNames",, "Colored Names", false));
 	WeaponsTab = Menu_TabWeapons(TabC.AddTab("Weapons", "3SPNvSoL.Menu_TabWeapons",, "Weapons", false));
+
+    if(Misc_BaseGRI(PlayerOwner().GameReplicationInfo) != None && Misc_BaseGRI(PlayerOwner().GameReplicationInfo).bEnableEmoticons)
+    {
+        EmoticonsTab = Menu_TabEmoticons(TabC.AddTab("Emoticons", "3SPNvSoL.Menu_TabEmoticons",, "Emoticons", false));
+    }
 
 
 	if(InfoTab == None)
@@ -55,7 +61,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	
 	if(bAdmin)
 	{
-		TournamentAdminTab = Menu_TabTournamentAdmin(TabC.AddTab("Tournament Admin", "3SPNvSoL.Menu_TabTournamentAdmin",, "Tournament", false));
+		TournamentAdminTab = Menu_TabTournamentAdmin(TabC.AddTab("Tournament", "3SPNvSoL.Menu_TabTournamentAdmin",, "Tournament", false));
  
 		if(PlayerOwner().Level.GRI!=None)
 		{

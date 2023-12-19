@@ -1,6 +1,13 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.8
+- emoticons
+- attempt fix at shield bug (untested)
+- add small delay before playing extra award sound
+- 'air rocket' extra award
+- 'rocket science' award
+
 v3.7
 - fix 1st person dead issue
 - impressive award for certain combos

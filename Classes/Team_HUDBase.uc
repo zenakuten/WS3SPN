@@ -40,6 +40,7 @@ var Actor TargetingActor;
 #include Classes\Include\DrawCrosshair.uci
 #include Classes\Include\DrawTeamHudPassA.uci
 #include Classes\Include\DrawWeaponBar.uci
+#include Classes\Include\EmoticonsHud.uci
 #include Classes\Include\_HudCommon.p.uci
 
 

@@ -621,6 +621,12 @@ function GiveAmmo(Pawn P)
 
 		if(WeaponInfo[i].Ammo[1] > 0)
 			W.AmmoCharge[1] = WeaponInfo[i].Ammo[1];
+
+        //fix shield bug
+        if(ShieldGun(W) != None)
+        {
+            W.FillToInitialAmmo();
+        }
 	}
 }
 

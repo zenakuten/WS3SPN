@@ -228,6 +228,9 @@ var config float ForceDeadSpectateDelay;
 var config bool bEnableAntiAwards;
 var config bool bEnableExtraAwards;
 
+var config bool bEnableEmoticons;
+var Emoticons EmoteActor;
+
 
 /*
 struct RestartInfo
@@ -326,6 +329,13 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).bEnableAntiAwards = bEnableAntiAwards;
     Misc_BaseGRI(GameReplicationInfo).bEnableExtraAwards = bEnableExtraAwards;
+
+    Misc_BaseGRI(GameReplicationInfo).bEnableEmoticons = bEnableEmoticons;
+
+    if(bEnableEmoticons)
+    {
+        EmoteActor = spawn(class'Emoticons', self);
+    } 
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -491,8 +501,10 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bAllowSetBehindView", "Allow players to set behind view", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bForceDeadToSpectate", "Force dead players to spectate", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "ForceDeadSpectateDelay", "Delay before dead spectate next player", 0, Weight++, "Text", "8;0.0:10.0");
+
     PI.AddSetting("3SPN", "bEnableAntiAwards", "Enable anti awards", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, True);
 }
 
 static event string GetDescriptionText(string PropName)
@@ -599,6 +611,8 @@ static event string GetDescriptionText(string PropName)
 
       case "bEnableAntiAwards": return "Enable anti awards";
       case "bEnableExtraAwards": return "Enable extra awards";
+
+      case "bEnableEmoticons": return "Enable emoticons";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -1751,6 +1765,7 @@ event PlayerController Login
 {
     local string InName;
     local PlayerController PC;
+    local EmoticonsReplicationInfo EmoteInfo;
 
   Options = class'Misc_Util'.static.SanitizeLoginOptions(Options);
 
@@ -1775,6 +1790,16 @@ event PlayerController Login
         {
             Misc_Player(PC).NextRezTime = Level.TimeSeconds+5; // don't allow resurrecting for 5 seconds after joining the server
             Misc_Player(PC).LoginTime = Level.TimeSeconds;
+        }
+
+        if(bEnableEmoticons)
+        {
+            EmoteInfo = spawn(class'EmoticonsReplicationInfo', PC);
+            EmoteInfo.EmoteActor = EmoteActor;
+            if(Misc_Player(PC) != None)
+            {
+                Misc_Player(PC).EmoteInfo = EmoteInfo;
+            }
         }
     }
 
@@ -4046,6 +4071,7 @@ defaultproperties
      ForceDeadSpectateDelay=1.0
      bEnableAntiAwards=true
      bEnableExtraAwards=true
+     bEnableEmoticons=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
