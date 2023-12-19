@@ -31,6 +31,7 @@ event Tick(float deltaTime)
 
 	if (nextIndex == EmoteActor.Smileys.Length) {
         // bTearOff = true;
+        Disable('Tick');
 		return;
     }
 
@@ -42,9 +43,6 @@ event Tick(float deltaTime)
 simulated function ClientAddEmoticon(string event, string icon, string matIcon)
 {
 	local int i;
-
-    if(Role == ROLE_Authority)
-        return;
 
 	i = Smileys.Length;
 	Smileys.Length = i + 1;
