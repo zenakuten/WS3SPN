@@ -4071,7 +4071,7 @@ defaultproperties
      ForceDeadSpectateDelay=1.0
      bEnableAntiAwards=true
      bEnableExtraAwards=true
-     bEnableEmoticons=true
+     bEnableEmoticons=false
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
