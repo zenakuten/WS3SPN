@@ -30,7 +30,6 @@ var NewNet_FakeProjectileManager FPM;
 
 var int Index;
 var Sound AirRocketSound;
-var PlayerController Awarded;
 
 replication
 {
@@ -154,7 +153,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 		if( (Victims != self) && (Hurtwall != Victims) && (Victims.Role == ROLE_Authority) && !Victims.IsA('FluidSurfaceInfo') )
 		{
 			rocketdir = Victims.Location - HitLocation;
-			dist = FMax(1,VSize(dir));
+			dist = FMax(1,VSize(rocketdir));
 			rocketdir = rocketdir/dist;
 			damageScale = 1 - FMax(0,(dist - Victims.CollisionRadius)/DamageRadius);
 			if ( Instigator == None || Instigator.Controller == None )
@@ -165,7 +164,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 			(
 				damageScale * DamageAmount,
 				Instigator,
-				Victims.Location - 0.5 * (Victims.CollisionHeight + Victims.CollisionRadius) * dir,
+				Victims.Location - 0.5 * (Victims.CollisionHeight + Victims.CollisionRadius) * rocketdir,
 				(damageScale * Momentum * rocketdir),
 				DamageType
 			);
@@ -217,19 +216,10 @@ function BlowUp(vector HitLocation)
         && Misc_BaseGRI(Level.GRI) != None 
         && Misc_BaseGRI(Level.GRI).bEnableExtraAwards)
     {    
-        if(PlayerController(Instigator.Controller) != None)
+        if(Misc_Player(Instigator.Controller) != None)
         {
-            Awarded = PlayerController(Instigator.Controller);
-            SetTimer(0.3,false);
+            Misc_Player(Instigator.Controller).ClientDelayedAnnouncement(AirRocketSound,5);
         }
-    }
-}
-
-function Timer()
-{
-    if(Awarded != None)
-    {
-        Awarded.ClientPlaySound(AirRocketSound);
     }
 }
 
