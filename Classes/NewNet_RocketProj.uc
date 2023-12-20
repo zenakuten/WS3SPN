@@ -141,18 +141,23 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 	local float damageScale, dist;
 	local vector rocketdir;
     local bool bKilledPlayerInAir;
+    local EPhysics prePhysics;
+    local bool bAboveGround;
 
 	if ( bHurtEntry )
 		return false;
 
 	bHurtEntry = true;
     bKilledPlayerInAir = false;
+    prePhysics=PHYS_None;
 	foreach VisibleCollidingActors( class 'Actor', Victims, DamageRadius, HitLocation )
 	{
 		// don't let blast damage affect fluid - VisibleCollisingActors doesn't really work for them - jag
 		if( (Victims != self) && (Hurtwall != Victims) && (Victims.Role == ROLE_Authority) && !Victims.IsA('FluidSurfaceInfo') )
 		{
 			rocketdir = Victims.Location - HitLocation;
+            bAboveGround = Victims.FastTrace(Victims.Location + vect(0,0,-150));
+            
 			dist = FMax(1,VSize(rocketdir));
 			rocketdir = rocketdir/dist;
 			damageScale = 1 - FMax(0,(dist - Victims.CollisionRadius)/DamageRadius);
@@ -160,6 +165,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 				Victims.SetDelayedDamageInstigatorController( InstigatorController );
 			if ( Victims == LastTouched )
 				LastTouched = None;
+            prePhysics = Victims.Physics;
 			Victims.TakeDamage
 			(
 				damageScale * DamageAmount,
@@ -171,7 +177,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 			if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 				Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && Pawn(Victims).Physics == PHYS_Falling)
+            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround)
                 bKilledPlayerInAir = true;
 
 		}
@@ -181,11 +187,13 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 		Victims = LastTouched;
 		LastTouched = None;
 		rocketdir = Victims.Location - HitLocation;
+        bAboveGround = Victims.FastTrace(Victims.Location + vect(0,0,-150));
 		dist = FMax(1,VSize(rocketdir));
 		rocketdir = rocketdir/dist;
 		damageScale = FMax(Victims.CollisionRadius/(Victims.CollisionRadius + Victims.CollisionHeight),1 - FMax(0,(dist - Victims.CollisionRadius)/DamageRadius));
 		if ( Instigator == None || Instigator.Controller == None )
 			Victims.SetDelayedDamageInstigatorController(InstigatorController);
+        prePhysics = Victims.Physics;
 		Victims.TakeDamage
 		(
 			damageScale * DamageAmount,
@@ -197,7 +205,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 		if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 			Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && Pawn(Victims).Physics == PHYS_Falling)
+        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround)
             bKilledPlayerInAir = true;
 	}
 

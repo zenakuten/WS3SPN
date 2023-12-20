@@ -8,6 +8,9 @@ function EmoticonsReplicationInfo GetReplication()
     //         break;
     // }
 
+    if(PlayerOwner != None && Misc_Player(PlayerOwner) != None)
+        return Misc_Player(PlayerOwner).EmoteInfo;
+
     return Class'Emoticons'.default.EmoticonsState;
 }
 
