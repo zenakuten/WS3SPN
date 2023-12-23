@@ -196,6 +196,7 @@ var Actor.eDoubleClickDir BufferedClickDir;
 
 //used by hud menu
 var EmoticonsReplicationInfo EmoteInfo;
+var config bool bEnableEmoticons;
 
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
@@ -2038,6 +2039,7 @@ simulated function ReloadDefaults()
 
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
     bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
+    bEnableEmoticons = class'Misc_Player'.default.bEnableEmoticons;
 }
 
 /* settings */
@@ -2114,6 +2116,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
     class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
 	Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
 	Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
+    class'Misc_Player'.default.bEnableEmoticons = Misc.bEnableEmoticons;
 	
 	ReloadDefaults();
 	SetupCombos();
@@ -3407,6 +3410,7 @@ defaultproperties
      TeamColorRed=(R=255,G=80,B=80,A=255)
      TeamColorBlue=(R=80,G=80,B=255,A=255)
      bTeamColorUseTeam=true
+     bEnableEmoticons=true
 
      AbortNecroSoundType=ANS_Meow
 }

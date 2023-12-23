@@ -2,6 +2,8 @@ class Menu_TabEmoticons extends UT2k3TabPanel;
 
 var automated AltSectionBackground BackG;
 var automated GUIVertScrollBar ScrollBar;
+var automated moCheckBox ch_EnableEmoticons;
+
 var EmoticonsReplicationInfo ERI;
 var int Offset;
 
@@ -13,6 +15,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     {
         ERI = Misc_Player(PlayerOwner()).EmoteInfo;
         ScrollBar.ItemCount=ERI.Smileys.length;
+
+        ch_EnableEmoticons.Checked(Misc_Player(PlayerOwner()).bEnableEmoticons);
     }
 	
 }
@@ -66,6 +70,18 @@ delegate OnRender(Canvas C)
 	}
 }
 
+function InternalOnChange( GUIComponent C )
+{
+    Switch(C)
+    {
+        case ch_EnableEmoticons: class'Misc_Player'.default.bEnableEmoticons=ch_EnableEmoticons.IsChecked();  break;
+    }
+
+    Misc_Player(PlayerOwner()).ReloadDefaults();
+    class'Misc_Player'.Static.StaticSaveConfig();	
+	class'Menu_Menu3SPN'.default.SettingsDirty = true;
+}
+
 defaultproperties
 {
      Begin Object Class=AltSectionBackground Name=BackGObj
@@ -89,4 +105,15 @@ defaultproperties
          OnPreDraw=ScrollBarObj.GripPreDraw
      End Object
      ScrollBar=GUIVertScrollBar'3SPNvSoL.Menu_TabEmoticons.ScrollBarObj'
+
+    Begin Object class=moCheckBox name=EnableEmoticonsCheck
+		WinWidth=0.200000
+		WinHeight=0.030000
+		WinLeft=0.70000
+		WinTop=0.050000
+        Caption="Enable Emoticons"
+        OnChange=InternalOnChange
+        OnCreateComponent=SpeedCheck.InternalOnCreateComponent
+    End Object
+    ch_EnableEmoticons=moCheckBox'Menu_TabEmoticons.EnableEmoticonsCheck'
 }
