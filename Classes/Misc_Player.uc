@@ -796,6 +796,10 @@ simulated function PostNetBeginPlay()
 
     if(Level.GRI != None)
         Level.GRI.MaxLives = 0;	
+
+    // enforce max value from server for saved moves
+    if(Misc_BaseGRI(Level.GRI) != None)
+        MaxSavedMoves = Min(Misc_BaseGRI(Level.GRI).MaxSavedMoves, MaxSavedMoves);
 }
 
 simulated function InitInputSystem()

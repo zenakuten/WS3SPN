@@ -1,6 +1,12 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.10
+- enforce max saved moves (warping fix) max value from server
+
+v3.9
+- add checkbox in emoticons menu to turn on/off emoticons
+
 v3.8
 - emoticons
 - attempt fix at shield bug (untested)

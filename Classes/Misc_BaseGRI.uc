@@ -81,6 +81,7 @@ var bool bEnableAntiAwards;
 var bool bEnableExtraAwards;
 
 var bool bEnableEmoticons;
+var int MaxSavedMoves;
 
 replication
 {
@@ -94,7 +95,7 @@ replication
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
-        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons;
+        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -311,6 +312,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 3.9"
+     Version="SoL 3.10"
      EnableNewNet=True
 }

@@ -230,6 +230,7 @@ var config bool bEnableExtraAwards;
 
 var config bool bEnableEmoticons;
 var Emoticons EmoteActor;
+var config int MaxSavedMoves;
 
 
 /*
@@ -331,6 +332,8 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bEnableExtraAwards = bEnableExtraAwards;
 
     Misc_BaseGRI(GameReplicationInfo).bEnableEmoticons = bEnableEmoticons;
+
+    Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
 
     if(bEnableEmoticons)
     {
@@ -505,6 +508,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bEnableAntiAwards", "Enable anti awards", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "MaxSavedMoves", "Max saved player moves (warping fix)", 0, Weight++, "Text", "3;100:750");
 }
 
 static event string GetDescriptionText(string PropName)
@@ -613,6 +617,8 @@ static event string GetDescriptionText(string PropName)
       case "bEnableExtraAwards": return "Enable extra awards";
 
       case "bEnableEmoticons": return "Enable emoticons";
+      case "MaxSavedMoves": return "Max saved moves for player (warping fix)";
+
     }
 
     return Super.GetDescriptionText(PropName);
@@ -4072,6 +4078,7 @@ defaultproperties
      bEnableAntiAwards=true
      bEnableExtraAwards=true
      bEnableEmoticons=false
+     MaxSavedMoves=200
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000
