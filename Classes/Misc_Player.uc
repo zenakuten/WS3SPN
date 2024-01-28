@@ -173,9 +173,9 @@ var float LastSettingsSaveTimeSeconds;
 var config bool bConfigureNetSpeed;
 var config int ConfigureNetSpeedValue;
 
-var config int DesiredNetUpdateRate;
-var transient PlayerInput PlayerInput2;
-var float TimeBetweenUpdates;
+//var config int DesiredNetUpdateRate;
+//var transient PlayerInput PlayerInput2;
+//var float TimeBetweenUpdates;
 
 var config bool bTeamColorRockets;
 var config bool bTeamColorBio;
@@ -185,7 +185,7 @@ var config bool bTeamColorSniper;
 var config Color TeamColorRed, TeamColorBlue;
 var config bool bTeamColorUseTeam;
 
-var config bool bEnableDodgeFix;
+//var config bool bEnableDodgeFix;
 
 var transient float PitchFraction, YawFraction;
 var AudioSubsystem AudioSubsystem;
@@ -214,7 +214,8 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, TimeBetweenUpdates, EmoteInfo;
+        ReceiveAwardMessage, AbortNecro, EmoteInfo;
+        //TimeBetweenUpdates;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         bSeeInvis;
@@ -226,10 +227,12 @@ replication
         ServerSetMapString, ServerCallTimeout,
 		SetNetCodeDisabled, SetTeamScore,
 		ServerLoadSettings, ServerSaveSettings, ServerReportNewNetStats,ServerSetEyeHeightAlgorithm,
-        ServerSetNetUpdateRate, ServerPlaySound;
+        ServerPlaySound;
+        
+        //ServerSetNetUpdateRate, ServerPlaySound;
   
-    unreliable if (Role < ROLE_Authority)
-        UTComp_ServerMove, UTComp_DualServerMove, UTComp_ShortServerMove;		
+    //unreliable if (Role < ROLE_Authority)
+    //    UTComp_ServerMove, UTComp_DualServerMove, UTComp_ShortServerMove;		
 
 	reliable if(Role == ROLE_Authority)
 		ClientSettingsResult, ClientLoadSettings;
@@ -482,7 +485,7 @@ function PlayerTick(float DeltaTime)
 	    SetEyeHeightAlgorithm(class'Misc_Player'.default.bUseNewEyeHeightAlgorithm);
         SetInitialColoredName();
         SetInitialNetSpeed();
-        ServerSetNetUpdateRate(Class'Misc_Player'.Default.DesiredNetUpdateRate,Player.CurrentNetSpeed);
+        //ServerSetNetUpdateRate(Class'Misc_Player'.Default.DesiredNetUpdateRate,Player.CurrentNetSpeed);
 		PlayerInitialized = true;
 	}
 
@@ -513,11 +516,13 @@ function PlayerTick(float DeltaTime)
     }
 
     // update timeBetweenUpdates if netspeed changes
+    /*
     if(LastNetSpeed != Player.CurrentNetSpeed)
     {
         ServerSetNetUpdateRate(DesiredNetUpdateRate,Player.CurrentNetSpeed);
         LastNetSpeed = Player.CurrentNetSpeed;
     }
+    */
 	
 	if(EndCeremonyStarted)
 	{
@@ -814,11 +819,13 @@ simulated function InitInputSystem()
 		C.Player.InteractionMaster.AddInteraction("3SPNvSoL.Menu_Interaction", C.Player);
 	}
 
+    /*
     if ((Level.GRI != None) && (Misc_BaseGRI(Level.GRI).UseNetUpdateRate))
 	{
         // UTCOMP movement
         FindPlayerInput();
 	}
+    */
 
 }
 
@@ -1989,7 +1996,7 @@ simulated function ReloadDefaults()
 	bShowTeamInfo = class'Misc_Player'.default.bShowTeamInfo;
 	bExtendedInfo = class'Misc_Player'.default.bExtendedInfo;	
 	bMatchHUDToSkins = class'Misc_Player'.default.bMatchHUDToSkins;
-	DesiredNetUpdateRate = Class'Misc_Player'.default.DesiredNetUpdateRate;	
+	//DesiredNetUpdateRate = Class'Misc_Player'.default.DesiredNetUpdateRate;	
 	bUseBrightSkins = class'Misc_Player'.default.bUseBrightSkins;
 	bUseTeamColors = class'Misc_Player'.default.bUseTeamColors;
 	RedOrEnemy = class'Misc_Player'.default.RedOrEnemy;
@@ -2042,7 +2049,7 @@ simulated function ReloadDefaults()
     TeamColorBlue = class'Misc_Player'.default.TeamColorBlue;
 
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
-    bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
+    //bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
     bEnableEmoticons = class'Misc_Player'.default.bEnableEmoticons;
 }
 
@@ -2118,14 +2125,14 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
     class'Misc_Player'.default.bConfigureNetSpeed = Misc.bConfigureNetSpeed;
     class'Misc_Player'.default.ConfigureNetSpeedValue = Misc.ConfigureNetSpeedValue;
     class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
-	Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
-	Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
+	//Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
+	//Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
     class'Misc_Player'.default.bEnableEmoticons = Misc.bEnableEmoticons;
 	
 	ReloadDefaults();
 	SetupCombos();
 	SetColoredNameOldStyleCustom(,0);
-    SetNetUpdateRate(Misc.DesiredNetUpdateRate);
+    //SetNetUpdateRate(Misc.DesiredNetUpdateRate);
 	class'Misc_Player'.static.StaticSaveConfig();
 	class'TAM_ScoreBoard'.static.StaticSaveConfig();
 	class'Misc_DeathMessage'.static.StaticSaveConfig();
@@ -2255,8 +2262,8 @@ function SaveSettings()
     Misc.ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
     Misc.bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     Misc.ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
-	Misc.DesiredNetUpdateRate = class'Misc_Player'.default.DesiredNetUpdateRate;
-    Misc.bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
+	//Misc.DesiredNetUpdateRate = class'Misc_Player'.default.DesiredNetUpdateRate;
+    //Misc.bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
 
     Weapons.bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
 
@@ -2360,6 +2367,7 @@ simulated function AbortNecro()
 }
 
 // UTCOMP movement
+/*
 function FindPlayerInput() {
     local PlayerInput PIn;
     local PlayerInput PInAlt;
@@ -2374,7 +2382,9 @@ function FindPlayerInput() {
     if (PlayerInput2 == none)
         PlayerInput2 = PInAlt;
 }
+*/
 
+/*
 event ClientTravel (string URL, ETravelType TravelType, bool bItems)
 {
   Super.ClientTravel(URL,TravelType,bItems);
@@ -2384,7 +2394,9 @@ event ClientTravel (string URL, ETravelType TravelType, bool bItems)
   }
   PlayerInput2 = None;
 }
+*/
 
+/*
 function ServerSetNetUpdateRate (float Rate, int Netspeed)
 {
     local float MaxRate;
@@ -2415,6 +2427,7 @@ exec function SetNetUpdateRate (float Rate)
     Class'Misc_Player'.static.StaticSaveConfig();
   }
 }
+*/
 
 state PlayerWalking
 {
@@ -2438,6 +2451,7 @@ state PlayerWalking
         return false;
     }
 
+    /*
     function PlayerMove( float DeltaTime )
     {
         local vector X,Y,Z, NewAccel;
@@ -2462,6 +2476,7 @@ state PlayerWalking
         NewAccel.Z = 0;
         if ( VSize(NewAccel) < 1.0 )
             NewAccel = vect(0,0,0);
+
         if (PlayerInput2 == none || PlayerInput2.Outer != self) {
             FindPlayerInput();
         }
@@ -2521,14 +2536,22 @@ state PlayerWalking
         }
         else
             bSaveJump = false;
+        
         if ( Role < ROLE_Authority ) // then save this move and replicate it
             UTComp_ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         else
             ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
+        
+        if ( Role < ROLE_Authority ) // then save this move and replicate it
+            ReplicateMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
+        else
+            ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;
     }
+    */
 }
 
+/*
 function UTComp_ReplicateMove(
     float DeltaTime,
     vector NewAccel,
@@ -2838,9 +2861,9 @@ function UTComp_CallServerMove(
         );
     }
 }
-/* ShortServerMove()
-compressed version of server move for bandwidth saving
-*/
+// ShortServerMove()
+// compressed version of server move for bandwidth saving
+//
 function UTComp_ShortServerMove(
     float TimeStamp,
     vector ClientLoc,
@@ -2852,9 +2875,10 @@ function UTComp_ShortServerMove(
 ) {
     UTComp_ServerMove(TimeStamp,vect(0,0,0),ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,false,DCLICK_None,ClientRoll,View);
 }
-/* DualServerMove()
-- replicated function sent by client to server - contains client movement and firing info for two moves
-*/
+
+// DualServerMove()
+// replicated function sent by client to server - contains client movement and firing info for two moves
+//
 function UTComp_DualServerMove(
     float TimeStamp0,
     vector InAccel0,
@@ -2886,9 +2910,9 @@ function UTComp_DualServerMove(
         ClientLoc = vect(0.1,0,0);
     UTComp_ServerMove(TimeStamp,InAccel,ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,NewbDoubleJump,DoubleClickMove,ClientRoll,View,OldTimeDelta,OldAccel);
 }
-/* ServerMove()
-- replicated function sent by client to server - contains client movement and firing info.
-*/
+// ServerMove()
+// replicated function sent by client to server - contains client movement and firing info.
+//
 function UTComp_ServerMove(
     float TimeStamp,
     vector InAccel,
@@ -3065,7 +3089,8 @@ function UTComp_ServerMove(
     }
     //log("Server moved stamp "$TimeStamp$" location "$Pawn.Location$" Acceleration "$Pawn.Acceleration$" Velocity "$Pawn.Velocity);
 }
-/* END UTCOMP movement */
+// END UTCOMP movement 
+*/
 
 function ServerPlaySound(Sound S, Pawn P)
 {
@@ -3401,10 +3426,10 @@ defaultproperties
      bConfigureNetSpeed=false
      ConfigureNetSpeedValue=15000
      bEnableWidescreenFix=false
-     bEnableDodgeFix=false
+     //bEnableDodgeFix=false
 
-     DesiredNetUpdateRate=90.0
-     TimeBetweenUpdates=0.011111
+     //DesiredNetUpdateRate=90.0
+     //TimeBetweenUpdates=0.011111
  
      bTeamColorRockets=false
      bTeamColorBio=false

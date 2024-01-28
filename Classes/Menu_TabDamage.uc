@@ -7,8 +7,8 @@ var automated GUINumericEdit EditConfigureNetSpeedValue;
 var automated moCheckBox EnableWidescreenFixes;
 var automated moCheckBox PlayOwnLandings;
 var automated moComboBox AbortNecro;
-var automated moNumericEdit EditNetUpdateRate;
-var automated moCheckBox EnableDodgeFix;
+// var automated moNumericEdit EditNetUpdateRate;
+// var automated moCheckBox EnableDodgeFix;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -48,6 +48,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     ConfigureNetSpeed.Checked(class'Misc_Player'.default.bConfigureNetSpeed);
     EnableWidescreenFixes.Checked(class'Misc_Player'.default.bEnableWidescreenFix);
+
+    /*
     EditConfigureNetSpeedValue.MinValue=9000;
     EditConfigureNetSpeedValue.MaxValue=99999;
     EditConfigureNetSpeedValue.MyEditBox.MaxWidth=5;
@@ -69,6 +71,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
         }
     }
     EditNetUpdateRate.SetValue(class'Misc_Player'.default.DesiredNetUpdateRate);
+    */
 
     AbortNecro.AddItem("None");
     AbortNecro.AddItem("Meow");
@@ -78,7 +81,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	AbortNecro.SetIndex(class'Misc_Player'.default.AbortNecroSoundType);
 
     PlayOwnLandings.Checked(class'Misc_Pawn'.default.bPlayOwnLandings);
-    EnableDodgeFix.Checked(class'Misc_Player'.default.bEnableDodgeFix);
+    // EnableDodgeFix.Checked(class'Misc_Player'.default.bEnableDodgeFix);
 
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
@@ -116,10 +119,12 @@ function InternalOnChange( GUIComponent C )
 			class'Misc_Player'.default.AbortNecroSoundType = AbortNecroSounds(AbortNecro.GetIndex());
 			break;
 
+        /*
         case EditNetUpdateRate:
             class'Misc_Player'.default.DesiredNetUpdateRate = EditNetUpdateRate.GetValue();
             Misc_Player(PlayerOwner()).SetNetUpdateRate(EditNetUpdateRate.GetValue());
             break;            
+        */
 
 		case PlayOwnLandings:
             class'Misc_Pawn'.default.bPlayOwnLandings = PlayOwnLandings.IsChecked();
@@ -132,9 +137,11 @@ function InternalOnChange( GUIComponent C )
             }            
 			break;
 
+        /*
 		case EnableDodgeFix:
 			class'Misc_Player'.default.bEnableDodgeFix = EnableDodgeFix.IsChecked();
 			break;
+        */
     }
 	
     Misc_Player(PlayerOwner()).ReloadDefaults();
@@ -212,6 +219,7 @@ defaultproperties
      End Object
      PlayOwnLandings=moCheckBox'3SPNvSoL.Menu_TabDamage.PlayOwnLandingsCheckBox'
 
+    /*
      Begin Object Class=moNumericEdit Name=InputNetUpdateRate
          Caption="Net Update Rate (for movement):"
          WinTop=0.680000
@@ -224,10 +232,12 @@ defaultproperties
      Begin Object Class=moCheckBox Name=EnableDodgeFixCheckBox
          Caption="Enable Dodge Fix:"
          OnCreateComponent=EnableDodgeFixCheckBox.InternalOnCreateComponent
-         WinTop=0.730000
+         //WinTop=0.730000
+         WinTop=0.680000
          WinLeft=0.100000
          WinWidth=0.600000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      EnableDodgeFix=moCheckBox'3SPNvSoL.Menu_TabDamage.EnableDodgeFixCheckBox'
+     */
 }

@@ -192,9 +192,9 @@ var config bool bCanBoostDodge;
 var config int MinNetSpeed;
 var config int MaxNetSpeed;
 
-var config bool UseNetUpdateRate;
-var config float MinNetUpdateRate;
-var config float MaxNetUpdateRate;
+//var config bool UseNetUpdateRate;
+//var config float MinNetUpdateRate;
+//var config float MaxNetUpdateRate;
 
 var config int MinPlayersForStatsRecording;
 
@@ -303,9 +303,9 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).UseZAxisRadar = UseZAxisRadar;
     Misc_BaseGRI(GameReplicationInfo).ServerLinkStatus = ServerLinkStatus;
 
-    Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate = UseNetUpdateRate;
-    Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate = MinNetUpdateRate;
-    Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate = MaxNetUpdateRate;
+    //Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate = UseNetUpdateRate;
+    //Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate = MinNetUpdateRate;
+    //Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate = MaxNetUpdateRate;
 
     Misc_BaseGRI(GameReplicationInfo).bFastWeaponSwitching = bFastWeaponSwitching;
     Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
@@ -466,9 +466,9 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
     PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
     PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
-    PI.AddSetting("3SPN", "UseNetUpdateRate", "Use UTComp movement update", 0, Weight++, "Check");
-    PI.AddSetting("3SPN", "MinNetUpdateRate", "Minimum net update rate for clients", 0, Weight++, "Text", "3;90:250");
-    PI.AddSetting("3SPN", "MaxNetUpdateRate", "Maximum net update rate for clients", 0, Weight++, "Text", "3;90:250");
+    //PI.AddSetting("3SPN", "UseNetUpdateRate", "Use UTComp movement update", 0, Weight++, "Check");
+    //PI.AddSetting("3SPN", "MinNetUpdateRate", "Minimum net update rate for clients", 0, Weight++, "Text", "3;90:250");
+    //PI.AddSetting("3SPN", "MaxNetUpdateRate", "Maximum net update rate for clients", 0, Weight++, "Text", "3;90:250");
 //    PI.AddSetting("3SPN", "MaxHealth", "Max Health", 0, Weight++, "Text", "8;1.0:2.0");
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
@@ -594,9 +594,9 @@ static event string GetDescriptionText(string PropName)
       case "MinNetSpeed": return "Minimum netspeed for clients";
       case "MaxNetSpeed": return "Maximum netspeed for clients";
       
-      case "UseNetUpdateRate": return "Use UTComp movement update";
-      case "MinNetUpdateRate": return "Minimum net update rate for clients";
-      case "MaxNetUpdateRate": return "Maximum net update rate for clients";
+      //case "UseNetUpdateRate": return "Use UTComp movement update";
+      //case "MinNetUpdateRate": return "Minimum net update rate for clients";
+      //case "MaxNetUpdateRate": return "Maximum net update rate for clients";
 
       case "FootstepVolume": return "Volume of player footstep sound";
       case "FootstepRadius": return "Radius of player footstep sound";
@@ -4057,9 +4057,9 @@ defaultproperties
      MinPlayersForStatsRecording=2
      MinNetSpeed=9636
      MaxNetSpeed=100000
-     UseNetUpdateRate=True
-     MinNetUpdateRate=90.0
-     MaxNetUpdateRate=250.0     
+     //UseNetUpdateRate=True
+     //MinNetUpdateRate=90.0
+     //MaxNetUpdateRate=250.0     
      FootstepVolume=0.15
      FootstepRadius=400
      FriendlyFireScale=0.500000

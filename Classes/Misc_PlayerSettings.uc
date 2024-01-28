@@ -52,8 +52,8 @@ struct MiscSettings
     var bool bConfigureNetSpeed;
     var bool bEnableWidescreenFix;
     var int ConfigureNetSpeedValue;
-    var int DesiredNetUpdateRate;
-    var bool bEnableDodgeFix;
+    //var int DesiredNetUpdateRate;
+    //var bool bEnableDodgeFix;
     var bool bEnableEmoticons;
 };
 
