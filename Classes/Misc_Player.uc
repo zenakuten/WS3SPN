@@ -198,6 +198,9 @@ var Actor.eDoubleClickDir BufferedClickDir;
 var EmoticonsReplicationInfo EmoteInfo;
 var config bool bEnableEmoticons;
 
+//used for challenge mode
+var bool bWasBalanced;
+
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
 delegate OnPlayerDataRemovedCallback(string PlayerName);
@@ -227,7 +230,7 @@ replication
         ServerSetMapString, ServerCallTimeout,
 		SetNetCodeDisabled, SetTeamScore,
 		ServerLoadSettings, ServerSaveSettings, ServerReportNewNetStats,ServerSetEyeHeightAlgorithm,
-        ServerPlaySound;
+        ServerPlaySound, ServerPausePass;
         
         //ServerSetNetUpdateRate, ServerPlaySound;
   
@@ -1596,7 +1599,7 @@ function ServerSay(string Msg)
   
   Super.ServerSay(Msg);
   
-  if(Msg ~= "teams")
+  if(Msg ~= "teams" || Msg ~= "teens")
   {
       isAdmin = False;
 
@@ -3333,6 +3336,31 @@ function Actor.eDoubleClickDir CheckForDoubleClickMove(PlayerInput PI, float Del
 	return DoubleClickMove;
 }
 
+exec function passpause(string pass)
+{
+    ServerPausePass(self, pass);
+}
+
+function ServerPausePass(PlayerController PC, string pass)
+{
+    local bool bPause;
+    local bool bCanPause;
+
+    if(Role == ROLE_Authority
+    && Team_GameBase(Level.Game) != none 
+    && Team_GameBase(level.Game).bEnablePasswordPause
+    && Team_GameBase(Level.Game).PasswordPausePassword != "")
+    {
+        if(pass == Team_GameBase(Level.Game).PasswordPausePassword)
+        {
+            bPause = Level.Pauser == None;
+            bCanPause = Level.Game.bPauseable;
+            Level.Game.bPauseable = true;
+            Level.Game.SetPause(bPause, PC);
+            Level.Game.bPauseable = bCanPause;
+        }
+    }
+}
 
 /* settings */
 

@@ -215,10 +215,20 @@ function SetupPlayer(Pawn P)
     local int health;
     local int armor;
     local float formula;
+    local bool bWasBalanced;
 
     Super.SetupPlayer(P);
 
-    if(bChallengeMode)
+    // If teams was called and we got teams balanced, don't 
+    // use challenge mode during this setup
+    bWasBalanced=false;
+    if(P != None && P.Controller != None && Misc_Player(P.Controller) != None)
+    {
+        bWasBalanced = Misc_Player(P.Controller).bWasBalanced && bChallengeModeFix;
+        Misc_Player(P.Controller).bWasBalanced = false;
+    }
+
+    if(bChallengeMode && !bWasBalanced)
     {
         difference = Max(0, Teams[p.GetTeamNum()].Score - Teams[int(!bool(p.GetTeamNum()))].Score);
         difference += Max(0, Teams[p.GetTeamNum()].Size - Teams[int(!bool(p.GetTeamNum()))].Size) * 2;

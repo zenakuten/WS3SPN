@@ -1,6 +1,13 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+
+v3.11
+- remove UTComp movement (netupdaterate), keep utcomp landing momentum change
+- remove dodgefix
+- add pause by password feature.  use 'passpause <passwd>' to pause/unpause
+- add challenge mode fix.  If challenge mode is enabled and teams just got balanced, skip challenge mode nerf this round
+
 v3.10
 - enforce max saved moves (warping fix) max value from server
 

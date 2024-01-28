@@ -231,6 +231,9 @@ var config bool bEnableExtraAwards;
 var config bool bEnableEmoticons;
 var Emoticons EmoteActor;
 var config int MaxSavedMoves;
+var config bool bEnablePasswordPause;
+var config string PasswordPausePassword;
+var config bool bChallengeModeFix;
 
 
 /*
@@ -334,6 +337,8 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bEnableEmoticons = bEnableEmoticons;
 
     Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
+    Misc_BaseGRI(GameReplicationInfo).bChallengeModeFix = bChallengeModeFix;
+
 
     if(bEnableEmoticons)
     {
@@ -509,6 +514,9 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "MaxSavedMoves", "Max saved player moves (warping fix)", 0, Weight++, "Text", "3;100:750");
+    PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "PasswordPausePassword", "Password pause password", 0, Weight++, "Text", "10");
+    PI.AddSetting("3SPN", "bChallengeModeFix", "Skip challenge mode nerf if teams have just been balanced", 0, Weight++, "Check",,,True);
 }
 
 static event string GetDescriptionText(string PropName)
@@ -618,7 +626,9 @@ static event string GetDescriptionText(string PropName)
 
       case "bEnableEmoticons": return "Enable emoticons";
       case "MaxSavedMoves": return "Max saved moves for player (warping fix)";
-
+      case "bEnablePasswordPause": return "Enable pausing the game w/password.  Use 'pausepass <passwd>' console command";
+      case "PasswordPausePassword": return "Password pause password";
+      case "bChallegeModeFix": return "Skip challenge mode nerf if teams just got balanced";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -2813,10 +2823,14 @@ function BalanceTeamsMatchStart()
                 TeamPPR[1-TeamIdx] += Misc_PRI(Players[i-1].PlayerReplicationInfo).AvgPPR;
             --i;
         }
-    else
-    {
-      TeamsAreOdd = true;
-    }
+        else
+        {
+            TeamsAreOdd = true;
+        }
+
+        // set flag to know we've been auto balanced
+        if(Misc_Player(Players[i]) != none)
+            Misc_Player(Players[i]).bWasBalanced = true;
 
         Players.Length = i;
     }
@@ -4079,6 +4093,9 @@ defaultproperties
      bEnableExtraAwards=true
      bEnableEmoticons=false
      MaxSavedMoves=200
+     bEnablePasswordPause=false
+     PasswordPausePassword=""
+     bChallengeModeFix=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

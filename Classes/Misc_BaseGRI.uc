@@ -82,6 +82,7 @@ var bool bEnableExtraAwards;
 
 var bool bEnableEmoticons;
 var int MaxSavedMoves;
+var bool bChallengeModeFix;
 
 replication
 {
@@ -95,7 +96,8 @@ replication
         MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
-        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves;
+        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves,
+        bChallengeModeFix;
         //UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, 
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
