@@ -34,5 +34,5 @@ static function IncrementKills(Controller Killer)
 defaultproperties
 {
     AwardLevel=3
-    ScrubLevel=8
+    ScrubLevel=6
 }

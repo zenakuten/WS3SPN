@@ -83,6 +83,7 @@ var bool bEnableExtraAwards;
 var bool bEnableEmoticons;
 var int MaxSavedMoves;
 var bool bChallengeModeFix;
+var bool bShowNumSpecs;
 
 replication
 {
@@ -97,7 +98,7 @@ replication
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
         bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves,
-        bChallengeModeFix;
+        bChallengeModeFix, bShowNumSpecs;
         //UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, 
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
@@ -315,6 +316,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 3.11"
+     Version="SoL 3.12"
      EnableNewNet=True
 }

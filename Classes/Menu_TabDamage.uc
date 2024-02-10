@@ -9,6 +9,7 @@ var automated moCheckBox PlayOwnLandings;
 var automated moComboBox AbortNecro;
 // var automated moNumericEdit EditNetUpdateRate;
 // var automated moCheckBox EnableDodgeFix;
+var automated moCheckBox ShowSpectators;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -82,6 +83,12 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     PlayOwnLandings.Checked(class'Misc_Pawn'.default.bPlayOwnLandings);
     // EnableDodgeFix.Checked(class'Misc_Player'.default.bEnableDodgeFix);
+    ShowSpectators.Checked(class'Misc_Player'.default.bShowSpectators);
+
+    if(Misc_BaseGRI(PlayerOwner().Level.GRI) != None && !Misc_BaseGRI(PlayerOwner().Level.GRI).bShowNumSpecs)
+    {
+        ShowSpectators.SetVisibility(false);
+    }
 
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
@@ -142,6 +149,9 @@ function InternalOnChange( GUIComponent C )
 			class'Misc_Player'.default.bEnableDodgeFix = EnableDodgeFix.IsChecked();
 			break;
         */
+		case ShowSpectators:
+			class'Misc_Player'.default.bShowSpectators = ShowSpectators.IsChecked();
+			break;
     }
 	
     Misc_Player(PlayerOwner()).ReloadDefaults();
@@ -240,4 +250,15 @@ defaultproperties
      End Object
      EnableDodgeFix=moCheckBox'3SPNvSoL.Menu_TabDamage.EnableDodgeFixCheckBox'
      */
+
+     Begin Object Class=moCheckBox Name=ShowSpectatorsCheckBox
+         Caption="Show spectators:"
+         OnCreateComponent=ShowSpectatorsCheckBox.InternalOnCreateComponent
+         //WinTop=0.730000
+         WinTop=0.680000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     ShowSpectators=moCheckBox'3SPNvSoL.Menu_TabDamage.ShowSpectatorsCheckBox'
 }

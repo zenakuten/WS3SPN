@@ -234,6 +234,8 @@ var config int MaxSavedMoves;
 var config bool bEnablePasswordPause;
 var config string PasswordPausePassword;
 var config bool bChallengeModeFix;
+var config bool bSpecsKeepAdren;
+var config bool bShowNumSpecs;
 
 
 /*
@@ -338,6 +340,7 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
     Misc_BaseGRI(GameReplicationInfo).bChallengeModeFix = bChallengeModeFix;
+    Misc_BaseGRI(GameReplicationInfo).bShowNumSpecs = bShowNumSpecs;
 
 
     if(bEnableEmoticons)
@@ -517,6 +520,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "PasswordPausePassword", "Password pause password", 0, Weight++, "Text", "10");
     PI.AddSetting("3SPN", "bChallengeModeFix", "Skip challenge mode nerf if teams have just been balanced", 0, Weight++, "Check",,,True);
+    PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,True);
+    PI.AddSetting("3SPN", "bShowNumSpecs", "Players see number of spectators watching them on HUD", 0, Weight++, "Check",,,True);
 }
 
 static event string GetDescriptionText(string PropName)
@@ -629,6 +634,8 @@ static event string GetDescriptionText(string PropName)
       case "bEnablePasswordPause": return "Enable pausing the game w/password.  Use 'pausepass <passwd>' console command";
       case "PasswordPausePassword": return "Password pause password";
       case "bChallegeModeFix": return "Skip challenge mode nerf if teams just got balanced";
+      case "bSpecsKeepAdren": return "Players keep adrenaline when returning from spectate";
+      case "bShowNumSpecs": return "Players see number of spectators watching them on HUD";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -855,6 +862,11 @@ event InitGame(string Options, out string Error)
   LastWinTeamIndex = -1;
   TeamScoreDelta[0] = 0;
   TeamScoreDelta[1] = 0;
+
+  if(bShowNumSpecs)
+  {
+      Spawn(class'SpecMonitor');
+  }
   //SaveConfig();
 
   //SaveConfig();
@@ -4096,6 +4108,8 @@ defaultproperties
      bEnablePasswordPause=false
      PasswordPausePassword=""
      bChallengeModeFix=true
+     bSpecsKeepAdren=true
+     bShowNumSpecs=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

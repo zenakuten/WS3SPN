@@ -1087,6 +1087,43 @@ simulated function UpdateRankAndSpread(Canvas C)
         else
            DrawPlayers(C);
     }
+
+    DrawNumSpectators(C);
+}
+
+simulated function DrawNumSpectators(Canvas C)
+{
+    local string numspecs;
+    local float XL, YL;
+    local Color oldColor;
+
+    if(Misc_BaseGRI(Level.GRI) == none)
+        return;
+
+    if(Misc_BaseGRI(Level.GRI) != None && !Misc_BaseGRI(Level.GRI).bShowNumSpecs)
+        return;
+
+    if(myOwner == None)
+    {
+        myOwner = Misc_Player(PlayerOwner);
+        if(myOwner == None)
+        {
+            return;
+        }
+    }
+    if(myOwner.PlayerReplicationInfo.bOnlySpectator)
+        return;
+
+    if(!myOwner.bShowSpectators)
+        return;
+
+    numspecs = "Spectators:"@string(myOwner.NumSpectators);
+    C.StrLen(numspecs, XL, YL);
+    C.SetPos((C.ClipX - XL) * 0.032, (C.ClipY - YL) * 0.055);
+    oldColor = C.DrawColor;
+    C.DrawColor = default.WhiteColor;
+    C.DrawTextClipped(numspecs);
+    C.DrawColor = oldColor;
 }
 
 

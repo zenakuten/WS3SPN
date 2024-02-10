@@ -201,6 +201,9 @@ var config bool bEnableEmoticons;
 //used for challenge mode
 var bool bWasBalanced;
 
+var int NumSpectators;
+var config bool bShowSpectators;
+
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
 delegate OnPlayerDataRemovedCallback(string PlayerName);
@@ -217,7 +220,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, EmoteInfo;
+        ReceiveAwardMessage, AbortNecro, EmoteInfo, NumSpectators;
         //TimeBetweenUpdates;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
@@ -1221,7 +1224,10 @@ function BecomeActivePlayer()
 		Level.Game.GameStats.ConnectEvent(PlayerReplicationInfo);
 	}
 	PlayerReplicationInfo.Reset();
-	Adrenaline = 0;
+    if(Team_GameBase(Level.Game) != None && !Team_GameBase(Level.Game).bSpecsKeepAdren)
+    {
+        Adrenaline = 0;
+    }
 	LastRezTime = Level.TimeSeconds;
 	BroadcastLocalizedMessage(Level.Game.GameMessageClass, 1, PlayerReplicationInfo);
 
@@ -2054,6 +2060,7 @@ simulated function ReloadDefaults()
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
     //bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
     bEnableEmoticons = class'Misc_Player'.default.bEnableEmoticons;
+    bShowSpectators = class'Misc_Player'.default.bShowSpectators;
 }
 
 /* settings */
@@ -3468,6 +3475,7 @@ defaultproperties
      TeamColorBlue=(R=80,G=80,B=255,A=255)
      bTeamColorUseTeam=true
      bEnableEmoticons=true
+     bShowSpectators=true
 
      AbortNecroSoundType=ANS_Meow
 }

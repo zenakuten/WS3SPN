@@ -1,6 +1,10 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.12
+- New rank icons
+- server config value to allow players returning from spectate to keep their adrenaline
+- HUD update to show number of spectators watching you
 
 v3.11
 - remove UTComp movement (netupdaterate), keep utcomp landing momentum change

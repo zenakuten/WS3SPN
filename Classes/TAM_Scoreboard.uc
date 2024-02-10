@@ -7,36 +7,36 @@ class TAM_Scoreboard extends ScoreBoardTeamDeathMatch;
 #exec TEXTURE IMPORT NAME=FlagDE FILE=Textures\FlagDE.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
 #exec TEXTURE IMPORT NAME=FlagGB FILE=Textures\FlagGB.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
 #exec TEXTURE IMPORT NAME=FlagEU FILE=Textures\FlagEU.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank1 FILE=Textures\Rank1.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank2 FILE=Textures\Rank2.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank3 FILE=Textures\Rank3.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank4 FILE=Textures\Rank4.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank5 FILE=Textures\Rank5.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank6 FILE=Textures\Rank6.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank7 FILE=Textures\Rank7.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank8 FILE=Textures\Rank8.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank9 FILE=Textures\Rank9.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank10 FILE=Textures\Rank10.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank11 FILE=Textures\Rank11.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank12 FILE=Textures\Rank12.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank13 FILE=Textures\Rank13.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank14 FILE=Textures\Rank14.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank15 FILE=Textures\Rank15.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank16 FILE=Textures\Rank16.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank17 FILE=Textures\Rank17.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank18 FILE=Textures\Rank18.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank19 FILE=Textures\Rank19.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank20 FILE=Textures\Rank20.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank21 FILE=Textures\Rank21.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank22 FILE=Textures\Rank22.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank23 FILE=Textures\Rank23.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank24 FILE=Textures\Rank24.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank25 FILE=Textures\Rank25.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank26 FILE=Textures\Rank26.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank27 FILE=Textures\Rank27.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank28 FILE=Textures\Rank28.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank29 FILE=Textures\Rank29.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
-#exec TEXTURE IMPORT NAME=Rank30 FILE=Textures\Rank30.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
+#exec TEXTURE IMPORT NAME=Rank1 FILE=Textures\Rank1.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank2 FILE=Textures\Rank2.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank3 FILE=Textures\Rank3.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank4 FILE=Textures\Rank4.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank5 FILE=Textures\Rank5.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank6 FILE=Textures\Rank6.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank7 FILE=Textures\Rank7.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank8 FILE=Textures\Rank8.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank9 FILE=Textures\Rank9.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank10 FILE=Textures\Rank10.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank11 FILE=Textures\Rank11.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank12 FILE=Textures\Rank12.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank13 FILE=Textures\Rank13.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank14 FILE=Textures\Rank14.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank15 FILE=Textures\Rank15.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank16 FILE=Textures\Rank16.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank17 FILE=Textures\Rank17.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank18 FILE=Textures\Rank18.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank19 FILE=Textures\Rank19.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank20 FILE=Textures\Rank20.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank21 FILE=Textures\Rank21.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank22 FILE=Textures\Rank22.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank23 FILE=Textures\Rank23.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank24 FILE=Textures\Rank24.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank25 FILE=Textures\Rank25.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank26 FILE=Textures\Rank26.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank27 FILE=Textures\Rank27.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank28 FILE=Textures\Rank28.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank29 FILE=Textures\Rank29.tga GROUP=Textures MIPS=Off ALPHA=1 
+#exec TEXTURE IMPORT NAME=Rank30 FILE=Textures\Rank30.tga GROUP=Textures MIPS=Off ALPHA=1 
 #exec TEXTURE IMPORT NAME=test FILE=Textures\test.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
 #exec TEXTURE IMPORT NAME=wick FILE=Textures\wick.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
 #exec TEXTURE IMPORT NAME=hoas FILE=Textures\hoas.dds GROUP=Textures MIPS=Off ALPHA=1 DXT=5
