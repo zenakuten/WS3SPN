@@ -12,6 +12,7 @@ function Timer()
 {
     local Controller C;
     local Misc_Player PC;
+    local bool bSpectatingOther;
     for(C = Level.ControllerList; C != None; C=C.NextController)
     {
         if(Misc_Player(C) != None)
@@ -20,12 +21,26 @@ function Timer()
 
     for(C = Level.ControllerList; C != None; C=C.NextController)
     {
-        if(Misc_Player(C) != None)
+        if(Misc_Player(C) != None && C.PlayerReplicationInfo != None && !C.PlayerReplicationInfo.bAdmin)
         {
             PC = Misc_Player(C);
             
             // if we aren't looking at ourself
-            if(PC.ViewTarget != None && PC.ViewTarget != C && PC.ViewTarget != C.Pawn)
+            if(Freon_Player(C) != None)
+            {
+                bSpectatingOther = PC.ViewTarget != None 
+                    && PC.ViewTarget != C 
+                    && PC.ViewTarget != C.Pawn 
+                    && Freon_Player(C).ViewTarget != Freon_Player(C).FrozenPawn;
+            }
+            else
+            {
+                bSpectatingOther = PC.ViewTarget != None 
+                    && PC.ViewTarget != C 
+                    && PC.ViewTarget != C.Pawn;
+            }
+
+            if(bSpectatingOther)
             {
                 // increment spec count for who we are looking at
                 if(Misc_Player(PC.ViewTarget) != None)
@@ -34,7 +49,7 @@ function Timer()
                 }
                 else if(Pawn(PC.ViewTarget) != None && Misc_Player(Pawn(PC.ViewTarget).Controller) != None)
                 {
-                    Misc_Player(Misc_Pawn(PC.ViewTarget).Controller).NumSpectators++;
+                    Misc_Player(Pawn(PC.ViewTarget).Controller).NumSpectators++;
                 }
             }
         }
