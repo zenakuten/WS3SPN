@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.13
+- Fix spec count for freon
+
 v3.12
 - New rank icons
 - server config value to allow players returning from spectate to keep their adrenaline
