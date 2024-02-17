@@ -194,7 +194,7 @@ simulated event DrawScoreBoard(Canvas C)
     local int TextX, TextY;
     local int Dam, killsw;
     local int i, j;
-    local float XL, YL;
+    local float XL, YL, XL2, YL2;
     local Color Red;
     local Color Blue;
     local Color OwnerColor;
@@ -952,6 +952,76 @@ simulated event DrawScoreBoard(Canvas C)
             C.DrawText(name, true);
         }
         /* RFF */
+
+        /* Res */
+        MiscY += MiscH * 1.275;
+        DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+        C.DrawColor = HUDClass.default.WhiteColor * 0.7;
+        
+        C.SetPos(MiscX + TextX, MiscY + TextY);
+        C.DrawText("Resurrections:", true);
+
+        name = string(TmpPRI.ResCount);
+        C.StrLen(name, XL, YL);
+        C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
+        C.DrawText(name, true);
+
+        if(Freon_PRI(TmpPRI) != None)
+        {
+            /* Thaw */
+            MiscY += MiscH * 1.275;
+            DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+            C.DrawColor = HUDClass.default.WhiteColor * 0.7;
+            
+            C.SetPos(MiscX + TextX, MiscY + TextY);
+            C.DrawText("Thaws:", true);
+
+            name = string(Freon_PRI(TmpPRI).Thaws);
+            C.StrLen(name, XL, YL);
+            C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
+            C.DrawText(name, true);
+
+            /* Git */
+            MiscY += MiscH * 1.275;
+            DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+            C.DrawColor = HUDClass.default.WhiteColor * 0.7;
+            
+            C.SetPos(MiscX + TextX, MiscY + TextY);
+            C.DrawText("Gits:", true);
+
+            name = string(Freon_PRI(TmpPRI).Git);
+            C.StrLen(name, XL, YL);
+            C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
+            C.DrawText(name, true);
+        }
+
+        MiscY += MiscH * 1.275;
+        DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+        C.DrawColor = HUDClass.default.WhiteColor * 0.7;
+        
+        C.SetPos(MiscX + TextX, MiscY + TextY);
+        C.DrawText("Vs:                K   D", true);
+
+        for(i=0;i<TmpPRI.VsStatsList.Length;i++)
+        {
+            /* vs stats */
+            MiscY += MiscH * 1.275;
+            DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+            C.DrawColor = HUDClass.default.WhiteColor * 0.7;
+            
+            C.SetPos(MiscX + TextX, MiscY + TextY);
+            C.DrawText(TmpPRI.VsStatsList[i].OpponentName$":", true);
+
+            name = string(TmpPRI.VsStatsList[i].Wins);
+            C.StrLen(name, XL, YL);
+            C.StrLen("XXX", XL2, YL2);
+            C.SetPos(MiscX + MiscW - TextX - XL - XL2, MiscY + TextY);
+            C.DrawText(string(TmpPRI.VsStatsList[i].Wins), true);
+            name = string(TmpPRI.VsStatsList[i].Losses);
+            C.StrLen(name, XL, YL);
+            C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
+            C.DrawText(name, true);
+        }
 
         /* weapons */
         // show 'Weapon'...'Kills'...etc. bar

@@ -1,6 +1,15 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.14
+- Fix auto set netspeed textbox, was limited to 4 chars
+- Show resurrections, thaws, gits, and vs on F3 stats board
+- Show health bars for both teams when spectating
+- add cheers for killing streaks
+- fix air rocket yourself or frozen
+- fix impressive yourself or frozen
+
+
 v3.13
 - Fix spec count for freon
 

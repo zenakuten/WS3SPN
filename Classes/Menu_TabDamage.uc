@@ -10,6 +10,7 @@ var automated moComboBox AbortNecro;
 // var automated moNumericEdit EditNetUpdateRate;
 // var automated moCheckBox EnableDodgeFix;
 var automated moCheckBox ShowSpectators;
+var automated moCheckBox KillingSpreeCheers;
 
 function bool AllowOpen(string MenuClass)
 {
@@ -50,12 +51,12 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     ConfigureNetSpeed.Checked(class'Misc_Player'.default.bConfigureNetSpeed);
     EnableWidescreenFixes.Checked(class'Misc_Player'.default.bEnableWidescreenFix);
 
-    /*
     EditConfigureNetSpeedValue.MinValue=9000;
-    EditConfigureNetSpeedValue.MaxValue=99999;
-    EditConfigureNetSpeedValue.MyEditBox.MaxWidth=5;
+    EditConfigureNetSpeedValue.MaxValue=100000;
+    EditConfigureNetSpeedValue.MyEditBox.MaxWidth=6;
     EditConfigureNetSpeedValue.SetValue(class'Misc_Player'.default.ConfigureNetSpeedValue);
 
+    /*
     EditNetUpdateRate.MinValue=90;
     EditNetUpdateRate.MaxValue=250;
     if(Misc_Player(PlayerOwner()) != None)
@@ -89,6 +90,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     {
         ShowSpectators.SetVisibility(false);
     }
+
+    KillingSpreeCheers.Checked(class'Misc_Player'.default.bKillingSpreeCheers);
 
 	class'Menu_Menu3SPN'.default.SettingsDirty = OldDirty;
 }
@@ -152,6 +155,9 @@ function InternalOnChange( GUIComponent C )
 		case ShowSpectators:
 			class'Misc_Player'.default.bShowSpectators = ShowSpectators.IsChecked();
 			break;
+        case KillingSpreeCheers:
+			class'Misc_Player'.default.bKillingSpreeCheers = KillingSpreeCheers.IsChecked();
+
     }
 	
     Misc_Player(PlayerOwner()).ReloadDefaults();
@@ -261,4 +267,14 @@ defaultproperties
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
      ShowSpectators=moCheckBox'3SPNvSoL.Menu_TabDamage.ShowSpectatorsCheckBox'
+
+     Begin Object Class=moCheckBox Name=KillingSpreeCheersCheckBox
+         Caption="Killing spree cheers:"
+         OnCreateComponent=KillingSpreeCheersCheckBox.InternalOnCreateComponent
+         WinTop=0.730000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     KillingSpreeCheers=moCheckBox'3SPNvSoL.Menu_TabDamage.KillingSpreeCheersCheckBox'
 }

@@ -236,6 +236,7 @@ var config string PasswordPausePassword;
 var config bool bChallengeModeFix;
 var config bool bSpecsKeepAdren;
 var config bool bShowNumSpecs;
+var config bool bCheersForSprees;
 
 
 /*
@@ -522,6 +523,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bChallengeModeFix", "Skip challenge mode nerf if teams have just been balanced", 0, Weight++, "Check",,,True);
     PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,True);
     PI.AddSetting("3SPN", "bShowNumSpecs", "Players see number of spectators watching them on HUD", 0, Weight++, "Check",,,True);
+    PI.AddSetting("3SPN", "bCheersForSprees", "Players hear applause when getting a killing spree", 0, Weight++, "Check",,,True);
 }
 
 static event string GetDescriptionText(string PropName)
@@ -636,6 +638,7 @@ static event string GetDescriptionText(string PropName)
       case "bChallegeModeFix": return "Skip challenge mode nerf if teams just got balanced";
       case "bSpecsKeepAdren": return "Players keep adrenaline when returning from spectate";
       case "bShowNumSpecs": return "Players see number of spectators watching them on HUD";
+      case "bCheersForSprees": return "Players hear applause for killing sprees";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -1158,8 +1161,18 @@ function EndTimeOut()
 
 function ScoreKill(Controller Killer, Controller Other)
 {
+    local Misc_PRI KillerPRI, KilledPRI;
     if(Killer==None)
         return;
+
+    KillerPRI = Misc_PRI(Killer.PlayerReplicationInfo);
+    KilledPRI = Misc_PRI(Other.PlayerReplicationInfo);
+
+    if(KillerPRI != None && KilledPRI != None)
+    {
+        KillerPRI.UpdateVsStats(KilledPRI.PlayerName,true);
+        KilledPRI.UpdateVsStats(KillerPRI.PlayerName,false);
+    }
 
     Super.ScoreKill(Killer, Other);
 }
@@ -4023,6 +4036,48 @@ function ResetDefaults()
     }
 }
 
+function NotifySpree(Controller Other, int num)
+{
+	local Controller C;
+
+	if ( num == 5 )
+		num = 0;
+	else if ( num == 10 )
+		num = 1;
+	else if ( num == 15 )
+		num = 2;
+	else if ( num == 20 )
+		num = 3;
+	else if ( num == 25 )
+		num = 4;
+	else if ( num == 30 )
+		num = 5;
+	else
+		return;
+
+	SpecialEvent(Other.PlayerReplicationInfo,"spree_"$(num+1));
+	if ( TeamPlayerReplicationInfo(Other.PlayerReplicationInfo) != None )
+	{
+		TeamPlayerReplicationInfo(Other.PlayerReplicationInfo).Spree[num] += 1;
+		if ( num > 0 )
+			TeamPlayerReplicationInfo(Other.PlayerReplicationInfo).Spree[num-1] -= 1;
+	}
+	Other.AwardAdrenaline( ADR_MajorKill );
+
+    if(bCheersForSprees)
+    {
+        for ( C=Level.ControllerList; C!=None; C=C.NextController )
+            if ( PlayerController(C) != None )
+                PlayerController(C).ReceiveLocalizedMessage( class'KillingSpreeCheersMessage', Num, Other.PlayerReplicationInfo );
+    }
+    else
+    {
+        for ( C=Level.ControllerList; C!=None; C=C.NextController )
+            if ( PlayerController(C) != None )
+                PlayerController(C).ReceiveLocalizedMessage( class'KillingSpreeMessage', Num, Other.PlayerReplicationInfo );
+    }
+}
+
 defaultproperties
 {
      StartingHealth=100
@@ -4110,6 +4165,7 @@ defaultproperties
      bChallengeModeFix=true
      bSpecsKeepAdren=true
      bShowNumSpecs=true
+     bCheersForSprees=true
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

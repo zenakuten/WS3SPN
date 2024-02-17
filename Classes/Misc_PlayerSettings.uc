@@ -55,6 +55,7 @@ struct MiscSettings
     //var int DesiredNetUpdateRate;
     //var bool bEnableDodgeFix;
     var bool bEnableEmoticons;
+    var bool bKillingSpreeCheers;
 };
 
 struct WeaponSettings

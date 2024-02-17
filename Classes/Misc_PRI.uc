@@ -69,14 +69,26 @@ var float       AveragePercent;
 var class<Misc_PawnReplicationInfo> PawnInfoClass;
 var Misc_PawnReplicationInfo PawnReplicationInfo;
 
+var int ResCount;
+
+struct VsStats
+{
+    var string OpponentName;
+    var int    Wins;
+    var int    Losses;
+};
+
+var array<VsStats> VsStatsList;
+
+
 replication
 {
-      reliable if ( Role < 4 )
-    SetColoredName;
-  reliable if ( Role == 4 )
-    RegisterDamage;
-  unreliable if ( bNetDirty && (Role == 4) )
-    ColoredName,PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo;
+    reliable if ( Role < ROLE_Authority )
+        SetColoredName;
+    reliable if ( Role == ROLE_Authority )
+        RegisterDamage, UpdateVsStats;
+    unreliable if ( bNetDirty && (Role == ROLE_Authority) )
+        ColoredName,PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo;
 }
 
 event PostBeginPlay()
@@ -272,6 +284,36 @@ function ProcessHitStats()
 
     if(count > 0)
         AveragePercent /= count;
+}
+
+simulated function UpdateVsStats( string Opponent, bool bWin )
+{
+    local int i;
+    local VsStats NewVsStats;
+
+    for ( i = 0; i < VsStatsList.Length; i++ )
+    {
+        if ( VsStatsList[i].OpponentName == Opponent ) {
+
+            if ( bWin ) {
+                VsStatsList[i].Wins++;
+            } else {
+                VsStatsList[i].Losses++;
+            }
+
+            return;
+        }
+    }
+
+    NewVsStats.OpponentName = Opponent;
+
+    if ( bWin ) {
+        NewVsStats.Wins++;
+    } else {
+        NewVsStats.Losses++;
+    }
+
+    VsStatsList[VsStatsList.Length] = NewVsStats;
 }
 
 defaultproperties

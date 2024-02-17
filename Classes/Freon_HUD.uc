@@ -787,18 +787,294 @@ simulated function DrawPlayersZAxis(Canvas C)
     }
 }
 
+simulated function DrawPlayersExtendedZAxisTeam(Canvas C, int posx, int posy, int namex, Misc_PRI pri)
+{
+    local int HUDOwnerTeam; //team for the HUDOwner
+    local float xl;
+    local float yl;
+    local float MaxNamePos;
+    local string name;
+    local int StartListY;
+    local int space;
+    local int namey;
+    local int height;
+    local int width;
+    local int health;
+
+    //hagis
+    local int radarSizeAllies;
+    local int radarCenterX;
+    local int radarCenterY;
+    local float CU; // spacing unit 1 char width
+
+
+    if(myOwner == None)
+        return;
+
+    if(PlayerOwner.PlayerReplicationInfo.Team != None)
+    {
+        HUDOwnerTeam = PlayerOwner.GetTeamNum();
+    }
+    else
+    {
+        if(Pawn(PlayerOwner.ViewTarget) == None || Pawn(PlayerOwner.ViewTarget).GetTeamNum() == 255)
+            return;
+
+        HUDOwnerTeam = Pawn(PlayerOwner.ViewTarget).GetTeamNum();
+    }
+
+    //
+    // draw own team / allies
+    //
+
+    StartListY = 0.08 * HUDScale * C.ClipY; // Y axis start player entries
+    height = C.ClipY * 0.02;
+
+    C.Font = GetFontSizeIndex(C, -3);
+    C.StrLen("X", CU, yl);
+    namey = (height * 0.6) - (yl * 0.5);
+    
+    space = height + (0.0075 * C.ClipY);
+
+    //calc the size of the radar and use this to space out the name and location bars
+    radarSizeAllies = (height + space) * 0.82; // fill 82% of player entry height with radar
+
+    //draw the text areas if they are showing team info
+    if(class'Misc_Player'.default.bShowTeamInfo)
+    {
+        //start of text area backgrounds
+        width = C.ClipX * 0.12;
+        MaxNamePos = width - CU*2.75; //width for text
+
+        //
+        // draw text area backgrounds
+        //
+        if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
+            Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
+        {
+            C.DrawColor = class'Freon_PRI'.default.FrozenColor * 0.6;
+        }
+        else
+        {
+            C.DrawColor = default.BlackColor;
+        }
+
+        C.SetPos(namex, posy);
+        C.DrawColor.A = 100;
+        C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
+
+        C.SetPos(namex, posy + height * 1.1);
+        C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
+
+        //
+        // draw player name
+        //
+        if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            name = PRI.GetColoredName();
+        else
+            name = PRI.PlayerName;
+
+        C.DrawColor = NameColor;
+        C.SetPos(namex, posy + namey);
+        class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
+
+        //
+        // draw player map location
+        //
+        name = PRI.GetLocationName();
+        if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo)!= None && Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
+            C.DrawColor = class'Freon_PRI'.default.FrozenColor;
+        else
+            C.DrawColor = LocationColor;
+        C.SetPos(namex, posy + (height * 1.1) + namey);
+        class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
+
+        //
+        // health text
+        //
+        if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
+            Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
+        {
+            health = PRI.PawnReplicationInfo.Health;
+        }
+        else
+        {
+            health = PRI.PawnReplicationInfo.Health + PRI.PawnReplicationInfo.Shield;
+        }
+
+        name = string(health);
+        C.StrLen(name, xl, yl);
+        C.SetPos(posx + width + radarSizeAllies - xl, posy + namey);
+        C.DrawColor = GetHealthRampColor(PRI);
+        C.DrawText(name);
+
+        //
+        // draw adrenaline amount text
+        //
+        if(PRI.PawnReplicationInfo.Adrenaline<100)
+            C.DrawColor = AdrenColor;
+        else
+            C.DrawColor = FullAdrenColor;
+
+        name = string(PRI.PawnReplicationInfo.Adrenaline);
+        C.StrLen(name, xl, yl);
+        C.SetPos(posx + width + radarSizeAllies - xl, posy + (height * 1.1) + namey);
+        C.DrawText(name);
+    }
+
+    //
+    // draw outer radar disc
+    //
+    C.SetPos(posx, posy);
+    C.DrawColor = default.WhiteColor;
+    //C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55); //original crops
+    C.DrawTile(TeamTex, radarSizeAllies, radarSizeAllies, 121, 260, 51, 51); //hagis crops
+
+    //calc radar circle center
+    radarCenterX = posx + ((radarSizeAllies+1) / 2);
+    radarCenterY = posy + ((radarSizeAllies+1) / 2);
+
+    //
+    // draw health dot
+    //
+    // use circle center to calc the position (need to find top left corner)
+    // health dot size is 80% of radarSizeAllies 
+    C.SetPos(radarCenterX - ((radarSizeAllies * 0.80)/2.0), radarCenterY - ((radarSizeAllies * 0.80)/2.0));
+    C.DrawColor = GetHealthRampColor(PRI);
+    C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 1, 1, 78, 78);
+
+    //z axis overlay
+    if(PlayerOwner.ViewTarget != None)
+    {
+        //same position as the dot
+        C.SetPos(radarCenterX - ((radarSizeAllies * 0.80)/2.0), radarCenterY - ((radarSizeAllies * 0.80)/2.0));
+
+        // player height is 88 use two player heights 176
+        if(PRI.PawnReplicationInfo.Position.Z > (PlayerOwner.ViewTarget.Location.Z + 176))
+            C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 80, 1, 78, 78); //plus
+        else if (PRI.PawnReplicationInfo.Position.Z < (PlayerOwner.ViewTarget.Location.Z - 176))
+            C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 160, 1, 78, 78); //minus
+    }
+
+
+    //
+    // draw location dot
+    //
+    // don't draw location dot when viewing spec players own HUD entry
+    if(PlayerOwner.ViewTarget == None ||
+        PRI != Misc_PRI(Pawn(PlayerOwner.ViewTarget).PlayerReplicationInfo))
+    {
+        C.DrawColor = WhiteColor;
+        NewDraw2DLocationDot(C, PRI.PawnReplicationInfo.Position, radarCenterX, radarCenterY, radarSizeAllies);
+    }
+
+}
+
+simulated function DrawPlayersExtendedZAxisEnemy(Canvas C, int posx, int posy, int namex, Misc_PRI PRI)
+{
+    local int HUDOwnerTeam; //team for the HUDOwner
+    local float xl;
+    local float yl;
+    local float MaxNamePos;
+    local float scale;
+    local string name;
+    local int StartListY;
+    local int space;
+    local int namey;
+    local int height;
+    local int width;
+
+    //hagis
+    local float CU; // spacing unit 1 char width
+
+    if(myOwner == None)
+        return;
+
+    if(PlayerOwner.PlayerReplicationInfo.Team != None)
+    {
+        HUDOwnerTeam = PlayerOwner.GetTeamNum();
+    }
+    else
+    {
+        if(Pawn(PlayerOwner.ViewTarget) == None || Pawn(PlayerOwner.ViewTarget).GetTeamNum() == 255)
+            return;
+
+        HUDOwnerTeam = Pawn(PlayerOwner.ViewTarget).GetTeamNum();
+    }
+
+    //
+    // draw own team / allies
+    //
+
+    StartListY = 0.08 * HUDScale * C.ClipY; // Y axis start player entries
+    height = C.ClipY * 0.02;
+
+    C.Font = GetFontSizeIndex(C, -3);
+    C.StrLen("X", CU, yl);
+    namey = (height * 0.6) - (yl * 0.5);
+    scale = 0.75; // radar size old method
+    space = (0.005 * C.ClipY);
+    width = C.ClipX * 0.11;
+    MaxNamePos = 0.99 * (width - namex);
+
+    //draw the text areas if they are showing team info
+    if(class'Misc_Player'.default.bShowTeamInfo)
+    {
+        // draw background
+        C.SetPos(posx - width, posy);
+        if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
+            Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
+        {
+            C.DrawColor = class'Freon_PRI'.default.FrozenColor * 0.6;
+        }
+        else
+        {
+            C.DrawColor = default.BlackColor;
+        }
+        C.DrawColor.A = 100;
+        C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
+
+        // draw name
+        if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            name = PRI.GetColoredName();
+        else
+            name = PRI.PlayerName;
+
+        C.TextSize(name, xl, yl);
+        xl = Min(xl, MaxNamePos);
+        C.DrawColor = NameColor;
+        C.SetPos(posx - xl - namex, posy + namey);
+        class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
+    }
+
+    // draw disc
+    C.SetPos(posx - (C.ClipX * 0.0195 * Scale), posy);
+    C.DrawColor = default.WhiteColor;
+    C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
+
+    // draw health dot
+    if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo)!= None &&
+        Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
+    {
+        C.DrawColor = class'Freon_PRI'.default.FrozenColor;
+    }
+    else
+    {
+        C.DrawColor = HudColorTeam[PRI.Team.TeamIndex];
+    }
+    C.SetPos(posx - (0.016 * Scale * C.ClipX), posy + (0.0035 * Scale * C.ClipY));
+    C.DrawTile(TeamTex, C.ClipX * 0.0165 * Scale, C.ClipY * 0.0185 * Scale, 340, 432, 78, 78);
+}
 
 simulated function DrawPlayersExtendedZAxis(Canvas C)
 {
     local int i;
     local int HUDOwnerTeam; //team for the HUDOwner
-    local float xl;
     local float yl;
     local float MaxNamePos;
     local int posx;
     local int posy;
     local float scale;
-    local string name;
     local int StartListY;
     local int space;
     local int namey;
@@ -806,12 +1082,9 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     local int height;
     local int width;
     local Misc_PRI pri;
-    local int health;
 
     //hagis
     local int radarSizeAllies;
-    local int radarCenterX;
-    local int radarCenterY;
     local float CU; // spacing unit 1 char width
 
     local int allies;
@@ -861,139 +1134,12 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
 
         //calc the size of the radar and use this to space out the name and location bars
         radarSizeAllies = (height + space) * 0.82; // fill 82% of player entry height with radar
+        namex = radarSizeAllies + CU;
 
         posx = int(CU*0.5); //set posx to left side
         posy = StartListY + ((height + space) * allies);
 
-        //draw the text areas if they are showing team info
-        if(class'Misc_Player'.default.bShowTeamInfo)
-        {
-            //start of text area backgrounds
-            namex = radarSizeAllies + CU;
-            width = C.ClipX * 0.12;
-            MaxNamePos = width - CU*2.75; //width for text
-
-            //
-            // draw text area backgrounds
-            //
-            if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
-               Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
-            {
-                C.DrawColor = class'Freon_PRI'.default.FrozenColor * 0.6;
-            }
-            else
-            {
-                C.DrawColor = default.BlackColor;
-            }
-
-            C.SetPos(namex, posy);
-            C.DrawColor.A = 100;
-            C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
-
-            C.SetPos(namex, posy + height * 1.1);
-            C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
-
-            //
-            // draw player name
-            //
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
-                name = PRI.GetColoredName();
-            else
-                name = PRI.PlayerName;
-
-            C.DrawColor = NameColor;
-            C.SetPos(namex, posy + namey);
-            class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
-
-            //
-            // draw player map location
-            //
-            name = PRI.GetLocationName();
-            if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo)!= None && Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
-                C.DrawColor = class'Freon_PRI'.default.FrozenColor;
-            else
-                C.DrawColor = LocationColor;
-            C.SetPos(namex, posy + (height * 1.1) + namey);
-            class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
-
-            //
-            // health text
-            //
-            if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
-               Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
-            {
-                health = PRI.PawnReplicationInfo.Health;
-            }
-            else
-            {
-                health = PRI.PawnReplicationInfo.Health + PRI.PawnReplicationInfo.Shield;
-            }
-
-            name = string(health);
-            C.StrLen(name, xl, yl);
-            C.SetPos((C.ClipX * 0.015) + width + radarSizeAllies - xl, posy + namey);
-            C.DrawColor = GetHealthRampColor(PRI);
-            C.DrawText(name);
-
-            //
-            // draw adrenaline amount text
-            //
-            if(PRI.PawnReplicationInfo.Adrenaline<100)
-                C.DrawColor = AdrenColor;
-            else
-                C.DrawColor = FullAdrenColor;
-
-            name = string(PRI.PawnReplicationInfo.Adrenaline);
-            C.StrLen(name, xl, yl);
-            C.SetPos((C.ClipX * 0.015) + width + radarSizeAllies - xl, posy + (height * 1.1) + namey);
-            C.DrawText(name);
-        }
-
-        //
-        // draw outer radar disc
-        //
-        C.SetPos(posx, posy);
-        C.DrawColor = default.WhiteColor;
-        //C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55); //original crops
-        C.DrawTile(TeamTex, radarSizeAllies, radarSizeAllies, 121, 260, 51, 51); //hagis crops
-
-        //calc radar circle center
-        radarCenterX = posx + ((radarSizeAllies+1) / 2);
-        radarCenterY = posy + ((radarSizeAllies+1) / 2);
-
-        //
-        // draw health dot
-        //
-        // use circle center to calc the position (need to find top left corner)
-        // health dot size is 80% of radarSizeAllies 
-        C.SetPos(radarCenterX - ((radarSizeAllies * 0.80)/2.0), radarCenterY - ((radarSizeAllies * 0.80)/2.0));
-        C.DrawColor = GetHealthRampColor(PRI);
-        C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 1, 1, 78, 78);
-
-        //z axis overlay
-        if(PlayerOwner.ViewTarget != None)
-        {
-            //same position as the dot
-            C.SetPos(radarCenterX - ((radarSizeAllies * 0.80)/2.0), radarCenterY - ((radarSizeAllies * 0.80)/2.0));
-
-            // player height is 88 use two player heights 176
-            if(PRI.PawnReplicationInfo.Position.Z > (PlayerOwner.ViewTarget.Location.Z + 176))
-                C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 80, 1, 78, 78); //plus
-            else if (PRI.PawnReplicationInfo.Position.Z < (PlayerOwner.ViewTarget.Location.Z - 176))
-                C.DrawTile(Hudzaxis, radarSizeAllies * 0.80, radarSizeAllies * 0.80, 160, 1, 78, 78); //minus
-        }
-
-
-        //
-        // draw location dot
-        //
-        // don't draw location dot when viewing spec players own HUD entry
-        if(PlayerOwner.ViewTarget == None ||
-           PRI != Misc_PRI(Pawn(PlayerOwner.ViewTarget).PlayerReplicationInfo))
-        {
-            C.DrawColor = WhiteColor;
-            NewDraw2DLocationDot(C, PRI.PawnReplicationInfo.Position, radarCenterX, radarCenterY, radarSizeAllies);
-        }
+        DrawPlayersExtendedZAxisTeam(C, posx, posy, namex, PRI);
 
         // friends shown
         allies++;
@@ -1025,53 +1171,29 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
         posx = C.ClipX * 0.99;
         posy = StartListY + ((height + space) * enemies);
 
-        //draw the text areas if they are showing team info
-        if(class'Misc_Player'.default.bShowTeamInfo)
+         if(PlayerOwner.PlayerReplicationInfo.bOnlySpectator)
         {
-            // draw background
-            C.SetPos(posx - width, posy);
-            if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo) != None &&
-              Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
-            {
-                C.DrawColor = class'Freon_PRI'.default.FrozenColor * 0.6;
-            }
-            else
-            {
-                C.DrawColor = default.BlackColor;
-            }
-            C.DrawColor.A = 100;
-            C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
+            space = height + (0.0075 * C.ClipY);
 
-            // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
-                name = PRI.GetColoredName();
-            else
-                name = PRI.PlayerName;
+            //calc the size of the radar and use this to space out the name and location bars
+            radarSizeAllies = (height + space) * 0.85; // fill 85% of player entry height with radar
 
-            C.TextSize(name, xl, yl);
-            xl = Min(xl, MaxNamePos);
-            C.DrawColor = NameColor;
-            C.SetPos(posx - xl - namex, posy + namey);
-            class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);
-        }
+            //posx = int(CU*0.5); //set posx to left side
 
-        // draw disc
-        C.SetPos(posx - (C.ClipX * 0.0195 * Scale), posy);
-        C.DrawColor = default.WhiteColor;
-        C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
+            //start of text area backgrounds
+            //namex = radarSizeAllies + CU;
+            width = C.ClipX * 0.12;
+            MaxNamePos = width - CU*2.75; //width for text
 
-        // draw health dot
-        if(Freon_PawnReplicationInfo(PRI.PawnReplicationInfo)!= None &&
-           Freon_PawnReplicationInfo(PRI.PawnReplicationInfo).bFrozen)
-        {
-            C.DrawColor = class'Freon_PRI'.default.FrozenColor;
+            namex = C.ClipX * 0.88;
+            posx = C.ClipX * 0.85;
+            posy = StartListY + ((height + space) * enemies);
+            DrawPlayersExtendedZAxisTeam(C, posx, posy, namex, PRI);
         }
         else
         {
-            C.DrawColor = HudColorTeam[PRI.Team.TeamIndex];
+            DrawPlayersExtendedZAxisEnemy(C, posx, posy, namex, PRI);
         }
-        C.SetPos(posx - (0.016 * Scale * C.ClipX), posy + (0.0035 * Scale * C.ClipY));
-        C.DrawTile(TeamTex, C.ClipX * 0.0165 * Scale, C.ClipY * 0.0185 * Scale, 340, 432, 78, 78);
 
         // enemies shown
         enemies++;

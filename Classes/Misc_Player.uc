@@ -203,6 +203,7 @@ var bool bWasBalanced;
 
 var int NumSpectators;
 var config bool bShowSpectators;
+var config bool bKillingSpreeCheers;
 
 /* persistent stats */
 delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
@@ -220,7 +221,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, EmoteInfo, NumSpectators;
+        ReceiveAwardMessage, AbortNecro, EmoteInfo, NumSpectators, ClientDelayedSound;
         //TimeBetweenUpdates;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
@@ -2061,6 +2062,7 @@ simulated function ReloadDefaults()
     //bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
     bEnableEmoticons = class'Misc_Player'.default.bEnableEmoticons;
     bShowSpectators = class'Misc_Player'.default.bShowSpectators;
+    bKillingSpreeCheers = class'Misc_Player'.default.bKillingSpreeCheers;
 }
 
 /* settings */
@@ -2138,6 +2140,7 @@ function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSe
 	//Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
 	//Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
     class'Misc_Player'.default.bEnableEmoticons = Misc.bEnableEmoticons;
+    class'Misc_Player'.default.bKillingSpreeCheers = Misc.bKillingSpreeCheers;
 	
 	ReloadDefaults();
 	SetupCombos();
@@ -3369,6 +3372,18 @@ function ServerPausePass(PlayerController PC, string pass)
     }
 }
 
+function ClientDelayedSound(Sound snd, float delay)
+{
+    local DelayedSound dsnd;
+    dsnd = spawn(class'DelayedSound');
+    if(dsnd != None)
+    {
+        dsnd.PC = self;
+        dsnd.SoundToPlay = snd;
+        dsnd.SetTimer(delay, false);
+    }
+}
+
 /* settings */
 
 defaultproperties
@@ -3476,6 +3491,7 @@ defaultproperties
      bTeamColorUseTeam=true
      bEnableEmoticons=true
      bShowSpectators=true
+     bKillingSpreeCheers=true
 
      AbortNecroSoundType=ANS_Meow
 }

@@ -60,4 +60,5 @@ defaultproperties
 {
     checkTimer=1.5
     RemoteRole=ROLE_None
+    bHidden=true
 }

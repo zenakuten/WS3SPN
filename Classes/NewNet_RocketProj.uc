@@ -177,7 +177,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 			if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 				Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround)
+            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround && Victims != Instigator)
                 bKilledPlayerInAir = true;
 
 		}
@@ -205,7 +205,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 		if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 			Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround)
+        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && prePhysics == PHYS_Falling && bAboveGround && Victims != Instigator)
             bKilledPlayerInAir = true;
 	}
 
@@ -226,7 +226,7 @@ function BlowUp(vector HitLocation)
     {    
         if(Misc_Player(Instigator.Controller) != None)
         {
-            Misc_Player(Instigator.Controller).ClientDelayedAnnouncement(AirRocketSound,5);
+            Misc_Player(Instigator.Controller).ClientDelayedSound(AirRocketSound,0.5);
         }
     }
 }

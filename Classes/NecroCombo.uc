@@ -344,6 +344,10 @@ function DoResurrection ()
   {
     Team_GameBase(Level.Game).DarkHorse = None;
   }
+  if(Misc_PRI(NecroMancer.PlayerReplicationInfo) != None)
+  {
+     Misc_PRI(NecroMancer.PlayerReplicationInfo).ResCount++;
+  }
   Destroy();
 }
 

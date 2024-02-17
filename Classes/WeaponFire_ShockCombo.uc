@@ -7,6 +7,17 @@ class WeaponFire_ShockCombo extends TeamColorShockProjectile;
 var Sound ImpressiveSound;
 var Sound MostImpressiveSound;
 
+function bool Frozen(Pawn P)
+{
+    if(P == None)
+        return false;
+
+    if(Freon_Pawn(P) == None)
+        return false;
+
+    return Freon_Pawn(P).bFrozen;
+}
+
 // copy from projectile -> hurt radius, return true if anybody killed
 simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, class<DamageType> DamageType, float Momentum, vector HitLocation )
 {
@@ -44,7 +55,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 			if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 				Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0)
+            if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && !Frozen(Pawn(Victims)) && Victims != Instigator)
                 bKilledPlayer = true;
 
 		}
@@ -70,7 +81,7 @@ simulated function bool HurtRadiusEx( float DamageAmount, float DamageRadius, cl
 		if (Vehicle(Victims) != None && Vehicle(Victims).Health > 0)
 			Vehicle(Victims).DriverRadiusDamage(DamageAmount, DamageRadius, InstigatorController, DamageType, Momentum, HitLocation);
 
-        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0)
+        if(Pawn(Victims) != None && Pawn(Victims).Health <= 0 && !Frozen(Pawn(Victims)) && Victims != Instigator)
             bKilledPlayer = true;
 	}
 
@@ -135,9 +146,9 @@ function SuperExplosion()
         if(Misc_Player(Instigator.Controller) != None)
         {
             if(bMostImpressive)
-                Misc_Player(Instigator.Controller).ClientDelayedAnnouncement(MostImpressiveSound,5);
+                Misc_Player(Instigator.Controller).ClientDelayedSound(MostImpressiveSound,0.5);
             else if(bIsImpressive)
-                Misc_Player(Instigator.Controller).ClientDelayedAnnouncement(ImpressiveSound,5);
+                Misc_Player(Instigator.Controller).ClientDelayedSound(ImpressiveSound,0.5);
         }
     }
 
