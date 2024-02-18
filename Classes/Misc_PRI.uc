@@ -73,7 +73,8 @@ var int ResCount;
 
 struct VsStats
 {
-    var string OpponentName;
+    //var string OpponentName;
+    var Controller Opponent;
     var int    Wins;
     var int    Losses;
 };
@@ -286,14 +287,15 @@ function ProcessHitStats()
         AveragePercent /= count;
 }
 
-simulated function UpdateVsStats( string Opponent, bool bWin )
+//simulated function UpdateVsStats( string Opponent, bool bWin )
+simulated function UpdateVsStats( Controller Opponent, bool bWin )
 {
     local int i;
     local VsStats NewVsStats;
 
     for ( i = 0; i < VsStatsList.Length; i++ )
     {
-        if ( VsStatsList[i].OpponentName == Opponent ) {
+        if ( VsStatsList[i].Opponent == Opponent ) {
 
             if ( bWin ) {
                 VsStatsList[i].Wins++;
@@ -305,7 +307,7 @@ simulated function UpdateVsStats( string Opponent, bool bWin )
         }
     }
 
-    NewVsStats.OpponentName = Opponent;
+    NewVsStats.Opponent = Opponent;
 
     if ( bWin ) {
         NewVsStats.Wins++;

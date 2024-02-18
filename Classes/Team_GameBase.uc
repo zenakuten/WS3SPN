@@ -1170,8 +1170,8 @@ function ScoreKill(Controller Killer, Controller Other)
 
     if(KillerPRI != None && KilledPRI != None)
     {
-        KillerPRI.UpdateVsStats(KilledPRI.PlayerName,true);
-        KilledPRI.UpdateVsStats(KillerPRI.PlayerName,false);
+        KillerPRI.UpdateVsStats(Other,true);
+        KilledPRI.UpdateVsStats(Killer,false);
     }
 
     Super.ScoreKill(Killer, Other);

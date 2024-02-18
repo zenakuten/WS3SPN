@@ -1649,6 +1649,8 @@ function NewDraw2DLocationDot(Canvas C, vector Loc, int CenterX, int CenterY, in
     local int posCenterY;
     local float length;
     local float dotSize;
+    local float dist;
+    local float scale;
 
 
     if(PlayerOwner.Pawn == None)
@@ -1665,8 +1667,12 @@ function NewDraw2DLocationDot(Canvas C, vector Loc, int CenterX, int CenterY, in
 
     Dir = rotator(Loc - Start.Location);
     Angle = ((Dir.Yaw - Start.Rotation.Yaw) & 65535) * 6.2832 / 65536;
+    dist = VSize(Loc - Start.Location);
+    scale = 1.5 - dist/3000.0;
+    scale = FClamp(scale, 0.5,2.0);
 
     dotSize = OutsideDiameter * 0.4; // 40% diameter
+    dotSize *= scale;
     length = (OutsideDiameter - (dotSize/2.0)) / 2.0;
 
     posCenterX = CenterX + length * sin(Angle);

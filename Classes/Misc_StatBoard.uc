@@ -996,25 +996,32 @@ simulated event DrawScoreBoard(Canvas C)
         }
 
         MiscY += MiscH * 1.275;
-        DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+        //DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+        DrawBars(C, TmpPRI.VsStatsList.Length+2, MiscX, MiscY, MiscW, MiscH);
         C.DrawColor = HUDClass.default.WhiteColor * 0.7;
         
-        C.SetPos(MiscX + TextX, MiscY + TextY);
-        C.DrawText("Vs:                K   D", true);
+        C.Font = PlayerController(Owner).myHUD.GetFontSizeIndex(C,-5);
+        C.StrLen("X", XL, YL);
+        C.SetPos(MiscX + TextX, MiscY + TextY + YL/4);
+        C.DrawText("Versus:               Kills Deaths", true);
 
         for(i=0;i<TmpPRI.VsStatsList.Length;i++)
         {
             /* vs stats */
-            MiscY += MiscH * 1.275;
-            DrawBars(C, 1, MiscX, MiscY, MiscW, MiscH);
+            MiscY += MiscH;
             C.DrawColor = HUDClass.default.WhiteColor * 0.7;
             
             C.SetPos(MiscX + TextX, MiscY + TextY);
-            C.DrawText(TmpPRI.VsStatsList[i].OpponentName$":", true);
+            name = Misc_PRI(TmpPRI.VsStatsList[i].Opponent.PlayerReplicationInfo).GetColoredName();
+            C.StrLen(name, XL, YL);
+            if(XL > C.ClipX * 0.08)
+                name = Left(name, C.ClipX * 0.08 / XL * len(name));
+            C.DrawText(name, true);
 
+            C.DrawColor = HUDClass.default.WhiteColor * 0.7;
             name = string(TmpPRI.VsStatsList[i].Wins);
             C.StrLen(name, XL, YL);
-            C.StrLen("XXX", XL2, YL2);
+            C.StrLen("XXXXXX", XL2, YL2);
             C.SetPos(MiscX + MiscW - TextX - XL - XL2, MiscY + TextY);
             C.DrawText(string(TmpPRI.VsStatsList[i].Wins), true);
             name = string(TmpPRI.VsStatsList[i].Losses);
@@ -1022,6 +1029,7 @@ simulated event DrawScoreBoard(Canvas C)
             C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
             C.DrawText(name, true);
         }
+        C.Font = PlayerController(Owner).myHUD.GetFontSizeIndex(C,-3);
 
         /* weapons */
         // show 'Weapon'...'Kills'...etc. bar

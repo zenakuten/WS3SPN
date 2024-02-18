@@ -5,6 +5,7 @@ v3.14
 - Fix auto set netspeed textbox, was limited to 4 chars
 - Show resurrections, thaws, gits, and vs on F3 stats board
 - Show health bars for both teams when spectating
+- scale dots on radar based on distance
 - add cheers for killing streaks
 - fix air rocket yourself or frozen
 - fix impressive yourself or frozen
