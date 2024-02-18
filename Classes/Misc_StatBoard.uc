@@ -1012,10 +1012,10 @@ simulated event DrawScoreBoard(Canvas C)
             C.DrawColor = HUDClass.default.WhiteColor * 0.7;
             
             C.SetPos(MiscX + TextX, MiscY + TextY);
-            name = Misc_PRI(TmpPRI.VsStatsList[i].Opponent.PlayerReplicationInfo).GetColoredName();
-            C.StrLen(name, XL, YL);
+            name = TmpPRI.VsStatsList[i].OpponentName;
+            C.StrLen(class'Misc_Util'.static.StripColor(name), XL, YL);
             if(XL > C.ClipX * 0.08)
-                name = Left(name, C.ClipX * 0.08 / XL * len(name));
+                name = Left(name, C.ClipX * 0.08 / XL * len(class'Misc_Util'.static.StripColor(name)));
             C.DrawText(name, true);
 
             C.DrawColor = HUDClass.default.WhiteColor * 0.7;

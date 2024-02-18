@@ -73,7 +73,7 @@ var int ResCount;
 
 struct VsStats
 {
-    //var string OpponentName;
+    var string OpponentName;
     var Controller Opponent;
     var int    Wins;
     var int    Losses;
@@ -308,6 +308,9 @@ simulated function UpdateVsStats( Controller Opponent, bool bWin )
     }
 
     NewVsStats.Opponent = Opponent;
+    NewVsStats.OpponentName = "Player";
+    if(Misc_PRI(Opponent.PlayerReplicationInfo) != None)
+        NewVsStats.OpponentName = Misc_PRI(Opponent.PlayerReplicationInfo).GetColoredName();
 
     if ( bWin ) {
         NewVsStats.Wins++;
