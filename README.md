@@ -1,6 +1,10 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.15
+- Fix TAM clobbering shield gun for other gametypes
+- Fix vs stats showing as 'Player'
+
 v3.14
 - Fix auto set netspeed textbox, was limited to 4 chars
 - Show resurrections, thaws, gits, and vs on F3 stats board

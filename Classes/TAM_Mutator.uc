@@ -354,13 +354,13 @@ function ResetWeaponsToDefaults(bool bModifyShieldGun,float ShieldGunSelfForceSc
 
     if(bModifyShieldGun)
 	{
-		Class'XWeapons.ShieldFire'.default.SelfForceScale = ShieldGunSelfForceScale;
-		Class'XWeapons.ShieldFire'.default.SelfDamageScale = ShieldGunSelfDamageScale;
-		Class'XWeapons.ShieldFire'.default.MinSelfDamage = ShieldGunMinSelfDamage;
+		Class'XWeapons.ShieldFire'.default.SelfForceScale = 1.0;
+		Class'XWeapons.ShieldFire'.default.SelfDamageScale = 0.3;
+		Class'XWeapons.ShieldFire'.default.MinSelfDamage = 8;
         
-        class'WeaponFire_Shield'.default.SelfForceScale = ShieldGunSelfForceScale;
-        class'WeaponFire_Shield'.default.SelfDamageScale = ShieldGunSelfDamageScale;
-        class'WeaponFire_Shield'.default.MinSelfDamage = ShieldGunMinSelfDamage;
+        class'WeaponFire_Shield'.default.SelfForceScale = 1.0;
+        class'WeaponFire_Shield'.default.SelfDamageScale = 0.3;
+        class'WeaponFire_Shield'.default.MinSelfDamage = 8;
 	}
 
     class'FlakChunk'.default.MyDamageType = class'DamTypeFlakChunk';

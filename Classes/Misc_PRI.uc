@@ -74,7 +74,6 @@ var int ResCount;
 struct VsStats
 {
     var string OpponentName;
-    var Controller Opponent;
     var int    Wins;
     var int    Losses;
 };
@@ -287,15 +286,14 @@ function ProcessHitStats()
         AveragePercent /= count;
 }
 
-//simulated function UpdateVsStats( string Opponent, bool bWin )
-simulated function UpdateVsStats( Controller Opponent, bool bWin )
+simulated function UpdateVsStats( string OpponentName, bool bWin )
 {
     local int i;
     local VsStats NewVsStats;
 
     for ( i = 0; i < VsStatsList.Length; i++ )
     {
-        if ( VsStatsList[i].Opponent == Opponent ) {
+        if ( VsStatsList[i].OpponentName == OpponentName ) {
 
             if ( bWin ) {
                 VsStatsList[i].Wins++;
@@ -307,10 +305,7 @@ simulated function UpdateVsStats( Controller Opponent, bool bWin )
         }
     }
 
-    NewVsStats.Opponent = Opponent;
-    NewVsStats.OpponentName = "Player";
-    if(Misc_PRI(Opponent.PlayerReplicationInfo) != None)
-        NewVsStats.OpponentName = Misc_PRI(Opponent.PlayerReplicationInfo).GetColoredName();
+    NewVsStats.OpponentName = OpponentName;
 
     if ( bWin ) {
         NewVsStats.Wins++;
