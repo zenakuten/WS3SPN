@@ -72,11 +72,25 @@ static simulated function ClientReceive(
     {
         if(spree == SpreeType_ENDPLAYER)
         {
-            Misc_Player(P).ClientDelayedSound(Default.EndCheerSound[Rand(1)], 1.5);
+            if(RelatedPRI_1 != None)
+            {
+                if ( (RelatedPRI_1 == P.PlayerReplicationInfo) 
+                    || (P.PlayerReplicationInfo.bOnlySpectator && (Pawn(P.ViewTarget) != None) && (Pawn(P.ViewTarget).PlayerReplicationInfo == RelatedPRI_1)) )
+                {
+                    Misc_Player(P).ClientDelayedSound(Default.EndCheerSound[Rand(1)], 1.5);
+                }
+            }
         }
         else if(spree == SpreeType_ENDSELF)
         {
-            Misc_Player(P).ClientDelayedSound(Default.EndSelfCheerSound[Rand(1)], 1.5);
+            if(RelatedPRI_2 != None)
+            {
+                if ( (RelatedPRI_2 == P.PlayerReplicationInfo) 
+                    || (P.PlayerReplicationInfo.bOnlySpectator && (Pawn(P.ViewTarget) != None) && (Pawn(P.ViewTarget).PlayerReplicationInfo == RelatedPRI_2)) )
+                {
+                    Misc_Player(P).ClientDelayedSound(Default.EndSelfCheerSound[Rand(1)], 1.5);
+                }
+            }
         }
     }
 

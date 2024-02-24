@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.17
+- fix awww, lol sound playing for everybody, oops
+
 v3.16
 - Fix shield gun bug where shield stops working when frozen (thanks Lee!)
 - Fix resurrection stats not working online
