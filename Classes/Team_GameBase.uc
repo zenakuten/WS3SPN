@@ -233,10 +233,10 @@ var Emoticons EmoteActor;
 var config int MaxSavedMoves;
 var config bool bEnablePasswordPause;
 var config string PasswordPausePassword;
-var config bool bChallengeModeFix;
 var config bool bSpecsKeepAdren;
 var config bool bShowNumSpecs;
 var config bool bCheersForSprees;
+var config float ChallengeModeScale;
 
 
 /*
@@ -340,8 +340,8 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bEnableEmoticons = bEnableEmoticons;
 
     Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
-    Misc_BaseGRI(GameReplicationInfo).bChallengeModeFix = bChallengeModeFix;
     Misc_BaseGRI(GameReplicationInfo).bShowNumSpecs = bShowNumSpecs;
+    Misc_BaseGRI(GameReplicationInfo).ChallengeModeScale = ChallengeModeScale;
 
 
     if(bEnableEmoticons)
@@ -520,10 +520,10 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "MaxSavedMoves", "Max saved player moves (warping fix)", 0, Weight++, "Text", "3;100:750");
     PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, True);
     PI.AddSetting("3SPN", "PasswordPausePassword", "Password pause password", 0, Weight++, "Text", "10");
-    PI.AddSetting("3SPN", "bChallengeModeFix", "Skip challenge mode nerf if teams have just been balanced", 0, Weight++, "Check",,,True);
     PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,True);
     PI.AddSetting("3SPN", "bShowNumSpecs", "Players see number of spectators watching them on HUD", 0, Weight++, "Check",,,True);
     PI.AddSetting("3SPN", "bCheersForSprees", "Players hear applause when getting a killing spree", 0, Weight++, "Check",,,True);
+    PI.AddSetting("3SPN", "ChallengeModeScale", "0-1 scale for how strong tamdicap is", 0, Weight++, "Text", "8;0.0:1.0");
 }
 
 static event string GetDescriptionText(string PropName)
@@ -635,10 +635,10 @@ static event string GetDescriptionText(string PropName)
       case "MaxSavedMoves": return "Max saved moves for player (warping fix)";
       case "bEnablePasswordPause": return "Enable pausing the game w/password.  Use 'pausepass <passwd>' console command";
       case "PasswordPausePassword": return "Password pause password";
-      case "bChallegeModeFix": return "Skip challenge mode nerf if teams just got balanced";
       case "bSpecsKeepAdren": return "Players keep adrenaline when returning from spectate";
       case "bShowNumSpecs": return "Players see number of spectators watching them on HUD";
       case "bCheersForSprees": return "Players hear applause for killing sprees";
+      case "ChallengeModeScale": return "0-1 scale for how strong tamdicap is";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -2853,10 +2853,6 @@ function BalanceTeamsMatchStart()
             TeamsAreOdd = true;
         }
 
-        // set flag to know we've been auto balanced
-        if(Misc_Player(Players[i]) != none)
-            Misc_Player(Players[i]).bWasBalanced = true;
-
         Players.Length = i;
     }
 /*
@@ -4039,6 +4035,7 @@ function ResetDefaults()
 function NotifySpree(Controller Other, int num)
 {
 	local Controller C;
+    local Class<LocalMessage> SpreeMessageClass;
 
 	if ( num == 5 )
 		num = 0;
@@ -4055,6 +4052,11 @@ function NotifySpree(Controller Other, int num)
 	else
 		return;
 
+    SpreeMessageClass = class'KillingSpreeMessage';
+    if(bCheersForSprees)
+        SpreeMessageClass = class'KillingSpreeCheersMessage';
+
+
 	SpecialEvent(Other.PlayerReplicationInfo,"spree_"$(num+1));
 	if ( TeamPlayerReplicationInfo(Other.PlayerReplicationInfo) != None )
 	{
@@ -4064,18 +4066,30 @@ function NotifySpree(Controller Other, int num)
 	}
 	Other.AwardAdrenaline( ADR_MajorKill );
 
+    for ( C=Level.ControllerList; C!=None; C=C.NextController )
+        if ( PlayerController(C) != None )
+            PlayerController(C).ReceiveLocalizedMessage( SpreeMessageClass, Num, Other.PlayerReplicationInfo );
+}
+
+function EndSpree(Controller Killer, Controller Other)
+{
+	local Controller C;
+    local Class<LocalMessage> SpreeMessageClass;
+
+    SpreeMessageClass = class'KillingSpreeMessage';
     if(bCheersForSprees)
-    {
-        for ( C=Level.ControllerList; C!=None; C=C.NextController )
-            if ( PlayerController(C) != None )
-                PlayerController(C).ReceiveLocalizedMessage( class'KillingSpreeCheersMessage', Num, Other.PlayerReplicationInfo );
-    }
-    else
-    {
-        for ( C=Level.ControllerList; C!=None; C=C.NextController )
-            if ( PlayerController(C) != None )
-                PlayerController(C).ReceiveLocalizedMessage( class'KillingSpreeMessage', Num, Other.PlayerReplicationInfo );
-    }
+        SpreeMessageClass = class'KillingSpreeCheersMessage';
+
+	if ( (Other == None) || !Other.bIsPlayer )
+		return;
+	for ( C=Level.ControllerList; C!=None; C=C.NextController )
+		if ( PlayerController(C) != None )
+		{
+            if ( (Killer == Other) || (Killer == None) || !Killer.bIsPlayer )
+                PlayerController(C).ReceiveLocalizedMessage( SpreeMessageClass, 1, None, Other.PlayerReplicationInfo );
+            else
+                PlayerController(C).ReceiveLocalizedMessage( SpreeMessageClass, 0, Other.PlayerReplicationInfo, Killer.PlayerReplicationInfo );
+		}
 }
 
 defaultproperties
@@ -4162,10 +4176,10 @@ defaultproperties
      MaxSavedMoves=200
      bEnablePasswordPause=false
      PasswordPausePassword=""
-     bChallengeModeFix=true
      bSpecsKeepAdren=true
      bShowNumSpecs=true
      bCheersForSprees=true
+     ChallengeModeScale=1.0
 
      DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
      ADR_MinorError=-5.000000

@@ -1,6 +1,12 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.16
+- Fix shield gun bug where shield stops working when frozen (thanks Lee!)
+- Fix resurrection stats not working online
+- add awww, lol sounds when spree ends
+- Add config for challenge mode scaling, 0.0 = no challenge mode, 1.0 = full challenge mode
+
 v3.15
 - Fix TAM clobbering shield gun for other gametypes
 - Fix vs stats showing as 'Player'

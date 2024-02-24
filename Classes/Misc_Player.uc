@@ -198,9 +198,6 @@ var Actor.eDoubleClickDir BufferedClickDir;
 var EmoticonsReplicationInfo EmoteInfo;
 var config bool bEnableEmoticons;
 
-//used for challenge mode
-var bool bWasBalanced;
-
 var int NumSpectators;
 var config bool bShowSpectators;
 var config bool bKillingSpreeCheers;
@@ -1378,10 +1375,10 @@ function ServerUpdateStatArrays(TeamPlayerReplicationInfo PRI)
     ClientSendClassicSniperStats(P, P.ClassicSniper);
     ClientSendComboStats(P, P.Combo);
     ClientSendMiscStats(P, P.HeadShots, P.EnemyDamage, P.ReverseFF, P.AveragePercent, 
-        P.FlawlessCount, P.OverkillCount, P.DarkHorseCount, P.HatTrickCount, P.SGDamage, P.LinkCount, P.RoxCount, P.ShieldCount, P.GrenCount, P.MinigunCount);
+        P.FlawlessCount, P.OverkillCount, P.DarkHorseCount, P.HatTrickCount, P.SGDamage, P.LinkCount, P.RoxCount, P.ShieldCount, P.GrenCount, P.MinigunCount, P.ResCount);
 }
 
-function ClientSendMiscStats(Misc_PRI P, int HS, int ED, float RFF, float AP, int FC, int OC, int DHC, int HTC, int SGD, int LinkCount, int RoxCount, int ShieldCount, int GrenCount, int MinigunCount)
+function ClientSendMiscStats(Misc_PRI P, int HS, int ED, float RFF, float AP, int FC, int OC, int DHC, int HTC, int SGD, int LinkCount, int RoxCount, int ShieldCount, int GrenCount, int MinigunCount, int ResCount)
 {
     P.HeadShots = HS;
 	P.EnemyDamage = ED;
@@ -1397,6 +1394,7 @@ function ClientSendMiscStats(Misc_PRI P, int HS, int ED, float RFF, float AP, in
 	P.ShieldCount = ShieldCount;
 	P.GrenCount = GrenCount;
     P.MinigunCount = MinigunCount;
+    P.ResCount = ResCount;
 }
 
 function ClientSendAssaultStats(Misc_PRI P, Misc_PRI.HitStats Assault)
