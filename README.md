@@ -1,6 +1,9 @@
 # 3SPNvSoL
 3SPN/TAM mutator customized for SoL, originally based on 3SPNv42102
 
+v3.18
+- banlist for players spamming taunts
+
 v3.17
 - fix awww, lol sound playing for everybody, oops
 

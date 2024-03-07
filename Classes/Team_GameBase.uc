@@ -238,6 +238,8 @@ var config bool bShowNumSpecs;
 var config bool bCheersForSprees;
 var config float ChallengeModeScale;
 
+var config array<string> BannedTauntIDs;
+
 
 /*
 struct RestartInfo
@@ -4090,6 +4092,20 @@ function EndSpree(Controller Killer, Controller Other)
             else
                 PlayerController(C).ReceiveLocalizedMessage( SpreeMessageClass, 0, Other.PlayerReplicationInfo, Killer.PlayerReplicationInfo );
 		}
+}
+
+function bool AllowTaunt(string PlayerID)
+{
+    local int i;
+    for(i = 0;i< BannedTauntIDs.Length;i++)
+    {
+        if(BannedTauntIDs[i] == PlayerID)
+            return false;
+    }
+
+    return true;
+
+
 }
 
 defaultproperties

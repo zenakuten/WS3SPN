@@ -3382,6 +3382,16 @@ function ClientDelayedSound(Sound snd, float delay)
     }
 }
 
+function bool AllowVoiceMessage(name MessageType)
+{
+    if((MessageType == 'TAUNT' || MessageType == 'AUTOTAUNT') && Team_GameBase(Level.Game) != None && !Team_GameBase(Level.Game).AllowTaunt(GetPlayerIDHash()))
+    {
+        return false;
+    }
+
+    return super.AllowVoiceMessage(MessageType);
+}
+
 /* settings */
 
 defaultproperties
