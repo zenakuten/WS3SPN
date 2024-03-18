@@ -1,23 +1,9 @@
-class Misc_Pawn extends xPawn;
+class Misc_Pawn extends UTComp_xPawn;
 
 var Misc_Player MyOwner;
 
-/* brightskins */
-var bool bBrightSkins;
-
-var Material SavedBody;
-var Material OrigBody;
-var Combiner Combined;
-var ConstantColor SkinColor;
-var ConstantColor OverlayColor;
 var float SpawnedIconTimer;
 var VJustSpawnedIcon SpawnedIcon;
-var Color RedColor;
-var Color BlueColor;
-
-var byte  OverlayType;
-var Color OverlayColors[4];
-/* brightskins */
 var Vector ShockBall_FireLocation;
 /* camping related */
 var vector LocationHistory[10];
@@ -31,26 +17,13 @@ var int	   SpawnProtectionTimer;
 var bool bSpawnKilled;
 var xEmitter InvisEmitter;
 
-// UpdateEyeHeight related
-var EPhysics OldPhysics2;
-var vector OldLocation;
-var float OldBaseEyeHeight;
-var int IgnoreZChangeTicks;
-var float EyeHeightOffset;
-
-var int HitDamage;
-var bool bHitContact;
-var Pawn HitPawn;
 var config bool bPlayOwnLandings;
 
 replication
 {
-    unreliable if(Role == ROLE_Authority)
-        OverlayType;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
-        SpawnProtectionEnabled,SpawnedIcon,
-        HitDamage, bHitContact, HitPawn;
+        SpawnProtectionEnabled,SpawnedIcon;
 }
 
 function CreateInventory(string InventoryClassName)
@@ -138,7 +111,7 @@ simulated function Destroyed()
     Super.Destroyed();
 }
 
-event PostBeginPlay()
+simulated event PostBeginPlay()
 {
 	Super.PostBeginPlay();
 	bSpawnKilled = False;
@@ -151,12 +124,6 @@ event PostBeginPlay()
         bCanBoostDodge=Misc_BaseGRI(Level.GRI).bCanBoostDodge;
 }
 
-simulated event PostNetBeginPlay()
-{
-    super.PostNetBeginPlay();
-    OldBaseEyeHeight = default.BaseEyeHeight;
-    OldLocation = Location;
-}
 
 function PossessedBy(Controller C)
 {
@@ -334,292 +301,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 }
 
-simulated function SetOverlayMaterial(Material mat, float time, bool bOverride)
-{
-    if(mat == None)
-        OverlayType = 0;
-    else if(mat == ShieldHitMat)
-    {
-        OverlayType = 1;
-        SetTimer(ShieldHitMatTime, false);
-    }
-    else if(OverlayType != 1)
-    {
-        if(mat == Shader'XGameShaders.PlayerShaders.LightningHit')
-            OverlayType = 2;
-        else if(mat == Shader'UT2004Weapons.Shaders.ShockHitShader')
-            OverlayType = 3;
-        else if(mat == Shader'XGameShaders.PlayerShaders.LinkHit')
-            OverlayType = 4;   
 
-        SetTimer(ShieldHitMatTime, false);
-    }
-
-    Super.SetOverlayMaterial(mat, time, bOverride);
-}
-
-/* brightskins related */
-/* copied from a recent xpawn patch version.
-   needed to stop GPFs in older versions. */
-simulated function bool CheckValidFemaleDefault()
-{
-	return ( (PlacedFemaleCharacterName ~= "Tamika")
-			|| (PlacedFemaleCharacterName ~= "Sapphire")
-			|| (PlacedFemaleCharacterName ~= "Enigma")
-			|| (PlacedFemaleCharacterName ~= "Cathode")
-			|| (PlacedFemaleCharacterName ~= "Rylisa")
-			|| (PlacedFemaleCharacterName ~= "Ophelia")
-			|| (PlacedFemaleCharacterName ~= "Zarina") 
-            || (PlacedFemaleCharacterName ~= "Nebri")
-            || (PlacedFemaleCharacterName ~= "Subversa")
-            || (PlacedFemaleCharacterName ~= "Diva") );
-}
-
-simulated function bool CheckValidMaleDefault()
-{
-	return ( (PlacedCharacterName ~= "Jakob")
-			|| (PlacedCharacterName ~= "Gorge")
-			|| (PlacedCharacterName ~= "Malcolm")
-			|| (PlacedCharacterName ~= "Xan")
-			|| (PlacedCharacterName ~= "Brock")
-			|| (PlacedCharacterName ~= "Gaargod")
-			|| (PlacedCharacterName ~= "Axon")
-            || (PlacedCharacterName ~= "Barktooth")
-            || (PlacedCharacterName ~= "Torch")
-            || (PlacedCharacterName ~= "WidowMaker") );
-}
-/*
-*/
-
-simulated function string CheckAndGetCharacter()
-{
-    if(!CheckValidFemaleDefault() && !CheckValidMaleDefault())
-    {
-        if(!CheckValidFemaleDefault())
-            PlacedFemaleCharacterName = "Tamika";
-        if(!CheckValidMaleDefault())
-            PlacedCharacterName = "Jakob";
-    }
-
-    if(PlayerReplicationInfo != None && PlayerReplicationInfo.bIsFemale)
-        return PlacedFemaleCharacterName;
-    else
-        return PlacedCharacterName;
-}
-
-simulated function string GetDefaultCharacter()
-{
-    local PlayerController P;
-    local int MyTeam;
-    local int OwnerTeam;
-	
-    if(!class'Misc_Player'.default.bForceRedEnemyModel && !class'Misc_Player'.default.bForceBlueAllyModel)
-        return Super.GetDefaultCharacter();
-
-    MyTeam = GetTeamNum();
-    if(MyTeam == 255)
-        MyTeam = 0;
-
-    P = Level.GetLocalPlayerController();
-    if(P != None && P.PlayerReplicationInfo != None)
-    {
-        if(P.Pawn == self)
-            return Super.GetDefaultCharacter();
-
-        OwnerTeam = P.GetTeamNum();
-
-        if(class'Misc_Player'.default.bUseTeamModels || OwnerTeam == 255)
-        {
-            if(MyTeam == 1)
-            {
-                if(class'Misc_Player'.default.bForceBlueAllyModel)
-                {
-                    PlacedCharacterName = class'Misc_Player'.default.BlueAllyModel;
-                    PlacedFemaleCharacterName = class'Misc_Player'.default.BlueAllyModel;
-                }
-                else
-                    return CheckAndGetCharacter();
-            }
-            else
-            {
-                if(class'Misc_Player'.default.bForceRedEnemyModel)
-                {
-                    PlacedCharacterName = class'Misc_Player'.default.RedEnemyModel;
-                    PlacedFemaleCharacterName = class'Misc_Player'.default.RedEnemyModel;
-                }
-                else
-                    return CheckAndGetCharacter();
-            }
-        }
-        else if(!class'Misc_Player'.default.bUseTeamModels)
-        {
-            if(MyTeam == OwnerTeam)
-            {
-                if(class'Misc_Player'.default.bForceBlueAllyModel)
-                {
-                    PlacedCharacterName = class'Misc_Player'.default.BlueAllyModel;
-                    PlacedFemaleCharacterName = class'Misc_Player'.default.BlueAllyModel;
-                }
-                else
-                    return CheckAndGetCharacter();
-            }
-            else
-            {
-                if(class'Misc_Player'.default.bForceRedEnemyModel)
-                {
-                    PlacedCharacterName = class'Misc_Player'.default.RedEnemyModel;
-                    PlacedFemaleCharacterName = class'Misc_Player'.default.RedEnemyModel;
-                }
-                else
-                    return CheckAndGetCharacter();
-            }
-        }
-    }
-
-    return CheckAndGetCharacter();
-}
-
-simulated function bool ForceDefaultCharacter()
-{
-	local PlayerController P;
-    local int MyTeam;
-    local int OwnerTeam;
-	
-    if(!class'Misc_Player'.default.bForceRedEnemyModel && !class'Misc_Player'.default.bForceBlueAllyModel)
-        return Super.ForceDefaultCharacter();
-
-    MyTeam = GetTeamNum();
-    if(MyTeam == 255)
-        MyTeam = 0;
-
-    P = Level.GetLocalPlayerController();
-    if(P != None && P.PlayerReplicationInfo != None)
-    {
-        if(P.Pawn == self)
-            return Super.ForceDefaultCharacter();
-
-        OwnerTeam = P.GetTeamNum();
-
-        if(class'Misc_Player'.default.bUseTeamModels || OwnerTeam == 255)
-        {
-            if(MyTeam == 1)
-                return class'Misc_Player'.default.bForceBlueAllyModel;
-            else
-                return class'Misc_Player'.default.bForceRedEnemyModel;
-        }
-        else if(!class'Misc_Player'.default.bUseTeamModels)
-        {
-            if(MyTeam == OwnerTeam)
-                return class'Misc_Player'.default.bForceBlueAllyModel;
-            else
-                return class'Misc_Player'.default.bForceRedEnemyModel;
-        }
-    }
-
-    return true;
-}
-
-simulated function bool CheckValid(string name)
-{
-    return ((name ~= "Abaddon")
-        ||  (name ~= "Ambrosia") || (name ~= "Annika") || (name ~= "Arclite")
-        ||  (name ~= "Aryss") || (name ~= "Asp") || (name ~= "Axon")
-        ||  (name ~= "Azure") || (name ~= "Baird") || (name ~= "BlackJack")
-        ||  (name ~= "Barktooth") || (name ~= "Brock") || (name ~= "Brutalis")
-        ||  (name ~= "Cannonball") || (name ~= "Cathode") || (name ~= "ClanLord")
-        ||  (name ~= "Cleopatra") || (name ~= "Cobalt") || (name ~= "Corrosion")
-        ||  (name ~= "Cyclops") || (name ~= "Damarus") || (name ~= "Diva")
-        ||  (name ~= "Divisor") || (name ~= "Domina") || (name ~= "Dominator")
-        ||  (name ~= "Drekorig") || (name ~= "Enigma") || (name ~= "Faraleth")
-        ||  (name ~= "Fate") || (name ~= "Frostbite") || (name ~= "Gaargod")
-        ||  (name ~= "Garrett") || (name ~= "Gkublok") || (name ~= "Gorge")
-        ||  (name ~= "Greith") || (name ~= "Guardian") || (name ~= "Harlequin")
-        ||  (name ~= "Horus") || (name ~= "Hyena") || (name ~= "Jakob")
-        ||  (name ~= "Kaela") || (name ~= "Kane") || (name ~= "Kareg")
-        ||  (name ~= "Komek") || (name ~= "Kraagesh") || (name ~= "Kragoth")
-        ||  (name ~= "Lauren") || (name ~= "Lilith") || (name ~= "Makreth")
-        ||  (name ~= "Malcolm") || (name ~= "Mandible") || (name ~= "Matrix")
-        ||  (name ~= "Mekkor") || (name ~= "Memphis") || (name ~= "Mokara")
-        ||  (name ~= "Motig") || (name ~= "Mr.Crow") || (name ~= "Nebri")
-        ||  (name ~= "Nebri") || (name ~= "Ophelia") || (name ~= "Othello")
-        ||  (name ~= "Outlaw") || (name ~= "Prism") || (name ~= "Rae")
-        ||  (name ~= "Rapier") || (name ~= "Ravage") || (name ~= "Reinha")
-        ||  (name ~= "Remus") || (name ~= "Renegade") || (name ~= "Riker")
-        ||  (name ~= "Roc") || (name ~= "Romulus") || (name ~= "Rylisa")
-        ||  (name ~= "Sapphire") || (name ~= "Satin") || (name ~= "Scarab")
-        ||  (name ~= "Selig") || (name ~= "Siren") || (name ~= "Skakruk")
-        ||  (name ~= "Skrilax") || (name ~= "Subversa") || (name ~= "Syzygy")
-        ||  (name ~= "Tamika") || (name ~= "Thannis") || (name ~= "Torch")
-        ||  (name ~= "Thorax") || (name ~= "Virus") || (name ~= "Widowmaker")
-        ||  (name ~= "Wraith") || (name ~= "Xan") || (name ~= "Zarina"));
-}
-
-simulated function Setup(xUtil.PlayerRecord rec, optional bool bLoadNow)
-{
-	local string DefaultSkin;
-    local PlayerController p;
-
-    DefaultSkin = GetDefaultCharacter();
-
-	if(PlayerReplicationInfo!=None && (	PlayerReplicationInfo.CharacterName ~= "Virus"		|| 
-										PlayerReplicationInfo.CharacterName ~= "Enigma"		|| 
-										PlayerReplicationInfo.CharacterName ~= "Xan" 		||
-										PlayerReplicationInfo.CharacterName ~= "Cyclops"	||
-										PlayerReplicationInfo.CharacterName ~= "Axon"		||
-										PlayerReplicationInfo.CharacterName ~= "Matrix"		||
-										!CheckValid(PlayerReplicationInfo.CharacterName)))
-	{
-		if(Controller == None || Controller.IsA('Bot'))
-         		rec = class'xUtil'.static.FindPlayerRecord(DefaultSkin);
-	}
-
-	if ((rec.Species == None) || ForceDefaultCharacter())
-		rec = class'xUtil'.static.FindPlayerRecord(DefaultSkin);
-
-	Species = rec.Species;
-	RagdollOverride = rec.Ragdoll;
-	if(!Species.static.Setup(self, rec))
-	{
-		rec = class'xUtil'.static.FindPlayerRecord(DefaultSkin);
-		if(!Species.static.Setup(self, rec))
-			return;
-	}
-
-	ResetPhysicsBasedAnim();
-
-    if(Level.NetMode == NM_DedicatedServer)
-        return;
-
-    p = Level.GetLocalPlayerController();
-    if(p == None)
-        return;
-
-    bNoCoronas = true;
-
-    if(MyOwner == None)
-    {
-		MyOwner = Misc_Player(p);
-
-	    if(MyOwner == None)
-		    return;
-    }   
-
-    bBrightSkins = class'Misc_Player'.default.bUseBrightSkins;
-    if(bBrightSkins)
-    {
-        if(OrigBody == None)
-		    OrigBody = Skins[0];
-
-	    if(SkinColor == None)
-		    SkinColor = New(none)class'ConstantColor';
-
-        if(OverlayColor == None)
-            OverlayColor = New(none)class'ConstantColor';
-
-	    if(Combined == None)
-		    Combined = New(none)class'Combiner';
-    }
-}
 
 simulated function RemoveFlamingEffects()
 {
@@ -696,177 +378,14 @@ simulated function Tick(float DeltaTime)
     if(bPlayedDeath)
 		return;
 
-    bBrightSkins = class'Misc_Player'.default.bUseBrightSkins;	
-	SetSkin(-1);
-}
-
-simulated function SetSkin(int OverrideTeamIndex)
-{
-    if(bBrightSkins)
-    {
-        if(OverlayType != 0)
-            SetOverlaySkin();
-        else
-            SetBrightSkin(-1);
-    }
-    else
-        SetStandardSkin();
 }
 
 simulated event PlayDying(class<DamageType> DamageType, vector HitLoc)
 {
-	SetStandardSkin();
 	bUnlit = false;
 	Super.PlayDying(DamageType, HitLoc);
 }
 
-simulated function SetStandardSkin()
-{
-	if(OrigBody != None)
-		Skins[0] = OrigBody;
-
-	bUnlit = true;
-}
-
-simulated static function ClampColor(out Color color)
-{
-    color.R = Min(color.r, 100) / 100.0 * 128.0;
-    color.G = Min(color.g, 100) / 100.0 * 128.0;
-    color.B = Min(color.b, 100) / 100.0 * 128.0;
-    color.A = 128;
-}
-
-simulated function SetBrightSkin(int OverrideTeamIndex)
-{
-	local int TeamIndex;
-	local int OwnerTeam;
-    local bool ShowYellow;
-    local bool IsEnemy;
-	local bool GameEnded;
-
-	if(MyOwner!=None && MyOwner.IsInState('GameEnded'))
-		GameEnded = true;
-		
-	if(OverrideTeamIndex==-1 && GameEnded)
-		return;
-
-	if(OrigBody == None)
-		OrigBody = Skins[0];
-
-	if(SkinColor == None)
-		SkinColor = New(none)class'ConstantColor';
-
-    if(OverlayColor == None)
-        OverlayColor = New(none)class'ConstantColor';
-
-	if(Combined == None)
-		Combined = New(none)class'Combiner';
-
-	if(OverrideTeamIndex != -1)
-		TeamIndex = OverrideTeamIndex;
-	else
-		TeamIndex = GetTeamNum();
-    
-    IsEnemy = (MyOwner!=None && MyOwner.GetTeamNum()!=TeamIndex) || TeamIndex==255;
-    ShowYellow = IsEnemy && IsSpawnProtectionEnabled() && !GameEnded;
-
-		if(MyOwner!=None && MyOwner.PlayerReplicationInfo!=None && MyOwner.PlayerReplicationInfo.bOnlySpectator)
-		{
-			if(Pawn(MyOwner.ViewTarget) != None && Pawn(MyOwner.ViewTarget).PlayerReplicationInfo != None && Pawn(MyOwner.ViewTarget).PlayerReplicationInfo.Team != None)
-				OwnerTeam = Pawn(MyOwner.ViewTarget).PlayerReplicationInfo.Team.TeamIndex;
-            else
-        OwnerTeam = 255;
-		}
-		else
-    {
-        OwnerTeam = MyOwner.GetTeamNum();
-    }
-    
-	if(OverrideTeamIndex==-1 && MyOwner!=None && OwnerTeam!=255 && !class'Misc_Player'.default.bUseTeamColors)
-	{
-        if(ShowYellow)
-            SkinColor.Color = class'Misc_Player'.default.Yellow;
-		else if(MyOwner.PlayerReplicationInfo != PlayerReplicationInfo && (OwnerTeam == 255 || TeamIndex != OwnerTeam))
-			SkinColor.Color = class'Misc_Player'.default.RedOrEnemy;
-		else/* if(TeamIndex == OwnerTeam || MyOwner.PlayerReplicationInfo == PlayerReplicationInfo)*/
-			SkinColor.Color = class'Misc_Player'.default.BlueOrAlly;
-	}
-	else
-	{
-        if(MyOwner == None)
-        {
-            if(TeamIndex == 0 || TeamIndex == 255)
-			    SkinColor.Color = RedColor;
-		    else
-			    SkinColor.Color = BlueColor;
-        }
-        else
-        {
-            if(ShowYellow)
-                SkinColor.Color = class'Misc_Player'.default.Yellow;
-		    else if(TeamIndex == 0 || TeamIndex == 255)
-			    SkinColor.Color = class'Misc_Player'.default.RedOrEnemy;
-		    else
-			    SkinColor.Color = class'Misc_Player'.default.BlueOrAlly;
-        }
-	}
-
-    ClampColor(SkinColor.Color);
-	
-    Combined.CombineOperation = CO_Add;
-    Combined.Material1 = GetSkin();
-	Combined.Material2 = SkinColor;
-	Skins[0] = Combined;
-
-	bUnlit = true;
-}
-
-simulated function Material GetSkin()
-{
-    local Material TempSkin;
-   	local string Skin;
-
-	if(SavedBody != None)
-		return SavedBody;
-
-    Skin = String(Skins[0]);
-
-    if(Right(Skin, 2) == "_0" || Right(Skin, 2) == "_1")
-    {
-        Skin = Left(Skin, Len(Skin) - 2);
-    }
-    else if(Right(Skin, 3) == "_0B" || Right(Skin, 3) == "_1B")
-    {
-        Skin = Right(Skin, Len(Skin) - 6);
-        Skin = Left(Skin, Len(Skin) - 3);
-    }
-
-   	TempSkin = Material(DynamicLoadObject(Skin, class'Material', true));
-
-    if(TempSkin == None)
-        TempSkin = Skins[0];
-
-	SavedBody = TempSkin;
-	return SavedBody;
-}
-
-simulated function SetOverlaySkin()
-{
-	if(OverlayColor==None || Combined==None)
-		return;
-		
-    OverlayColor.Color = OverlayColors[OverlayType - 1];
-
-    Combined.Material1 = GetSkin();
-    Combined.Material2 = OverlayColor;
-    Skins[0] = Combined;
-}
-
-function Timer()
-{
-    OverlayType = 0;
-}
-/* brightskins related */
 
 simulated function bool IsSpawnProtectionEnabled()
 {
@@ -905,73 +424,6 @@ function UpdateSpawnProtection()
 		return;
 		
 	DeactivateSpawnProtection();
-}
-
-simulated function ClientRestart()
-{
-    super.ClientRestart();
-    IgnoreZChangeTicks = 1;
-}
-
-
-simulated function Touch(Actor Other) 
-{
-    super.Touch(Other);
-
-    if (Other != None && Other.IsA('Teleporter'))
-        IgnoreZChangeTicks = 2;
-}
-
-event UpdateEyeHeight( float DeltaTime )
-{
-    local vector Delta;
-
-    if (Misc_Player(Controller) == none || Misc_Player(Controller).bUseNewEyeHeightAlgorithm == false) {
-        super.UpdateEyeHeight(DeltaTime);
-        return;
-    }
-
-    if ( Controller == None )
-    {
-        EyeHeight = 0;
-        return;
-    }
-    if ( Level.NetMode == NM_DedicatedServer )
-    {
-        Eyeheight = BaseEyeheight;
-        return;
-    }
-    if ( bTearOff )
-    {
-        EyeHeight = Default.BaseEyeheight;
-        bUpdateEyeHeight = false;
-        return;
-    }
-
-    if (Controller.WantsSmoothedView()) {
-        Delta = Location - OldLocation;
-
-        // remove lifts from the equation.
-        if (Base != none)
-            Delta -= DeltaTime * Base.Velocity;
-
-        // Step detection heuristic
-        if (IgnoreZChangeTicks == 0 && Abs(Delta.Z) > DeltaTime * GroundSpeed)
-            EyeHeightOffset += FClamp(Delta.Z, -MAXSTEPHEIGHT, MAXSTEPHEIGHT);
-    }
-
-    OldLocation = Location;
-    OldPhysics2 = Physics;
-    if (IgnoreZChangeTicks > 0) IgnoreZChangeTicks--;
-
-    if (Controller.WantsSmoothedView())
-        EyeHeightOffset += BaseEyeHeight - OldBaseEyeHeight;
-    OldBaseEyeHeight = BaseEyeHeight;
-
-    EyeHeightOffset *= Exp(-9.0 * DeltaTime);
-    EyeHeight = BaseEyeHeight - EyeHeightOffset;
-
-    Controller.AdjustView(DeltaTime);
 }
 
 event Landed(vector HitNormal)
@@ -1049,12 +501,6 @@ defaultproperties
 {
      bAlwaysRelevant=true
      bPlayOwnLandings=true
-     RedColor=(R=100)
-     BlueColor=(B=100,G=25)
-     OverlayColors(0)=(G=80,R=128,A=128)
-     OverlayColors(1)=(B=128,G=96,R=64,A=128)
-     OverlayColors(2)=(B=110,R=80,A=128)
-     OverlayColors(3)=(B=64,G=128,R=64,A=128)
      SpawnProtectionTimer=4
      ShieldHitMatTime=0.350000
      RagdollLifeSpan=14.000000

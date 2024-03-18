@@ -28,7 +28,7 @@ function string RecommendCombo(string ComboName)
     
         if ( FRand() < 0.41 )
         {
-            ComboName = "3SPNvSoL.NecroCombo";
+            ComboName = "WS3SPN.NecroCombo";
 		}
         else
         {
@@ -66,7 +66,7 @@ function Timer()
 	{
 		if ( NotifyPlayer[i] != None )
 		{
-			NotifyPlayer[i].ClientReceiveCombo("3SPNvSoL.NecroCombo");
+			NotifyPlayer[i].ClientReceiveCombo("WS3SPN.NecroCombo");
 			NotifyPlayer[i] = None;
 		}
 	}
@@ -80,13 +80,13 @@ function bool IsRelevant(Actor Other, out byte bSuperRelevant)
 	{
 		for ( i=0; i<16; i++ )
 		{
-			if ( xPlayer(Other).ComboNameList[i] ~= "3SPNvSoL.NecroCombo" )
+			if ( xPlayer(Other).ComboNameList[i] ~= "WS3SPN.NecroCombo" )
 			{
 				break;
 			}
 			else if ( xPlayer(Other).ComboNameList[i] == "" )
 			{
-				xPlayer(Other).ComboNameList[i] = "3SPNvSoL.NecroCombo";
+				xPlayer(Other).ComboNameList[i] = "WS3SPN.NecroCombo";
 				break;
 			}
 		}
@@ -160,7 +160,7 @@ defaultproperties
      PropsDisplayText(1)="Show How To Necro Message"
      PropsDescText(0)="Should bots use necro? (true by default)"
      PropsDescText(1)="Show the (To resurrect a teammate press B,B,F,F with 100 adren) spawn message? (True by default)."
-     NecroComboClass=Class'3SPNvSoL.NecroCombo'
+     NecroComboClass=Class'WS3SPN.NecroCombo'
      bAddToServerPackages=True
      GroupName="Combo Necromancy"
      FriendlyName="Necromancy v3"

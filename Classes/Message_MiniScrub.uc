@@ -32,7 +32,7 @@ static simulated function ClientReceive (PlayerController P, optional int Switch
 
 defaultproperties
 {
-     MiniSound=Sound'3SPNvSoL.Sounds.scrub'
+     MiniSound=Sound'WS3SPN.Sounds.scrub'
      YouAreGatling="M I N I G U N    S C R U B"
      PlayerIsGatling="Is a M I N I G U N    S C R U B"
      bIsUnique=True

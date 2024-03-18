@@ -75,12 +75,7 @@ var config int  LightningAmmo;
 var config int  ClassicSniperAmmo;
 /* weapon related */
 
-/* newnet */
-var config bool EnableNewNet;
 var TAM_Mutator MutTAM;
-/* newnet */
-var config bool bDamageIndicator;
-//var config bool ServerLinkEnabled;
 
 var config String ShieldTextureName;
 var config string FlagTextureName;
@@ -165,8 +160,6 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).NetUpdateTime = Level.TimeSeconds - 1;
 	
 	Misc_BaseGRI(GameReplicationInfo).Acronym = Acronym;
-	Misc_BaseGRI(GameReplicationInfo).EnableNewNet = EnableNewNet;	
-	Misc_BaseGRI(GameReplicationInfo).bDamageIndicator = bDamageIndicator;																			
   
   Misc_BaseGRI(GameReplicationInfo).ShieldTextureName = ShieldTextureName;  
   Misc_BaseGRI(GameReplicationInfo).FlagTextureName = FlagTextureName;  
@@ -227,8 +220,6 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "RocketAmmo", "Rocket Ammunition", 0, 68, "Text", "3;0:999",, True);
     PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, 69, "Text", "3;0:999",, True);
     PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, 70, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "EnableNewNet", "Enable New Net", 0, 80, "Check");
-    PI.AddSetting("3SPN", "bDamageIndicator", "Enable Damage Indicator", 0, 401, "Check"); 																						   
 }
 
 static event string GetDescriptionText(string PropName)
@@ -274,8 +265,6 @@ static event string GetDescriptionText(string PropName)
         case "RocketAmmo":          return "Amount of Rocket Ammunition to give in a round.";
         case "LightningAmmo":       return "Amount of Lightning Ammunition to give in a round.";
         case "ClassicSniperAmmo":       return "Amount of ClassicSniper Ammunition to give in a round.";
-		case "EnableNewNet":		return "Make enhanced netcode available for players.";		
-        case "bDamageIndicator":    return "Make the numeric damage indicator available for players.";																												
 	}
 
     return Super.GetDescriptionText(PropName);
@@ -446,10 +435,10 @@ function SpawnRandomPickupBases()
 
 event InitGame(string Options, out string Error)
 {
-	class'TAM_Mutator'.default.EnableNewNet = EnableNewNet;
     bAllowBehindView = true;
 
     Super.InitGame(Options, Error);
+    AddMutator("WS3SPN.TAM_Mutator");
     ParseOptions(Options);
 
 	foreach DynamicActors(class'TAM_Mutator', MutTAM)
@@ -482,9 +471,6 @@ event InitGame(string Options, out string Error)
 		class'XWeapons.ShieldFire'.default.SelfDamageScale = ShieldGunSelfDamageScale;
 		class'XWeapons.ShieldFire'.default.MinSelfDamage = ShieldGunMinSelfDamage;
         
-        class'WeaponFire_Shield'.default.SelfForceScale= ShieldGunSelfForceScale;
-        class'WeaponFire_Shield'.default.SelfDamageScale = ShieldGunSelfDamageScale;
-        class'WeaponFire_Shield'.default.MinSelfDamage = ShieldGunMinSelfDamage;
 	}
     
     /* combo related */
@@ -501,7 +487,7 @@ event InitGame(string Options, out string Error)
         EnabledCombos[EnabledCombos.Length] = "xGame.ComboInvis";
 
     if(!bDisableNecro)
-        EnabledCombos[EnabledCombos.Length] = "3SPNvSoL.NecroCombo";
+        EnabledCombos[EnabledCombos.Length] = "WS3SPN.NecroCombo";
     /* combo related */
 
 	/*if(ServerLinkEnabled)
@@ -587,12 +573,6 @@ function int ReduceDamage(int Damage, pawn injured, pawn instigatedBy, vector Hi
             Score = NewDamage - OldDamage;
             if(Score > 0.0)
             {
-                if(Misc_Pawn(instigatedBy) != None)
-                {
-                    Misc_Pawn(instigatedBy).HitDamage += Score;
-                    Misc_Pawn(instigatedBy).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                    Misc_Pawn(instigatedBy).HitPawn = injured;
-                }
                 // log event
                 if(Misc_Player(instigatedBy.Controller) != None)
                 {
@@ -869,7 +849,7 @@ event PlayerController Login
 	if(PC!=None)
 	{
 		if(Misc_PRI(PC.PlayerReplicationInfo)!=None)
-			Misc_PRI(PC.PlayerReplicationInfo).ColoredName = InName;
+			Misc_PRI(PC.PlayerReplicationInfo).UTCompPRI.ColoredName = InName;
 			
 		if(Misc_Player(PC)!=None)
 			Misc_Player(PC).LoginTime = Level.TimeSeconds;
@@ -995,9 +975,9 @@ function bool AddBot(optional string botName)
 function string SwapDefaultCombo(string ComboName)
 {
     if(ComboName ~= "xGame.ComboSpeed")
-        return "3SPNvSoL.Misc_ComboSpeed";
+        return "WS3SPN.Misc_ComboSpeed";
     else if(ComboName ~= "xGame.ComboBerserk")
-        return "3SPNvSoL.Misc_ComboBerserk";
+        return "WS3SPN.Misc_ComboBerserk";
 
     return ComboName;
 }
@@ -1884,28 +1864,26 @@ defaultproperties
      RocketAmmo=12
      LightningAmmo=10
      ClassicSniperAmmo=10
-     EnableNewNet=True
-     bDamageIndicator=True
      ShowServerName=True
      FlagTextureEnabled=True
      FlagTextureShowAcronym=True
      bDisableNecro=true
      bDisableNecroMessage=true
-     OvertimeSound=Sound'3SPNvSoL.Sounds.overtime'
+     OvertimeSound=Sound'WS3SPN.Sounds.overtime'
      ADR_MinorError=-5.000000
-     LoginMenuClass="3SPNvSoL.Menu_TAMLoginMenu"
-     LocalStatsScreenClass=Class'3SPNvSoL.Misc_StatBoard'
-     DefaultPlayerClassName="3SPNvSoL.Misc_Pawn"
-     ScoreBoardType="3SPNvSoL.AM_Scoreboard"
-     HUDType="3SPNvSoL.AM_HUD"
-     MapListType="3SPNvSoL.MapListArenaMaster"
+     LoginMenuClass="WS3SPN.Menu_TAMLoginMenu"
+     LocalStatsScreenClass=Class'WS3SPN.Misc_StatBoard'
+     DefaultPlayerClassName="WS3SPN.Misc_Pawn"
+     ScoreBoardType="WS3SPN.AM_Scoreboard"
+     HUDType="WS3SPN.AM_HUD"
+     MapListType="WS3SPN.MapListArenaMaster"
      GoalScore=5
      MaxLives=1
      TimeLimit=0
-     DeathMessageClass=Class'3SPNvSoL.Misc_DeathMessage'
-     MutatorClass="3SPNvSoL.TAM_Mutator"
-     PlayerControllerClassName="3SPNvSoL.Misc_Player"
-     GameReplicationInfoClass=Class'3SPNvSoL.TAM_GRI'
+     DeathMessageClass=Class'WS3SPN.Misc_DeathMessage'
+     MutatorClass="UnrealGame.DMMutator"
+     PlayerControllerClassName="WS3SPN.Misc_Player"
+     GameReplicationInfoClass=Class'WS3SPN.TAM_GRI'
      GameName="ArenaMaster"
      Description="One life per round. Don't waste it"
      Acronym="AM"

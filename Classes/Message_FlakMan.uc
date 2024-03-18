@@ -35,7 +35,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     FlakManSound=Sound'3SPNvSoL.Sounds.FlakMan'
+     FlakManSound=Sound'WS3SPN.Sounds.FlakMan'
      YouAreFlakMan="YOU ARE A FLAKMAN!"
      PlayerIsFlakMan="IS A FLAKMAN!"
      bIsUnique=True

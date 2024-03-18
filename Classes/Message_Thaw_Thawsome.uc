@@ -36,7 +36,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     ThawsomeSound=Sound'3SPNvSoL.Sounds.Thawsome'
+     ThawsomeSound=Sound'WS3SPN.Sounds.Thawsome'
      YouAreThawsome="YOU ARE THAWSOME!"
      PlayerIsThawsome="IS THAWSOME!"
      bIsUnique=True

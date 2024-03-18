@@ -35,7 +35,7 @@ defaultproperties
      AdrenMessage="Adrenaline"
      MateOutMessage="Mate is out RES! !"
      AdrenSound=Sound'AnnouncerMAIN.adrenalin'
-     MateOutSound=Sound'3SPNvSoL.Sounds.MateOut'
+     MateOutSound=Sound'WS3SPN.Sounds.MateOut'
      bIsUnique=True
      bIsConsoleMessage=False
      bFadeMessage=True

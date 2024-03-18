@@ -105,11 +105,8 @@ var bool                    EndGameCalled;
 /* extended functionality */
 
 /* newnet */
-var config bool EnableNewNet;
 var TAM_Mutator MutTAM;
 /* newnet */
-
-var config bool bDamageIndicator;
 
 var int WinningTeamIndex;
 var array<Controller> EndCeremonyRankings;
@@ -177,8 +174,6 @@ var config bool FlagTextureShowAcronym;
 var config string SoundAloneName;
 var config string SoundSpawnProtectionName;
 
-//var config bool AllowServerSaveSettings;
-
 var config bool AlwaysRestartServerWhenEmpty;
 
 var Sound OvertimeSound;
@@ -188,13 +183,6 @@ var bool UseZAxisRadar;
 
 var config bool bFastWeaponSwitching;
 var config bool bCanBoostDodge;
-
-var config int MinNetSpeed;
-var config int MaxNetSpeed;
-
-//var config bool UseNetUpdateRate;
-//var config float MinNetUpdateRate;
-//var config float MaxNetUpdateRate;
 
 var config int MinPlayersForStatsRecording;
 
@@ -237,9 +225,7 @@ var config bool bSpecsKeepAdren;
 var config bool bShowNumSpecs;
 var config bool bCheersForSprees;
 var config float ChallengeModeScale;
-
 var config array<string> BannedTauntIDs;
-
 
 /*
 struct RestartInfo
@@ -292,8 +278,6 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).Timeouts = Timeouts;
 
     Misc_BaseGRI(GameReplicationInfo).Acronym = Acronym;
-    Misc_BaseGRI(GameReplicationInfo).EnableNewNet = EnableNewNet;
-	Misc_BaseGRI(GameReplicationInfo).bDamageIndicator = bDamageIndicator;
 
     Misc_BaseGRI(GameReplicationInfo).ShieldTextureName = ShieldTextureName;
     Misc_BaseGRI(GameReplicationInfo).FlagTextureName = FlagTextureName;
@@ -311,14 +295,8 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).UseZAxisRadar = UseZAxisRadar;
     Misc_BaseGRI(GameReplicationInfo).ServerLinkStatus = ServerLinkStatus;
 
-    //Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate = UseNetUpdateRate;
-    //Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate = MinNetUpdateRate;
-    //Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate = MaxNetUpdateRate;
-
     Misc_BaseGRI(GameReplicationInfo).bFastWeaponSwitching = bFastWeaponSwitching;
     Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
-    Misc_BaseGRI(GameReplicationInfo).MinNetSpeed = MinNetSpeed;
-    Misc_BaseGRI(GameReplicationInfo).MaxNetSpeed = MaxNetSpeed;
 
     Misc_BaseGRI(GameReplicationInfo).FootstepVolume = FootstepVolume;
     Misc_BaseGRI(GameReplicationInfo).FootstepRadius = FootstepRadius;
@@ -408,6 +386,7 @@ static function FillPlayInfo(PlayInfo PI)
     local byte Weight; // weight must be a byte (max value 127?)
 
     Super.FillPlayInfo(PI);
+    class'TAM_Mutator'.static.FillPlayInfo(PI);
 
     Weight = 1;
     PI.AddSetting("3SPN", "StartingHealth", "Starting Health", 0, Weight++, "Text", "3;0:999");
@@ -452,8 +431,6 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, Weight++, "Text", "3;0:999",, True);
     PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, Weight++, "Text", "3;0:999",, True);
 
-    PI.AddSetting("3SPN", "EnableNewNet", "Enable New Net", 0, Weight++, "Check");
-    PI.AddSetting("3SPN", "bDamageIndicator", "Enable Damage Indicator", 0, 401, "Check");  
     PI.AddSetting("3SPN", "EndCeremonyEnabled", "Enable End Ceremony", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "RoundCanTie", "Rounds Can Tie", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnProtectionOnRez", "Enable Spawn Protection After Resurrection", 0, Weight++, "Check");
@@ -468,24 +445,15 @@ static function FillPlayInfo(PlayInfo PI)
 
     PI.AddSetting("3SPN", "EnforceMaxPlayers", "Enforce Maximum Number Of Players (Tournament)", 0, Weight++, "Check");
 
-//    PI.AddSetting("3SPN", "AllowServerSaveSettings", "Allow Caching Player's 3SPN Settings On The Server", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "AlwaysRestartServerWhenEmpty", "Always Restart Server When The Last Player Leaves", 0, Weight++, "Check");
 
     PI.AddSetting("3SPN", "ScoreboardCommunityName", "Scoreboard Community Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, True);
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
-    PI.AddSetting("3SPN", "MinNetSpeed", "Minimum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
-    PI.AddSetting("3SPN", "MaxNetSpeed", "Maximum netspeed for clients", 0, Weight++, "Text", "6;9636:100000");
-    //PI.AddSetting("3SPN", "UseNetUpdateRate", "Use UTComp movement update", 0, Weight++, "Check");
-    //PI.AddSetting("3SPN", "MinNetUpdateRate", "Minimum net update rate for clients", 0, Weight++, "Text", "3;90:250");
-    //PI.AddSetting("3SPN", "MaxNetUpdateRate", "Maximum net update rate for clients", 0, Weight++, "Text", "3;90:250");
-//    PI.AddSetting("3SPN", "MaxHealth", "Max Health", 0, Weight++, "Text", "8;1.0:2.0");
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
-
-//    PI.AddSetting("3SPN", "UseZAxisRadar", "Extended HUD Includes Z Axis", 0, Weight++, "Check");
 
     //serverlink menu entry
     Weight = 1;
@@ -574,8 +542,6 @@ static event string GetDescriptionText(string PropName)
       case "LightningAmmo":       return "Amount of Lightning Ammunition to give in a round.";
       case "ClassicSniperAmmo":       return "Amount of ClassicSniper Ammunition to give in a round.";
 	  
-      case "EnableNewNet":                  return "Make enhanced netcode available for players.";
-      case "bDamageIndicator":    return "Enable or Disable the Damage Indicators for players";
       case "EndCeremonyEnabled":            return "Enable End Ceremony";
       case "AllowPersistentStatsWithBots":  return "Allow Persistent Stats With Bots";
       case "RoundCanTie":                   return "Rounds Can Tie";
@@ -597,7 +563,6 @@ static event string GetDescriptionText(string PropName)
       case "ServerLinkPassword":       return "ServerLink Password";
       case "EndCeremonyStatsEnabled":  return "Enable End Ceremony Stats List (ServerLink)";
 
-//      case "AllowServerSaveSettings":       return "Allow Caching Player's 3SPN Settings On The Server";
       case "AlwaysRestartServerWhenEmpty":  return "Always Restart Server When The Last Player Leaves";
 
       case "ScoreboardCommunityName":  return "Scoreboard Community Name";
@@ -608,12 +573,6 @@ static event string GetDescriptionText(string PropName)
 //      case "UseZAxisRadar":            return "Extended Player HUD Includes Z Axis For Allies";
       case "bFastWeaponSwitching": return "UT2003 style fast weapon switching";
       case "bCanBoostDodge": return "UT2003 style boost dodging";
-      case "MinNetSpeed": return "Minimum netspeed for clients";
-      case "MaxNetSpeed": return "Maximum netspeed for clients";
-      
-      //case "UseNetUpdateRate": return "Use UTComp movement update";
-      //case "MinNetUpdateRate": return "Minimum net update rate for clients";
-      //case "MaxNetUpdateRate": return "Maximum net update rate for clients";
 
       case "FootstepVolume": return "Volume of player footstep sound";
       case "FootstepRadius": return "Radius of player footstep sound";
@@ -781,6 +740,7 @@ event InitGame(string Options, out string Error)
   DisablePersistentStatsForMatch = False;
   NoStatsForThisMatch = False;
   Super.InitGame(Options, Error);
+  AddMutator("WS3SPN.TAM_Mutator");
   ParseOptions(Options);
 
   if(TournamentModuleClass!="")
@@ -795,7 +755,6 @@ event InitGame(string Options, out string Error)
 
     foreach DynamicActors(class'TAM_Mutator', MutTAM)
         break;
-    MutTAM.EnableNewNet = EnableNewNet;
 
     class'xPawn'.Default.ControllerClass = class'Misc_Bot';
 
@@ -822,9 +781,6 @@ event InitGame(string Options, out string Error)
 		class'XWeapons.ShieldFire'.default.SelfDamageScale = ShieldGunSelfDamageScale;
 		class'XWeapons.ShieldFire'.default.MinSelfDamage = ShieldGunMinSelfDamage;
         
-        class'WeaponFire_Shield'.default.SelfForceScale= ShieldGunSelfForceScale;
-        class'WeaponFire_Shield'.default.SelfDamageScale = ShieldGunSelfDamageScale;
-        class'WeaponFire_Shield'.default.MinSelfDamage = ShieldGunMinSelfDamage;
     }
 
     /* combo related */
@@ -839,16 +795,6 @@ event InitGame(string Options, out string Error)
 
     if(!bDisableInvis)
         EnabledCombos[EnabledCombos.Length] = "xGame.ComboInvis";
-    /* combo related */
-
-  //  if(ServerLinkStatus != SL_DISABLED)
-  //  {
-   //     PlayerDataManager_ServerLink = spawn(class'Misc_PlayerDataManager_ServerLink');
-   //     if(PlayerDataManager_ServerLink!=None)
-   //         PlayerDataManager_ServerLink.ConfigureServerLink(ServerLinkAddress, ServerLinkPort, ServerLinkAccount, ServerLinkPassword);
-   // }
-
-  //  MatchStatsRegistered = false;
 	
 	if ( ServerLinkStatus != 0 )
   {
@@ -1307,12 +1253,6 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                     }
 
                    EyeHeight.z = instigatedBy.EyeHeight;
-                   if(Misc_Pawn(instigatedBy) != None)
-                   {
-                        Misc_Pawn(instigatedBy).HitDamage -= Score;
-                        Misc_Pawn(instigatedBy).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                        Misc_Pawn(instigatedBy).HitPawn = injured;
-                   }
                 }
 
                 if(Misc_Player(instigatedBy.Controller) != None)
@@ -1349,12 +1289,6 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             Score = NewDamage - OldDamage;
             if(Score > 0.0)
             {
-                if(Misc_Pawn(instigatedBy) != None)
-                {
-                    Misc_Pawn(instigatedBy).HitDamage += Score;
-                    Misc_Pawn(instigatedBy).bHitContact = FastTrace(injured.Location, instigatedBy.Location + EyeHeight);
-                    Misc_Pawn(instigatedBy).HitPawn = injured;
-                }
                 if(Misc_Player(instigatedBy.Controller) != None)
                 {
                     Misc_Player(instigatedBy.Controller).NewEnemyDamage += Score * 0.01;
@@ -1698,13 +1632,12 @@ function float RatePlayerStart(NavigationPoint N, byte Team, Controller Player)
 
 function StartMatch()
 {	
-  local Controller C;
-  local int CountPlayers;
-//  local bool testen;
+    local Controller C;
+    local int CountPlayers;
   
     Super(DeathMatch).StartMatch();
-  
-if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
+
+    if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
     {
         C = Level.ControllerList;
         J0x32:
@@ -1753,6 +1686,9 @@ function StartNewRound()
 {
     local Controller C;
 
+    if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInFinalCountdown)
+        return;
+
     RespawnTime = 4;
     LockTime = default.LockTime;
 
@@ -1765,7 +1701,6 @@ function StartNewRound()
     EndOfRoundScorer = None;
 
     NextRoundTime = 0;
-
     GameReplicationInfo.bStopCountdown = false;
 
     Deaths[0] = 0;
@@ -1808,7 +1743,6 @@ event PlayerController Login
 {
     local string InName;
     local PlayerController PC;
-    local EmoticonsReplicationInfo EmoteInfo;
 
   Options = class'Misc_Util'.static.SanitizeLoginOptions(Options);
 
@@ -1827,7 +1761,7 @@ event PlayerController Login
     if(PC!=None)
     {
         if(Misc_PRI(PC.PlayerReplicationInfo)!=None)
-            Misc_PRI(PC.PlayerReplicationInfo).ColoredName = InName;
+            Misc_PRI(PC.PlayerReplicationInfo).UTCompPRI.ColoredName = InName;
 
         if(Misc_Player(PC)!=None)
         {
@@ -1835,15 +1769,6 @@ event PlayerController Login
             Misc_Player(PC).LoginTime = Level.TimeSeconds;
         }
 
-        if(bEnableEmoticons)
-        {
-            EmoteInfo = spawn(class'EmoticonsReplicationInfo', PC);
-            EmoteInfo.EmoteActor = EmoteActor;
-            if(Misc_Player(PC) != None)
-            {
-                Misc_Player(PC).EmoteInfo = EmoteInfo;
-            }
-        }
     }
 
     return PC;
@@ -2161,8 +2086,8 @@ state MatchInProgress
             Misc_Pawn(C.Pawn).UpdateSpawnProtection();
         }
 
-    if(ForceAutoBalanceTimer > 0)
-      --ForceAutoBalanceTimer;
+        if(ForceAutoBalanceTimer > 0)
+            --ForceAutoBalanceTimer;
 
         if(EndOfRoundTime > 0)
         {
@@ -2279,7 +2204,9 @@ state MatchInProgress
         }
 
         if(RespawnTime > 0)
+        {
             RespawnTimer();
+        }
 
         CheckForCampers();
         CleanUpPawns();
@@ -3489,6 +3416,13 @@ function bool CheckMaxLives(PlayerReplicationInfo Scorer)
 
     if(bNoneLeft)
     {
+        if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInWarmup)
+        {
+            if(Scorer != None)
+                EndRound(Living);
+            return false;
+        }
+
         if(Living != None)
             QueueEndRound(Living);
         else
@@ -3498,6 +3432,8 @@ function bool CheckMaxLives(PlayerReplicationInfo Scorer)
             else
                 QueueEndRound(None);
         }
+
+
         return true;
     }
 
@@ -3633,7 +3569,9 @@ function EndRound(PlayerReplicationInfo Scorer)
     else
     {
         if(NextRoundDelay>0)
+        {
             NextRoundTime = NextRoundDelay;
+        }
     }
 }
 
@@ -4104,8 +4042,6 @@ function bool AllowTaunt(string PlayerID)
     }
 
     return true;
-
-
 }
 
 defaultproperties
@@ -4142,8 +4078,6 @@ defaultproperties
      EndOfRoundDelay=2
      EndOfRoundTime=10
      RoundCanTie=True
-     EnableNewNet=True
-     bDamageIndicator=True
      EndCeremonyEnabled=True
      EndCeremonyStatsEnabled=True
      EndCeremonyStatsListDisplayTime=15
@@ -4160,17 +4094,12 @@ defaultproperties
      ShowServerName=True
      FlagTextureEnabled=True
      FlagTextureShowAcronym=True
-     OvertimeSound=Sound'3SPNvSoL.Sounds.overtime'
+     OvertimeSound=Sound'WS3SPN.Sounds.overtime'
      UseZAxisRadar=True
      bScoreTeamKills=False
      bFastWeaponSwitching=True
      bCanBoostDodge=False
      MinPlayersForStatsRecording=2
-     MinNetSpeed=9636
-     MaxNetSpeed=100000
-     //UseNetUpdateRate=True
-     //MinNetUpdateRate=90.0
-     //MaxNetUpdateRate=250.0     
      FootstepVolume=0.15
      FootstepRadius=400
      FriendlyFireScale=0.500000
@@ -4197,20 +4126,21 @@ defaultproperties
      bCheersForSprees=true
      ChallengeModeScale=1.0
 
-     DefaultEnemyRosterClass="3SPNvSoL.TAM_TeamInfo"
+     DefaultEnemyRosterClass="WS3SPN.TAM_TeamInfo"
      ADR_MinorError=-5.000000
-     LoginMenuClass="3SPNvSoL.Menu_TAMLoginMenu"
-     LocalStatsScreenClass=Class'3SPNvSoL.Misc_StatBoard'
-     DefaultPlayerClassName="3SPNvSoL.Misc_Pawn"
-     ScoreBoardType="3SPNvSoL.TAM_Scoreboard"
-     HUDType="3SPNvSoL.TAM_HUD"
+     LoginMenuClass="WS3SPN.Menu_TAMLoginMenu"
+     LocalStatsScreenClass=Class'WS3SPN.Misc_StatBoard'
+     DefaultPlayerClassName="WS3SPN.Misc_Pawn"
+     ScoreBoardType="WS3SPN.TAM_Scoreboard"
+     HUDType="WS3SPN.TAM_HUD"
      MapListType="3SPNRU-B2.MapListTeamArenaMaster"
      GoalScore=10
      TimeLimit=0
-     DeathMessageClass=Class'3SPNvSoL.Misc_DeathMessage'
-     MutatorClass="3SPNvSoL.TAM_Mutator"
-     PlayerControllerClassName="3SPNvSoL.Misc_Player"
-     GameReplicationInfoClass=Class'3SPNvSoL.Misc_BaseGRI'
+     DeathMessageClass=Class'WS3SPN.Misc_DeathMessage'
+     //MutatorClass="WS3SPN.TAM_Mutator"
+     MutatorClass="UnrealGame.DMMutator"
+     PlayerControllerClassName="WS3SPN.Misc_Player"
+     GameReplicationInfoClass=Class'WS3SPN.Misc_BaseGRI'
      GameName="BASE"
      Description="One life per round. Don't waste it."
      ScreenShotName="UT2004Thumbnails.TDMShots"

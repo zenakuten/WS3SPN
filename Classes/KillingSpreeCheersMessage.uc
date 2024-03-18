@@ -114,14 +114,14 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-    CheerSound(0)=Sound'3SPNvSoL.Sounds.killingspree'
-    CheerSound(1)=Sound'3SPNvSoL.Sounds.rampage'
-    CheerSound(2)=Sound'3SPNvSoL.Sounds.dominating'
-    CheerSound(3)=Sound'3SPNvSoL.Sounds.unstoppable'
-    CheerSound(4)=Sound'3SPNvSoL.Sounds.godlike'
-    CheerSound(5)=Sound'3SPNvSoL.Sounds.wickedsick'
-    EndCheerSound(0)=Sound'3SPNvSoL.Sounds.aww1'
-    EndCheerSound(1)=Sound'3SPNvSoL.Sounds.aww2'
-    EndSelfCheerSound(0)=Sound'3SPNvSoL.Sounds.lol1'
-    EndSelfCheerSound(1)=Sound'3SPNvSoL.Sounds.lol2'
+    CheerSound(0)=Sound'WS3SPN.Sounds.killingspree'
+    CheerSound(1)=Sound'WS3SPN.Sounds.rampage'
+    CheerSound(2)=Sound'WS3SPN.Sounds.dominating'
+    CheerSound(3)=Sound'WS3SPN.Sounds.unstoppable'
+    CheerSound(4)=Sound'WS3SPN.Sounds.godlike'
+    CheerSound(5)=Sound'WS3SPN.Sounds.wickedsick'
+    EndCheerSound(0)=Sound'WS3SPN.Sounds.aww1'
+    EndCheerSound(1)=Sound'WS3SPN.Sounds.aww2'
+    EndSelfCheerSound(0)=Sound'WS3SPN.Sounds.lol1'
+    EndSelfCheerSound(1)=Sound'WS3SPN.Sounds.lol2'
 }

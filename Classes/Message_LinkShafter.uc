@@ -31,7 +31,7 @@ static simulated function ClientReceive (PlayerController P, optional int Switch
 
 defaultproperties
 {
-     LinkShafterSound=Sound'3SPNvSoL.Sounds.LinkShafter'
+     LinkShafterSound=Sound'WS3SPN.Sounds.LinkShafter'
      YouAreLinkShafter="L I N K  S H A F T E R"
      PlayerIsLinkShafter="Is A Link Shafter"
      bIsUnique=True

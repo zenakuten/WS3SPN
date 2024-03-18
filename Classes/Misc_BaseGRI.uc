@@ -37,8 +37,6 @@ var bool bDisableNecroMessage;
 
 var int  TimeOuts;
 
-var bool EnableNewNet;
-var bool bDamageIndicator;
 
 var string ShieldTextureName;
 var string FlagTextureName;
@@ -57,11 +55,6 @@ var string SoundSpawnProtectionName;
 var Team_GameBase.EServerLinkStatus ServerLinkStatus; //enum type dependson Team_GameBase
 
 var bool bCanBoostDodge;
-var int MinNetSpeed;
-var int MaxNetSpeed;
-//var bool UseNetUpdateRate;
-//var float MinNetUpdateRate;
-//var float MaxNetUpdateRate;
 var float FootstepVolume;
 var int FootstepRadius;
 
@@ -91,10 +84,10 @@ replication
         RoundTime, SecsPerRound, bDisableSpeed, bDisableBooster, bDisableInvis,
         bDisableBerserk, StartingHealth, StartingArmor, MaxHealth, OTDamage,
         OTInterval, CampThreshold, bKickExcessiveCampers, bSpecExcessiveCampers, bForceRUP, ForceRUPMinPlayers,
-        TimeOuts, Acronym, EnableNewNet, ShieldTextureName, ShowServerName,
+        TimeOuts, Acronym, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
-        SoundSpawnProtectionName,UseZAxisRadar,bDamageIndicator, bCanBoostDodge,
-        MaxNetSpeed, MinNetSpeed, FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
+        SoundSpawnProtectionName,UseZAxisRadar, bCanBoostDodge,
+        FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
         bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves,
@@ -107,7 +100,7 @@ replication
     reliable if(bNetDirty && Role == ROLE_Authority)
         CurrentRound, bEndOfRound, bGamePaused;
 		
-		 unreliable if ( bNetDirty && (Role == 4) )
+		 unreliable if ( bNetDirty && (Role == ROLE_Authority) )
     NextWhoToRes, ServerSkill, ServerLinkStatus, ScoreBoardExtraInfo, stat;
 }
 
@@ -292,15 +285,14 @@ function UpdateWhoToRes ()
 simulated function Timer()
 { 
     Super.Timer();
-	
-	UpdateServerRecorder();
-	if ( Role == 4 )
-  {
-	
-    UpdateServerSkill();
-	}
+
+    UpdateServerRecorder();
+    if ( Role == ROLE_Authority )
+    {
+        UpdateServerSkill();
+    }
+
     UpdateWhoToRes();
-  
     if(Level.NetMode == NM_Client)
     {
         if(RoundMinute > 0)
@@ -316,6 +308,5 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="SoL 3.18"
-     EnableNewNet=True
+     Version="WS3SPN 3.17"
 }

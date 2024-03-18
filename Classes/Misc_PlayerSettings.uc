@@ -2,20 +2,6 @@ class Misc_PlayerSettings extends Object
 	config(PlayerSettings3SPNCW)
 	PerObjectConfig;
 	
-struct BrightSkinsSettings
-{
-	var bool bUseBrightSkins;
-	var bool bUseTeamColors;
-	var Color RedOrEnemy;
-	var Color BlueOrAlly;
-	var Color Yellow;
-	var bool bUseTeamModels;
-	var bool bForceRedEnemyModel;
-	var bool bForceBlueAllyModel;
-	var string RedEnemyModel;
-	var string BlueAllyModel;	
-};
-
 struct ColoredNamesSettings
 {
 	var bool bEnableColoredNamesInTalk;
@@ -34,40 +20,24 @@ struct MiscSettings
 	var bool bDisableBooster;
 	var bool bDisableBerserk;
 	var bool bDisableInvis;
-	var bool bMatchHUDToSkins;
 	var bool bShowTeamInfo;
 	var bool bShowCombos;
 	var bool bExtendedInfo;
 	var bool bPlayOwnFootsteps;
 	var bool bPlayOwnLandings;
 	var bool bAutoScreenShot;
-	var bool bUseHitSounds;
-	var bool bEnableEnhancedNetCode;
 	var bool bDisableEndCeremonySound;
-	var float SoundHitVolume;
 	var float SoundAloneVolume;
-	var bool AutoSyncSettings;
     var int DamageIndicatorType;
     var int ReceiveAwardType;
     var bool bConfigureNetSpeed;
-    var bool bEnableWidescreenFix;
     var int ConfigureNetSpeedValue;
-    //var int DesiredNetUpdateRate;
-    //var bool bEnableDodgeFix;
     var bool bEnableEmoticons;
     var bool bKillingSpreeCheers;
 };
 
-struct WeaponSettings
-{
-    var bool bUseNewEyeHeightAlgorithm;
-};
-
 var config bool Existing;
-var config BrightSkinsSettings BrightSkins;
-var config ColoredNamesSettings ColoredNames;
 var config MiscSettings Misc;
-var config WeaponSettings Weapons;
 
 static function Misc_PlayerSettings LoadPlayerSettings(Misc_Player P)
 {
@@ -101,10 +71,7 @@ static function Misc_PlayerSettings LoadPlayerSettings(Misc_Player P)
 	if(NewPlayerSettings != None && NewPlayerSettings.Existing == False)
 	{
 		NewPlayerSettings.Existing = PlayerSettings.Existing;
-		NewPlayerSettings.BrightSkins = PlayerSettings.BrightSkins;
-		NewPlayerSettings.ColoredNames = PlayerSettings.ColoredNames;
 		NewPlayerSettings.Misc = PlayerSettings.Misc;
-        NewPlayerSettings.Weapons = PlayerSettings.Weapons;
 		NewPlayerSettings.SaveConfig();
 		
 		return NewPlayerSettings;

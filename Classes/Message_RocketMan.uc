@@ -35,7 +35,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     RocketManSound=Sound'3SPNvSoL.Sounds.RocketMan'
+     RocketManSound=Sound'WS3SPN.Sounds.RocketMan'
      YouAreRocketMan="YOU ARE A ROCKETMAN!"
      PlayerIsRocketMan="IS A ROCKETMAN!"
      bIsUnique=True

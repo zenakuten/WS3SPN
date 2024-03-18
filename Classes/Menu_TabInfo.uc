@@ -40,7 +40,7 @@ defaultproperties
          bNeverFocus=True
          OnPreDraw=SectionBackgObj.InternalPreDraw
      End Object
-     SectionBackg=AltSectionBackground'3SPNvSoL.Menu_TabInfo.SectionBackgObj'
+     SectionBackg=AltSectionBackground'WS3SPN.Menu_TabInfo.SectionBackgObj'
 
      Begin Object Class=GUIScrollTextBox Name=TextBoxObj
          bNoTeletype=True
@@ -55,7 +55,7 @@ defaultproperties
          bScaleToParent=True
          bNeverFocus=True
      End Object
-     TextBox=GUIScrollTextBox'3SPNvSoL.Menu_TabInfo.TextBoxObj'
+     TextBox=GUIScrollTextBox'WS3SPN.Menu_TabInfo.TextBoxObj'
 
      InfoText(0)="Greetings!"
      InfoText(1)="======="

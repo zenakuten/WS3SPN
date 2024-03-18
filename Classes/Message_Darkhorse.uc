@@ -36,7 +36,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     DarkhorseSound=Sound'3SPNvSoL.Sounds.DarkHorse'
+     DarkhorseSound=Sound'WS3SPN.Sounds.DarkHorse'
      YouAreADarkHorse="D A R K   H O R S E!"
      PlayerIsDarkHorse="IS   A   D A R K   H O R S E!"
      bIsUnique=True

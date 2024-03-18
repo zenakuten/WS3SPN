@@ -50,5 +50,4 @@ function AdjustPlayerDamage( out int Damage, Pawn InstigatedBy, Vector HitLocati
 
 defaultproperties
 {
-     FireModeClass(0)=Class'3SPNvSoL.WeaponFire_Shield'
 }

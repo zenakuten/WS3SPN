@@ -1,4 +1,4 @@
-class Misc_Player extends ModernPlayer dependson(Misc_PlayerSettings) dependson(TAM_Mutator);
+class Misc_Player extends BS_xPlayer dependson(TAM_Mutator);
 
 #exec AUDIO IMPORT FILE=Sounds\alone.wav     	    GROUP=Sounds
 #exec AUDIO IMPORT FILE=Sounds\hitsound.wav         GROUP=Sounds
@@ -7,10 +7,6 @@ class Misc_Player extends ModernPlayer dependson(Misc_PlayerSettings) dependson(
 /* Combo related */
 var config bool bShowCombos;            // show combos on the HUD
 
-var config bool bDisableSpeed;
-var config bool bDisableInvis;
-var config bool bDisableBooster;
-var config bool bDisableBerserk;
 var config bool bDisableRadar;
 var config bool bDisableAmmoRegen;
 /* Combo related */
@@ -71,11 +67,6 @@ var bool bFirstOpen;                    // used by the stat screen
 var float NewFriendlyDamage;            // friendly damage done
 var float NewEnemyDamage;               // enemy damage done
 
-var int LastDamage;
-
-var int SumDamage;
-var float SumDamageTime;
-
 var config bool bDisableAnnouncement;
 var config bool bAutoScreenShot;
 var bool bShotTaken;
@@ -114,8 +105,6 @@ var config Interactions.EInputKey Menu3SPNKey;
 
 var config bool bDisableEndCeremonySound;
 
-var config bool bEnableWidescreenFix;
-
 var bool EndCeremonyStarted;
 var float EndCeremonyTimer;
 var int EndCeremonyPlayerIdx;
@@ -140,10 +129,6 @@ var float LastRezTime;
 /* colored names */
 var bool PlayerInitialized;
 
-var Color RedMessageColor;
-var Color GreenMessageColor;
-var Color BlueMessageColor;
-var Color YellowMessageColor;
 var Color WhiteMessageColor;
 var Color WhiteColor;
 
@@ -151,18 +136,6 @@ var config bool bAllowColoredMessages;
 var config bool bEnableColoredNamesInTalk;
 var config bool bEnableColoredNamesOnEnemies;
 
-var config int CurrentSelectedColoredName;
-var config color ColorName[20];
-
-struct ColoredNamePair
-{
-    var color SavedColor[20];
-    var string SavedName;
-};
-var config array<ColoredNamePair> ColoredName;
-/* colored names */
-
-var config bool bUseNewEyeHeightAlgorithm;
 
 /* persistent settings */
 var config bool AutoSyncSettings;
@@ -172,10 +145,6 @@ var float LastSettingsSaveTimeSeconds;
 
 var config bool bConfigureNetSpeed;
 var config int ConfigureNetSpeedValue;
-
-//var config int DesiredNetUpdateRate;
-//var transient PlayerInput PlayerInput2;
-//var float TimeBetweenUpdates;
 
 var config bool bTeamColorRockets;
 var config bool bTeamColorBio;
@@ -187,16 +156,12 @@ var config bool bTeamColorUseTeam;
 
 //var config bool bEnableDodgeFix;
 
-var transient float PitchFraction, YawFraction;
 var AudioSubsystem AudioSubsystem;
 var int LastNetSpeed;
 
 var float BufferedClickTimer; 
 var Actor.eDoubleClickDir BufferedClickDir;
 
-//used by hud menu
-var EmoticonsReplicationInfo EmoteInfo;
-var config bool bEnableEmoticons;
 
 var int NumSpectators;
 var config bool bShowSpectators;
@@ -218,8 +183,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, EmoteInfo, NumSpectators, ClientDelayedSound;
-        //TimeBetweenUpdates;
+        ReceiveAwardMessage, AbortNecro, NumSpectators, ClientDelayedSound;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         bSeeInvis;
@@ -230,16 +194,8 @@ replication
     reliable if(Role < ROLE_Authority)
         ServerSetMapString, ServerCallTimeout,
 		SetNetCodeDisabled, SetTeamScore,
-		ServerLoadSettings, ServerSaveSettings, ServerReportNewNetStats,ServerSetEyeHeightAlgorithm,
+		ServerReportNewNetStats,
         ServerPlaySound, ServerPausePass;
-        
-        //ServerSetNetUpdateRate, ServerPlaySound;
-  
-    //unreliable if (Role < ROLE_Authority)
-    //    UTComp_ServerMove, UTComp_DualServerMove, UTComp_ShortServerMove;		
-
-	reliable if(Role == ROLE_Authority)
-		ClientSettingsResult, ClientLoadSettings;
 }
 
 simulated function PostBeginPlay()
@@ -255,42 +211,6 @@ simulated function PostBeginPlay()
 
 function SetNetCodeDisabled()
 {
-    local inventory inv;
-
-	class'Misc_Player'.default.bEnableEnhancedNetCode = false;
-	
-    if(Pawn == none)
-       return;
-
-	for(inv = Pawn.Inventory; inv!=None; inv=inv.inventory)
-	{
-		if(Weapon(inv)!=None)
-		{
-			  if(NewNet_AssaultRifle(Inv)!=None)
-				  NewNet_AssaultRifle(Inv).DisableNet();
-			   else if( NewNet_BioRifle(Inv)!=None)
-				  NewNet_BioRifle(Inv).DisableNet();
-			   else if(NewNet_ShockRifle(Inv)!=None)
-				  NewNet_ShockRifle(Inv).DisableNet();
-			   else if(NewNet_MiniGun(Inv)!=None)
-				  NewNet_MiniGun(Inv).DisableNet();
-			   else if(NewNet_LinkGun(Inv)!=None)
-				  NewNet_LinkGun(Inv).DisableNet();
-			   else if(NewNet_RocketLauncher(Inv)!=None)
-				  NewNet_RocketLauncher(inv).DisableNet();
-			   else if(NewNet_FlakCannon(inv)!=None)
-				  NewNet_FlakCannon(inv).DisableNet();
-			   else if(NewNet_SniperRifle(inv)!=None)
-				  NewNet_SniperRifle(inv).DisableNet();
-			   else if(NewNet_ClassicSniperRifle(inv)!=None)
-				  NewNet_ClassicSniperRifle(inv).DisableNet();
-		}
-	}
-}
-
-simulated static function bool UseNewNet()
-{
-    return class'Misc_Player'.default.bEnableEnhancedNetCode;
 }
 
 function Misc_PlayerDataManager_ServerLink GetPlayerDataManager_ServerLink()
@@ -449,23 +369,8 @@ function SetTeamScore(int RedScore, int BlueScore)
 		TeamGame.Teams[1].Score = BlueScore;
 }
 
-function CheckInitialMenu()
-{
-	if(Level.NetMode!=NM_DedicatedServer && class'Misc_Player'.default.ShowInitialMenu==0)
-	{
-		if(PlayerReplicationInfo==None || PlayerReplicationInfo.PlayerName==class'GameInfo'.Default.DefaultPlayerName)
-			return;
-	
-		class'Misc_Player'.default.ShowInitialMenu=1;
-		LoadSettings();
-		class'Misc_Player'.static.StaticSaveConfig();
-	}
-}
-
 function PlayerTick(float DeltaTime)
 {
-    local int Damage;
-    local Misc_Pawn MPawn;
     local float Rolloff;
     
     Super.PlayerTick(DeltaTime);
@@ -486,25 +391,10 @@ function PlayerTick(float DeltaTime)
         class'Misc_Player'.default.bAdminVisionInSpec = false;
         class'Misc_Player'.default.bDrawTargetingLineInSpec = false;
         class'Misc_Player'.default.bReportNewNetStats = false;
-	    SetEyeHeightAlgorithm(class'Misc_Player'.default.bUseNewEyeHeightAlgorithm);
         SetInitialColoredName();
         SetInitialNetSpeed();
-        //ServerSetNetUpdateRate(Class'Misc_Player'.Default.DesiredNetUpdateRate,Player.CurrentNetSpeed);
 		PlayerInitialized = true;
 	}
-
-    //enforce netspeed
-    if (Level.NetMode == NM_Client && Misc_BaseGRI(Level.GRI) != none) 
-    {
-        if (Player.CurrentNetSpeed > Misc_BaseGRI(Level.GRI).MaxNetSpeed)
-        {
-            SetNetSpeed(Misc_BaseGRI(Level.GRI).MaxNetSpeed);
-        }
-        else if (Player.CurrentNetSpeed < Misc_BaseGRI(Level.GRI).MinNetSpeed)
-        {
-            SetNetSpeed(Misc_BaseGRI(Level.GRI).MinNetSpeed);
-        }
-    }
 
     //enforce rolloff
     if (Level.NetMode == NM_Client && Misc_BaseGRI(Level.GRI) != none) 
@@ -518,15 +408,6 @@ function PlayerTick(float DeltaTime)
             }
         }
     }
-
-    // update timeBetweenUpdates if netspeed changes
-    /*
-    if(LastNetSpeed != Player.CurrentNetSpeed)
-    {
-        ServerSetNetUpdateRate(DesiredNetUpdateRate,Player.CurrentNetSpeed);
-        LastNetSpeed = Player.CurrentNetSpeed;
-    }
-    */
 	
 	if(EndCeremonyStarted)
 	{
@@ -534,48 +415,6 @@ function PlayerTick(float DeltaTime)
 		return;
 	}
 
-    // begin hitsounds/damage indicators
-    MPawn = Misc_Pawn(Pawn);
-    if(MPawn == None)
-    {
-        MPawn = Misc_Pawn(ViewTarget);
-    }
-
-    if(MPawn == None)
-    {
-        LastDamage = 0;
-        return;
-    }
-
-    if(MPawn.HitDamage != LastDamage)
-    {
-        Damage = MPawn.HitDamage - LastDamage;
-
-        if(MPawn.bHitContact && bUseHitsounds)
-        {
-            if(MPawn.HitDamage < LastDamage)
-                MPawn.PlaySound(soundHitFriendly,, soundHitVolume,,,(48 / (-Damage)), false);
-            else
-                MPawn.PlaySound(soundHit,, soundHitVolume,,,(48 / Damage), false);
-        }
-            
-        if(MPawn.HitPawn != None && Misc_BaseGRI(GameReplicationInfo).bDamageIndicator)
-        {
-            if (DamageIndicatorType == 2)
-            {
-                if ( (Level.TimeSeconds - SumDamageTime > 1) || (SumDamage > 0 ^^ Damage > 0) )
-                    SumDamage = 0;
-                SumDamage += Damage;
-                SumDamageTime = Level.TimeSeconds;
-            }
-            
-            if(DamageIndicatorType == 3)
-                class'Emitter_Damage'.static.ShowDamage(MPawn.HitPawn, MPawn.HitPawn.Location, Damage);        
-        }        
-
-        LastDamage = MPawn.HitDamage;
-    }
-    // end hitsounds/damage indicators
 }
 
 simulated function ClientAddCeremonyRanking(int PlayerIndex, Team_GameBase.SEndCeremonyInfo InEndCeremonyInfo)
@@ -623,7 +462,6 @@ simulated function ClientStartCeremony(int PlayerCount, int WinningTeamIndex, st
 			Misc_Pawn(P).GiveWeapon(EndCeremonyWeaponNames[i2]);
 			Misc_Pawn(P).PendingWeapon = Weapon(Misc_Pawn(P).FindInventoryType(EndCeremonyWeaponClasses[i2]));
 			Misc_Pawn(P).ChangedWeapon();			
-			Misc_Pawn(P).SetBrightSkin(EndCeremonyInfo[i].PlayerTeam);
 			Misc_Pawn(P).bNetNotify = false;
 			Misc_Pawn(P).SetAnimAction('None');
 
@@ -806,9 +644,6 @@ simulated function PostNetBeginPlay()
     if(Level.GRI != None)
         Level.GRI.MaxLives = 0;	
 
-    // enforce max value from server for saved moves
-    if(Misc_BaseGRI(Level.GRI) != None)
-        MaxSavedMoves = Min(Misc_BaseGRI(Level.GRI).MaxSavedMoves, MaxSavedMoves);
 }
 
 simulated function InitInputSystem()
@@ -820,17 +655,8 @@ simulated function InitInputSystem()
 	C = Level.GetLocalPlayerController();
 	if(C != None)
 	{
-		C.Player.InteractionMaster.AddInteraction("3SPNvSoL.Menu_Interaction", C.Player);
+		C.Player.InteractionMaster.AddInteraction("WS3SPN.Menu_Interaction", C.Player);
 	}
-
-    /*
-    if ((Level.GRI != None) && (Misc_BaseGRI(Level.GRI).UseNetUpdateRate))
-	{
-        // UTCOMP movement
-        FindPlayerInput();
-	}
-    */
-
 }
 
 function ClientKillBases()
@@ -1031,7 +857,7 @@ function SetupCombos()
             bDisable = (class'Misc_Player'.default.bDisableBerserk || GRI.bDisableBerserk);
         else if(ComboName ~= "xGame.ComboInvis")
             bDisable = (class'Misc_Player'.default.bDisableInvis || GRI.bDisableInvis);
-        else if(ComboName ~= "3SPNvSoL.NecroCombo")
+        else if(ComboName ~= "WS3SPN.NecroCombo")
             bDisable = (GRI.bDisableNecro);
 
         if(bDisable)
@@ -1092,15 +918,6 @@ function ClientSetBehindView(bool B)
         B = false;
 
     super.ClientSetBehindView(B);
-}
-
-event ClientSetViewTarget(Actor a)
-{
-    super.ClientSetViewTarget(a);
-    if(Misc_Pawn(A) != None)
-    {
-        LastDamage = Misc_Pawn(A).HitDamage;
-    }
 }
 
 state Dead
@@ -1259,7 +1076,7 @@ function BecomeActivePlayer()
 	
     ClientBecameActivePlayer();
 
-    if(Role == Role_Authority)
+    if(Role == ROLE_Authority)
     {		
 		NextRezTime = Level.TimeSeconds+2; // 2 seconds before can be resurrected
 
@@ -1324,9 +1141,9 @@ function bool CanDoCombo(class<Combo> ComboClass)
 function ServerDoCombo(class<Combo> ComboClass)
 {
     if(class<ComboBerserk>(ComboClass) != None)
-        ComboClass = class<Combo>(DynamicLoadObject("3SPNvSoL.Misc_ComboBerserk", class'Class'));
+        ComboClass = class<Combo>(DynamicLoadObject("WS3SPN.Misc_ComboBerserk", class'Class'));
     else if(class<ComboSpeed>(ComboClass) != None && class<Misc_ComboSpeed>(ComboClass) == None)
-        ComboClass = class<Combo>(DynamicLoadObject("3SPNvSoL.Misc_ComboSpeed", class'Class'));
+        ComboClass = class<Combo>(DynamicLoadObject("WS3SPN.Misc_ComboSpeed", class'Class'));
 
     if(Adrenaline < ComboClass.default.AdrenalineCost)
         return;
@@ -1364,6 +1181,8 @@ function ServerUpdateStatArrays(TeamPlayerReplicationInfo PRI)
     if(P == None)
         return;
 
+
+    MapUTCompStatsTo3SPN(P);
     ClientSendAssaultStats(P, P.Assault);
     ClientSendBioStats(P, P.Bio);
     ClientSendShockStats(P, P.Shock);
@@ -1376,6 +1195,35 @@ function ServerUpdateStatArrays(TeamPlayerReplicationInfo PRI)
     ClientSendComboStats(P, P.Combo);
     ClientSendMiscStats(P, P.HeadShots, P.EnemyDamage, P.ReverseFF, P.AveragePercent, 
         P.FlawlessCount, P.OverkillCount, P.DarkHorseCount, P.HatTrickCount, P.SGDamage, P.LinkCount, P.RoxCount, P.ShieldCount, P.GrenCount, P.MinigunCount, P.ResCount);
+}
+
+function MapUTCompStatsTo3SPN(Misc_PRI P)
+{
+    local UTComp_PRI U;
+    U = class'UTComp_Util'.static.GetUTCompPRI(P);
+    if(U == None)
+        return;
+
+    //weapon fired stats were all previously handled by weapon.firemodes in 3spn
+    //since we removed 3spn weapons, need to use utcomp weapon fired stats
+    //all other damage related (hit, damage) is still tracked by 3spn code
+    //so no need to change that
+
+    P.Assault.Primary.Fired = U.NormalWepStatsPrim[12];
+    P.Assault.Secondary.Fired = U.NormalWepStatsAlt[12];
+    P.Bio.Fired = U.NormalWepStatsPrim[11];
+    //P.ClassicSniper.Fired = U.NormalWepStatsPrim[5];
+    P.Flak.Primary.Fired = U.NormalWepStatsPrim[7];
+    P.Flak.Secondary.Fired = U.NormalWepStatsAlt[7];
+    P.Mini.Primary.Fired = U.NormalWepStatsPrim[8];
+    P.Mini.Secondary.Fired = U.NormalWepstatsAlt[8];
+    P.Link.Primary.Fired = U.NormalWepStatsPrim[9];
+    P.Link.Secondary.Fired = U.NormalWepStatsAlt[9];
+    P.Rockets.Fired = U.NormalWepStatsPrim[6];
+    P.Shock.Primary.Fired = U.NormalWepStatsPrim[10];
+    P.Shock.Secondary.Fired = U.NormalWepStatsAlt[10];
+    P.Combo.Fired = U.NormalWepStatsPrim[0];
+    P.Sniper.Fired = U.NormalWepStatsPrim[5]; // shared with classic?
 }
 
 function ClientSendMiscStats(Misc_PRI P, int HS, int ED, float RFF, float AP, int FC, int OC, int DHC, int HTC, int SGD, int LinkCount, int RoxCount, int ShieldCount, int GrenCount, int MinigunCount, int ResCount)
@@ -1624,7 +1472,7 @@ exec function Menu3SPN()
 	r.Pitch = 0;
 	SetRotation(r);
 
-	ClientOpenMenu("3SPNvSoL.Menu_Menu3SPN");
+	ClientOpenMenu("WS3SPN.Menu_Menu3SPN");
 }
 
 exec function ToggleTeamInfo()
@@ -1657,10 +1505,6 @@ exec function ToggleBehindView()
 
 exec function DisableCombos(bool s, bool b, bool be, bool i, optional bool r, optional bool a)
 {
-    class'Misc_Player'.default.bDisableSpeed = s;
-    class'Misc_Player'.default.bDisableBooster = b;
-    class'Misc_Player'.default.bDisableBerserk = be;
-    class'Misc_Player'.default.bDisableInvis = i;
     class'Misc_Player'.default.bDisableRadar = r;
     class'Misc_Player'.default.bDisableAmmoRegen = a;
 
@@ -1824,174 +1668,8 @@ event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type  )
 	}
 }
 
-simulated function SetColoredNameOldStyle(optional string S2, optional bool bShouldSave)
-{
-    local string S;
-    local byte k;
-    local byte numdoatonce;
-    local byte m;
-
-    if(Level.NetMode==NM_DedicatedServer || PlayerReplicationInfo==None)
-        return;
-
-    if(S2=="")
-       S2=PlayerReplicationInfo.PlayerName;
-	
-    for(k=1; k<=Len(S2); k++)
-    {
-        numdoatonce=1;
-        for(m=k;m<Len(S2)&& class'Misc_Player'.default.ColorName[k-1] == class'Misc_Player'.default.ColorName[m] ;m++)
-        {
-             numdoatonce++;
-             k++;
-        }
-		if(numdoatonce!=Len(S2) || class'Misc_Player'.default.ColorName[k-1]!=WhiteColor)
-			S=S$class'Misc_Util'.Static.MakeColorCode(class'Misc_Player'.default.ColorName[k-1])$Right(Left(S2, k), numdoatonce);
-    }	
-	
-    if(Misc_PRI(PlayerReplicationInfo)!=None)
-        Misc_PRI(PlayerReplicationInfo).SetColoredName(S);
-}
-
-simulated function SetColoredNameOldStyleCustom(optional string S2, optional int CustomColors)
-{
-    local string S;
-    local byte k;
-    local byte numdoatonce;
-    local byte m;
-
-    if(Level.NetMode==NM_DedicatedServer || PlayerReplicationInfo==None)
-        return;
-
-    if(S2=="")
-		S2=class'Misc_Player'.default.ColoredName[CustomColors].SavedName;
-
-    SetNameNoReset(S2);
-  //  Log(class'Misc_Player'.default.ColoredName[CustomColors].SavedName);
- //   Log(class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].R@class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].G@class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].B);
-    for(k=0; k<20; k++)
-        class'Misc_Player'.default.ColorName[k]=class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k];
-    for(k=1; k<=Len(S2); k++)
-    {
-        numdoatonce=1;
-        for(m=k;m<Len(S2)&& class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k-1] == class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[m] ;m++)
-        {
-             numdoatonce++;
-             k++;
-        }
-        S=S$class'Misc_Util'.Static.MakeColorCode(class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k-1])$Right(Left(S2, k), numdoatonce);
-    }
-	
-    if(Misc_PRI(PlayerReplicationInfo)!=None)
-        Misc_PRI(PlayerReplicationInfo).SetColoredName(S);
-}
-
-exec function SetName(coerce string S)
-{
-	S=class'Misc_Util'.static.StripColorCodes(S);
-	ReplaceText(S, " ", "_");
-	ReplaceText(S, "\"", ""); // "
-	SetColoredNameOldStyle(Left(S, 20));
-	class'Misc_Player'.default.CurrentSelectedColoredName=255;
-	CurrentSelectedColoredName=255;
-	StaticSaveConfig();
-	Super.SetName(S);
-}
-
-exec function SetNameNoReset(coerce string S)
-{
-	S=class'Misc_Util'.static.StripColorCodes(S);
-	ReplaceText(S, " ", "_");
-	ReplaceText(S, "\"", ""); // "
-	SetColoredNameOldStyle(S);
-	Super.SetName(S);
-}
-
-simulated function string FindColoredName(int CustomColors)
-{
-    local string S;
-    local byte k;
-    local byte numdoatonce;
-    local byte m;
-    local string S2;
-
-    if(Level.NetMode==NM_DedicatedServer || PlayerReplicationInfo==None)
-        return "";
-
-    if(S2=="")
-    {
-       S2=class'Misc_Player'.default.ColoredName[CustomColors].SavedName;
-    }
-    //SetNameNoReset(S2);
- //   Log(class'Misc_Player'.default.ColoredName[CustomColors].SavedName);
- //   Log(class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].R@class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].G@class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[0].B);
-    //for(k=0; k<20; k++)
-        //class'Misc_Player'.default.ColorName[k]=class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k];
-    for(k=1; k<=Len(S2); k++)
-    {
-        numdoatonce=1;
-        for(m=k;m<Len(S2)&& class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k-1] == class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[m] ;m++)
-        {
-             numdoatonce++;
-             k++;
-        }
-        S=S$class'Misc_Util'.static.MakeColorCode(class'Misc_Player'.default.ColoredName[CustomColors].SavedColor[k-1])$Right(Left(S2, k), numdoatonce);
-    }
-    return S;
-}
-
-simulated function SaveNewColoredName()
-{
-    local int i;
-    local int n;
-    local int l;
-
-    n=class'Misc_Player'.default.ColoredName.Length+1;
-    class'Misc_Player'.default.ColoredName.Length=n;
-
- //   Log(class'Misc_Player'.default.ColoredName.Length);
-
-    class'Misc_Player'.default.ColoredName[n-1].SavedName=PlayerReplicationInfo.PlayerName;
-
-    for(l=0; l<20; l++)
-         class'Misc_Player'.default.ColoredName[n-1].SavedColor[l]=class'Misc_Player'.default.ColorName[l];
-
-    ColoredName.Length=class'Misc_Player'.default.ColoredName.Length;
-    for(i=0; i<class'Misc_Player'.default.ColoredName.Length; i++)
-        ColoredName[i]=class'Misc_Player'.default.ColoredName[i];
-    for(i=0; i<ArrayCount(ColorName); i++)
-        ColorName[i]=class'Misc_Player'.default.ColorName[i];
-}
-
-simulated function SetInitialColoredName()
-{
-    if(class'Misc_Player'.default.CurrentSelectedColoredName!=255 && class'Misc_Player'.default.CurrentSelectedColoredName<class'Misc_Player'.default.ColoredName.Length)
-        SetColoredNameOldStyleCustom(,class'Misc_Player'.default.CurrentSelectedColoredName);
-    else
-        SetColoredNameOldStyle();
-}
-
-/* server travel */
-
-event PreClientTravel()
-{
-	//local int i;	
-	/*(i=0; i<10; ++i)
-	{
-		if(EndCeremonyPawns[i]!=None)
-			EndCeremonyPawns[i].Destroy();
-	}*/
-	
-	Super.PreClientTravel();
-}
-
-/* server travel */
-
-/* colored names */
-
 simulated function ReloadDefaults()
 {
-	local int i;
 	
 	bShowCombos = class'Misc_Player'.default.bShowCombos;
 	bDisableSpeed = class'Misc_Player'.default.bDisableSpeed;
@@ -2004,7 +1682,6 @@ simulated function ReloadDefaults()
 	bShowTeamInfo = class'Misc_Player'.default.bShowTeamInfo;
 	bExtendedInfo = class'Misc_Player'.default.bExtendedInfo;	
 	bMatchHUDToSkins = class'Misc_Player'.default.bMatchHUDToSkins;
-	//DesiredNetUpdateRate = Class'Misc_Player'.default.DesiredNetUpdateRate;	
 	bUseBrightSkins = class'Misc_Player'.default.bUseBrightSkins;
 	bUseTeamColors = class'Misc_Player'.default.bUseTeamColors;
 	RedOrEnemy = class'Misc_Player'.default.RedOrEnemy;
@@ -2041,15 +1718,7 @@ simulated function ReloadDefaults()
 	bEnableColoredNamesInTalk = class'Misc_Player'.default.bEnableColoredNamesInTalk;
 	bEnableColoredNamesOnEnemies = class'Misc_Player'.default.bEnableColoredNamesOnEnemies;
 
-	bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
-
-	CurrentSelectedColoredName = class'Misc_Player'.default.CurrentSelectedColoredName;
-	for(i=0; i<ArrayCount(ColorName); ++i)
-		ColorName[i] = class'Misc_Player'.default.ColorName[i];
-	ColoredName =  class'Misc_Player'.default.ColoredName;
-	
 	AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
-    bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
     bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
 
@@ -2057,242 +1726,13 @@ simulated function ReloadDefaults()
     TeamColorBlue = class'Misc_Player'.default.TeamColorBlue;
 
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
-    //bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
-    bEnableEmoticons = class'Misc_Player'.default.bEnableEmoticons;
     bShowSpectators = class'Misc_Player'.default.bShowSpectators;
     bKillingSpreeCheers = class'Misc_Player'.default.bKillingSpreeCheers;
-}
-
-/* settings */
-
-function ClientSettingsResult(int result, string PlayerName)
-{
-	class'Message_PlayerSettingsResult'.default.PlayerName = PlayerName;
-	class'Message_PlayerSettingsResult'.static.ClientReceive(self, result);
-
-	if(Level.NetMode!=NM_DedicatedServer && class'Misc_Player'.default.ShowInitialMenu==1)
-	{
-		class'Menu_Menu3SPN'.default.DefaultToInfoTab=True;
-		Menu3SPN();
-		class'Menu_Menu3SPN'.default.DefaultToInfoTab=False;
-		class'Misc_Player'.default.ShowInitialMenu = 2;
-		class'Misc_Player'.static.StaticSaveConfig();
-	}
-}
-
-function ClientLoadSettings(string PlayerName, Misc_PlayerSettings.BrightSkinsSettings BrightSkins, Misc_PlayerSettings.ColoredNamesSettings ColoredNames, Misc_PlayerSettings.MiscSettings Misc, Misc_PlayerSettings.WeaponSettings Weapons)
-{
-	local int i;
-	
-	class'Misc_Player'.default.bUseBrightSkins = BrightSkins.bUseBrightSkins;
-	class'Misc_Player'.default.bUseTeamColors = BrightSkins.bUseTeamColors;
-	class'Misc_Player'.default.RedOrEnemy = BrightSkins.RedOrEnemy;
-	class'Misc_Player'.default.BlueOrAlly = BrightSkins.BlueOrAlly;
-	class'Misc_Player'.default.Yellow = BrightSkins.Yellow;
-	class'Misc_Player'.default.bUseTeamModels = BrightSkins.bUseTeamModels;
-	class'Misc_Player'.default.bForceRedEnemyModel = BrightSkins.bForceRedEnemyModel;
-	class'Misc_Player'.default.bForceBlueAllyModel = BrightSkins.bForceBlueAllyModel;
-	class'Misc_Player'.default.RedEnemyModel = BrightSkins.RedEnemyModel;
-	class'Misc_Player'.default.BlueAllyModel = BrightSkins.BlueAllyModel;
-
-	class'Misc_Player'.default.bAllowColoredMessages = ColoredNames.bAllowColoredMessages;
-	class'Misc_Player'.default.bEnableColoredNamesInTalk = ColoredNames.bEnableColoredNamesInTalk;
-	class'Misc_Player'.default.bEnableColoredNamesOnEnemies = ColoredNames.bEnableColoredNamesOnEnemies;
-	for(i=0; i<20; ++i)
-		class'Misc_Player'.default.ColorName[i] = ColoredNames.ColorName[i];
-	class'Misc_DeathMessage'.default.bEnableTeamColoredDeaths = ColoredNames.bEnableTeamColoredDeaths;
-	class'Misc_DeathMessage'.default.bDrawColoredNamesInDeathMessages = ColoredNames.bDrawColoredNamesInDeathMessages;
-	class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD = ColoredNames.bEnableColoredNamesOnHUD;
-	class'TAM_ScoreBoard'.default.bEnableColoredNamesOnScoreboard = ColoredNames.bEnableColoredNamesOnScoreboard;
-	class'Misc_Player'.default.ColoredName.Length = 1;
-	for(i=0; i<20; ++i)
-		class'Misc_Player'.default.ColoredName[0].SavedColor[i] = ColoredNames.ColorName[i];
-	class'Misc_Player'.default.ColoredName[0].SavedName = PlayerReplicationInfo.PlayerName;
-	class'Misc_Player'.default.CurrentSelectedColoredName = 0;
-	
-	class'Misc_Player'.default.bDisableSpeed = Misc.bDisableSpeed;
-	class'Misc_Player'.default.bDisableBooster = Misc.bDisableBooster;
-	class'Misc_Player'.default.bDisableBerserk = Misc.bDisableBerserk;
-	class'Misc_Player'.default.bDisableInvis = Misc.bDisableInvis;
-	class'Misc_Player'.default.bMatchHUDToSkins = Misc.bMatchHUDToSkins;
-	class'Misc_Player'.default.bShowTeamInfo = Misc.bShowTeamInfo;
-	class'Misc_Player'.default.bShowCombos = Misc.bShowCombos;
-	class'Misc_Player'.default.bExtendedInfo = Misc.bExtendedInfo;
-	class'Misc_Pawn'.default.bPlayOwnFootsteps = Misc.bPlayOwnFootsteps;
-	class'Misc_Pawn'.default.bPlayOwnLandings = Misc.bPlayOwnLandings;
-	class'Misc_Player'.default.bAutoScreenShot = Misc.bAutoScreenShot;
-	class'Misc_Player'.default.bUseHitSounds = Misc.bUseHitSounds;
-	class'Misc_Player'.default.bEnableEnhancedNetCode = Misc.bEnableEnhancedNetCode;
-	class'Misc_Player'.default.bDisableEndCeremonySound = Misc.bDisableEndCeremonySound;
-	class'Misc_Player'.default.SoundHitVolume = Misc.SoundHitVolume;
-	class'Misc_Player'.default.SoundAloneVolume = Misc.SoundAloneVolume;
-
-	class'Misc_Player'.default.bUseNewEyeHeightAlgorithm = Weapons.bUseNewEyeHeightAlgorithm;
-
-	class'Misc_Player'.default.AutoSyncSettings = Misc.AutoSyncSettings;
-    class'Misc_Player'.default.DamageIndicatorType = Misc.DamageIndicatorType;
-    class'Misc_Player'.default.ReceiveAwardType = ReceiveAwardTypes(Misc.ReceiveAwardType);
-    class'Misc_Player'.default.bConfigureNetSpeed = Misc.bConfigureNetSpeed;
-    class'Misc_Player'.default.ConfigureNetSpeedValue = Misc.ConfigureNetSpeedValue;
-    class'Misc_Player'.default.bEnableWidescreenFix = Misc.bEnableWidescreenFix;
-	//Class'Misc_Player'.default.DesiredNetUpdateRate = Misc.DesiredNetUpdateRate;
-	//Class'Misc_Player'.default.bEnableDodgeFix = Misc.bEnableDodgeFix;
-    class'Misc_Player'.default.bEnableEmoticons = Misc.bEnableEmoticons;
-    class'Misc_Player'.default.bKillingSpreeCheers = Misc.bKillingSpreeCheers;
-	
-	ReloadDefaults();
-	SetupCombos();
-	SetColoredNameOldStyleCustom(,0);
-    //SetNetUpdateRate(Misc.DesiredNetUpdateRate);
-	class'Misc_Player'.static.StaticSaveConfig();
-	class'TAM_ScoreBoard'.static.StaticSaveConfig();
-	class'Misc_DeathMessage'.static.StaticSaveConfig();
-
-	ClientSettingsResult(2, PlayerName);
-}
-
-function ServerLoadSettings()
-{
-	local Misc_PlayerSettings PlayerSettings;  
-    local Team_GameBase TeamGame;
-  
-	foreach DynamicActors(class'Team_GameBase', TeamGame)
-        break;
-
-    PlayerSettings = class'Misc_PlayerSettings'.static.LoadPlayerSettings(self);
-	if(PlayerSettings != None && PlayerSettings.Existing == True)
-	{
-		Log("Loading settings for player "$PlayerReplicationInfo.PlayerName);		
-		ClientLoadSettings(PlayerReplicationInfo.PlayerName, PlayerSettings.BrightSkins, PlayerSettings.ColoredNames, PlayerSettings.Misc, PlayerSettings.Weapons);
-	}
-	else
-	{
-		Log("Unable to load settings for player "$PlayerReplicationInfo.PlayerName);
-		ClientSettingsResult(0, PlayerReplicationInfo.PlayerName);
-	}
-}
-
-function ServerSaveSettings(Misc_PlayerSettings.BrightSkinsSettings BrightSkins, Misc_PlayerSettings.ColoredNamesSettings ColoredNames, Misc_PlayerSettings.MiscSettings Misc, Misc_PlayerSettings.WeaponSettings Weapons)
-{
-	local Misc_PlayerSettings PlayerSettings;
-    local Team_GameBase TeamGame;
-  
-	foreach DynamicActors(class'Team_GameBase', TeamGame)
-		break;     
-
-    PlayerSettings = class'Misc_PlayerSettings'.static.LoadPlayerSettings(self);   
-	if(PlayerSettings != None)
-	{
-		Log("Saving settings for player "$PlayerReplicationInfo.PlayerName);		
-		PlayerSettings.BrightSkins = BrightSkins;
-		PlayerSettings.ColoredNames = ColoredNames;
-		PlayerSettings.Misc = Misc;
-        PlayerSettings.Weapons = Weapons;
-		class'Misc_PlayerSettings'.static.SavePlayerSettings(PlayerSettings);
-		ClientSettingsResult(3, PlayerReplicationInfo.PlayerName);
-	}
-	else
-	{
-		Log("Unable to save settings for player "$PlayerReplicationInfo.PlayerName);
-		ClientSettingsResult(1, PlayerReplicationInfo.PlayerName);
-	}
-}
-
-function LoadSettings()
-{
-	local float TimeStampSeconds;
-	
-	TimeStampSeconds = Level.TimeSeconds;
-	if(TimeStampSeconds-LastSettingsLoadTimeSeconds < 5)
-	{
-		class'Message_PlayerSettingsResult'.static.ClientReceive(self, 4);
-		return;
-	}	
-	LastSettingsLoadTimeSeconds = TimeStampSeconds;
-
-	ServerLoadSettings();
-}
-
-function SaveSettings()
-{
-	local Misc_PlayerSettings.BrightSkinsSettings BrightSkins;
-	local Misc_PlayerSettings.ColoredNamesSettings ColoredNames;
-	local Misc_PlayerSettings.MiscSettings Misc;
-	local Misc_PlayerSettings.WeaponSettings Weapons;
-	local int i;
-	local float TimeStampSeconds;
-	
-	TimeStampSeconds = Level.TimeSeconds;
-	if(TimeStampSeconds-LastSettingsSaveTimeSeconds < 5)
-	{
-		class'Message_PlayerSettingsResult'.static.ClientReceive(self, 5);
-		return;
-	}
-	LastSettingsSaveTimeSeconds = TimeStampSeconds;
-			
-	BrightSkins.bUseBrightSkins = class'Misc_Player'.default.bUseBrightSkins;
-	BrightSkins.bUseTeamColors = class'Misc_Player'.default.bUseTeamColors;
-	BrightSkins.RedOrEnemy = class'Misc_Player'.default.RedOrEnemy;
-	BrightSkins.BlueOrAlly = class'Misc_Player'.default.BlueOrAlly;
-	BrightSkins.Yellow = class'Misc_Player'.default.Yellow;
-	BrightSkins.bUseTeamModels = class'Misc_Player'.default.bUseTeamModels;
-	BrightSkins.bForceRedEnemyModel = class'Misc_Player'.default.bForceRedEnemyModel;
-	BrightSkins.bForceBlueAllyModel = class'Misc_Player'.default.bForceBlueAllyModel;
-	BrightSkins.RedEnemyModel = class'Misc_Player'.default.RedEnemyModel;
-	BrightSkins.BlueAllyModel = class'Misc_Player'.default.BlueAllyModel;
-
-	ColoredNames.bAllowColoredMessages = class'Misc_Player'.default.bAllowColoredMessages;
-	ColoredNames.bEnableColoredNamesInTalk = class'Misc_Player'.default.bEnableColoredNamesInTalk;
-	ColoredNames.bEnableColoredNamesOnEnemies = class'Misc_Player'.default.bEnableColoredNamesOnEnemies;
-	for(i=0; i<20; ++i)
-		ColoredNames.ColorName[i] = class'Misc_Player'.default.ColorName[i];
-	ColoredNames.bEnableTeamColoredDeaths = class'Misc_DeathMessage'.default.bEnableTeamColoredDeaths;
-	ColoredNames.bDrawColoredNamesInDeathMessages = class'Misc_DeathMessage'.default.bDrawColoredNamesInDeathMessages;
-	ColoredNames.bEnableColoredNamesOnHUD = class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD;
-	ColoredNames.bEnableColoredNamesOnScoreboard = class'TAM_ScoreBoard'.default.bEnableColoredNamesOnScoreboard;
-	
-	Misc.bDisableSpeed = class'Misc_Player'.default.bDisableSpeed;
-	Misc.bDisableBooster = class'Misc_Player'.default.bDisableBooster;
-	Misc.bDisableBerserk = class'Misc_Player'.default.bDisableBerserk;
-	Misc.bDisableInvis = class'Misc_Player'.default.bDisableInvis;
-	Misc.bMatchHUDToSkins = class'Misc_Player'.default.bMatchHUDToSkins;
-	Misc.bShowTeamInfo = class'Misc_Player'.default.bShowTeamInfo;
-	Misc.bShowCombos = class'Misc_Player'.default.bShowCombos;
-	Misc.bExtendedInfo = class'Misc_Player'.default.bExtendedInfo;
-	Misc.bPlayOwnFootsteps = class'Misc_Pawn'.default.bPlayOwnFootsteps;
-	Misc.bPlayOwnLandings = class'Misc_Pawn'.default.bPlayOwnLandings;
-	Misc.bAutoScreenShot = class'Misc_Player'.default.bAutoScreenShot;
-	Misc.bUseHitSounds = class'Misc_Player'.default.bUseHitSounds;
-	Misc.bEnableEnhancedNetCode = class'Misc_Player'.default.bEnableEnhancedNetCode;
-	Misc.bDisableEndCeremonySound = class'Misc_Player'.default.bDisableEndCeremonySound;
-    Misc.bEnableWidescreenFix = class'Misc_Player'.default.bEnableWidescreenFix;
-	Misc.SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
-	Misc.SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
-	Misc.AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
-    Misc.DamageIndicatorType = class'Misc_Player'.default.DamageIndicatorType;
-    Misc.ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
-    Misc.bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
-    Misc.ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
-	//Misc.DesiredNetUpdateRate = class'Misc_Player'.default.DesiredNetUpdateRate;
-    //Misc.bEnableDodgeFix = class'Misc_Player'.default.bEnableDodgeFix;
-
-    Weapons.bUseNewEyeHeightAlgorithm = class'Misc_Player'.default.bUseNewEyeHeightAlgorithm;
-
-	ServerSaveSettings(BrightSkins, ColoredNames, Misc, Weapons);
 }
 
 function ServerReportNewNetStats(bool enable)
 {
   bReportNewNetStats = enable;
-}
-
-function ServerSetEyeHeightAlgorithm(bool B) {
-    bUseNewEyeHeightAlgorithm = B;
-}
-
-function SetEyeHeightAlgorithm(bool B) {
-    bUseNewEyeHeightAlgorithm = B;
-    ServerSetEyeHeightAlgorithm(B);
 }
 
 
@@ -2377,69 +1817,7 @@ simulated function AbortNecro()
     ClientPlaySound(soundToPlay, false, 300.0, SLOT_None);
 }
 
-// UTCOMP movement
 /*
-function FindPlayerInput() {
-    local PlayerInput PIn;
-    local PlayerInput PInAlt;
-
-    // so that we can now capture it
-    foreach AllObjects(class'PlayerInput', PIn)
-        if (PIn.Outer == self) {
-            PInAlt = PIn;
-            if (InStr(PIn, ".PlayerInput") < 0)
-                PlayerInput2 = PIn;
-        }
-    if (PlayerInput2 == none)
-        PlayerInput2 = PInAlt;
-}
-*/
-
-/*
-event ClientTravel (string URL, ETravelType TravelType, bool bItems)
-{
-  Super.ClientTravel(URL,TravelType,bItems);
-  if ( Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate == False )
-  {
-    return;
-  }
-  PlayerInput2 = None;
-}
-*/
-
-/*
-function ServerSetNetUpdateRate (float Rate, int Netspeed)
-{
-    local float MaxRate;
-    local float MinRate;
-
-    if ( Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate == False )
-    {
-        return;
-    }
-
-    MaxRate = Misc_BaseGRI(GameReplicationInfo).MaxNetUpdateRate;
-
-    if ( Netspeed != 0 )
-    {
-        MaxRate = FMin(MaxRate,Netspeed / 100.0);
-    }
-
-    MinRate = Misc_BaseGRI(GameReplicationInfo).MinNetUpdateRate;
-    TimeBetweenUpdates = 1.0 / FClamp(Rate,MinRate,MaxRate);
-}
-
-exec function SetNetUpdateRate (float Rate)
-{
-  if ( Misc_BaseGRI(GameReplicationInfo).UseNetUpdateRate)
-  {
-    Class'Misc_Player'.Default.DesiredNetUpdateRate = Rate;
-    ServerSetNetUpdateRate(Rate,Player.CurrentNetSpeed);
-    Class'Misc_Player'.static.StaticSaveConfig();
-  }
-}
-*/
-
 state PlayerWalking
 {
     function bool NotifyLanded(vector HitNormal)
@@ -2462,7 +1840,6 @@ state PlayerWalking
         return false;
     }
 
-    /*
     function PlayerMove( float DeltaTime )
     {
         local vector X,Y,Z, NewAccel;
@@ -2559,548 +1936,7 @@ state PlayerWalking
             ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;
     }
-    */
 }
-
-/*
-function UTComp_ReplicateMove(
-    float DeltaTime,
-    vector NewAccel,
-    eDoubleClickDir DoubleClickMove,
-    rotator DeltaRot
-) {
-    local SavedMove NewMove, OldMove, AlmostLastMove, LastMove;
-    local byte ClientRoll;
-    local float OldTimeDelta;
-    local int OldAccel;
-    local vector BuildAccel, AccelNorm, MoveLoc, CompareAccel;
-    local bool bPendingJumpStatus;
-    MaxResponseTime = Default.MaxResponseTime * Level.TimeDilation;
-    DeltaTime = FMin(DeltaTime, MaxResponseTime);
-    // find the most recent move, and the most recent interesting move
-    if ( SavedMoves != None )
-    {
-        LastMove = SavedMoves;
-        AlmostLastMove = LastMove;
-        AccelNorm = Normal(NewAccel);
-        while ( LastMove.NextMove != None )
-        {
-            // find most recent interesting move to send redundantly
-            if ( LastMove.IsJumpMove() )
-            {
-                OldMove = LastMove;
-            }
-            else if ( (Pawn != None) && ((OldMove == None) || !OldMove.IsJumpMove()) )
-            {
-                // see if acceleration direction changed
-                if ( OldMove != None )
-                    CompareAccel = Normal(OldMove.Acceleration);
-                else
-                    CompareAccel = AccelNorm;
-                if ( (LastMove.Acceleration != CompareAccel) && ((normal(LastMove.Acceleration) Dot CompareAccel) < 0.95) )
-                    OldMove = LastMove;
-            }
-            AlmostLastMove = LastMove;
-            LastMove = LastMove.NextMove;
-        }
-        if ( LastMove.IsJumpMove() )
-        {
-            OldMove = LastMove;
-        }
-        else if ( (Pawn != None) && ((OldMove == None) || !OldMove.IsJumpMove()) )
-        {
-            // see if acceleration direction changed
-            if ( OldMove != None )
-                CompareAccel = Normal(OldMove.Acceleration);
-            else
-                CompareAccel = AccelNorm;
-            if ( (LastMove.Acceleration != CompareAccel) && ((normal(LastMove.Acceleration) Dot CompareAccel) < 0.95) )
-                OldMove = LastMove;
-        }
-    }
-    // Get a SavedMove actor to store the movement in.
-    NewMove = GetFreeMoveEx();
-    if ( NewMove == None )
-        return;
-    NewMove.SetMoveFor(self, DeltaTime, NewAccel, DoubleClickMove);
-    NewMove.RemoteRole = ROLE_None;
-    // Simulate the movement locally.
-    bDoubleJump = false;
-    ProcessMove(NewMove.Delta, NewMove.Acceleration, NewMove.DoubleClickMove, DeltaRot);
-    // see if the two moves could be combined
-    if ((PendingMove != None) &&
-        (Pawn != None) &&
-        (Pawn.Physics == PHYS_Walking) &&
-        (NewMove.Delta + PendingMove.Delta < MaxResponseTime) &&
-        (NewAccel != vect(0,0,0)) &&
-        (PendingMove.SavedPhysics == PHYS_Walking) &&
-        !PendingMove.bPressedJump &&
-        !NewMove.bPressedJump &&
-        (PendingMove.bRun == NewMove.bRun) &&
-        (PendingMove.bDuck == NewMove.bDuck) &&
-        (PendingMove.bDoubleJump == NewMove.bDoubleJump) &&
-        (PendingMove.DoubleClickMove == DCLICK_None) &&
-        (NewMove.DoubleClickMove == DCLICK_None) &&
-        ((Normal(PendingMove.Acceleration) Dot Normal(NewAccel)) > 0.99) &&
-        (Level.TimeDilation >= 0.9)
-    ) {
-        Pawn.SetLocation(PendingMove.GetStartLocation());
-        Pawn.Velocity = PendingMove.StartVelocity;
-        if ( PendingMove.StartBase != Pawn.Base);
-            Pawn.SetBase(PendingMove.StartBase);
-        Pawn.Floor = PendingMove.StartFloor;
-        NewMove.Delta += PendingMove.Delta;
-        NewMove.SetInitialPosition(Pawn);
-        // remove pending move from move list
-        if (LastMove == PendingMove) {
-            if (SavedMoves == PendingMove) {
-                SavedMoves.NextMove = FreeMoves;
-                FreeMoves = SavedMoves;
-                SavedMoves = None;
-            } else {
-                PendingMove.NextMove = FreeMoves;
-                FreeMoves = PendingMove;
-                if (AlmostLastMove != None) {
-                    AlmostLastMove.NextMove = None;
-                    LastMove = AlmostLastMove;
-                }
-            }
-            FreeMoves.Clear();
-        }
-        PendingMove = None;
-    }
-    if (Pawn != None)
-        Pawn.AutonomousPhysics(NewMove.Delta);
-    else
-        AutonomousPhysics(DeltaTime);
-    NewMove.PostUpdate(self);
-    if (SavedMoves == None)
-        SavedMoves = NewMove;
-    else
-        LastMove.NextMove = NewMove;
-    if (PendingMove == None) 
-    {
-        // Decide whether to hold off on move
-        if ((Level.TimeSeconds - ClientUpdateTime) * Level.TimeDilation * 0.91 < TimeBetweenUpdates) {
-            PendingMove = NewMove;
-            return;
-        }
-    }
-    ClientUpdateTime = Level.TimeSeconds;
-    // check if need to redundantly send previous move
-    if ( OldMove != None )
-    {
-        // old move important to replicate redundantly
-        OldTimeDelta = FMin(255, (Level.TimeSeconds - OldMove.TimeStamp) * 500);
-        BuildAccel = 0.05 * OldMove.Acceleration + vect(0.5, 0.5, 0.5);
-        OldAccel = (CompressAccel(BuildAccel.X) << 23)
-                    + (CompressAccel(BuildAccel.Y) << 15)
-                    + (CompressAccel(BuildAccel.Z) << 7);
-        if (OldMove.bRun)
-            OldAccel += 64;
-        if (OldMove.bDoubleJump)
-            OldAccel += 32;
-        if (OldMove.bPressedJump)
-            OldAccel += 16;
-        OldAccel += OldMove.DoubleClickMove;
-    }
-    // Send to the server
-    ClientRoll = (Rotation.Roll >> 8) & 255;
-    if (PendingMove != None) {
-        if ( PendingMove.bPressedJump )
-            bJumpStatus = !bJumpStatus;
-        bPendingJumpStatus = bJumpStatus;
-    }
-    if (NewMove.bPressedJump)
-        bJumpStatus = !bJumpStatus;
-    if (Pawn == None)
-        MoveLoc = Location;
-    else
-        MoveLoc = Pawn.Location;
-    UTComp_CallServerMove(
-        NewMove.TimeStamp,
-        NewMove.Acceleration * 10,
-        MoveLoc,
-        NewMove.bRun,
-        NewMove.bDuck,
-        bPendingJumpStatus,
-        bJumpStatus,
-        NewMove.bDoubleJump,
-        NewMove.DoubleClickMove,
-        ClientRoll,
-        ((0xFFFF & Rotation.Pitch) << 16) | (0xFFFF & Rotation.Yaw),
-        OldTimeDelta,
-        OldAccel
-    );
-    PendingMove = None;
-}
-function UTComp_CallServerMove(
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbPendingJumpStatus,
-    bool NewbJumpStatus,
-    bool NewbDoubleJump,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local byte PendingCompress;
-    local bool bCombine;
-    if ( PendingMove != None ) {
-        PendingCompress = PendingCompress | int(PendingMove.bRun);
-        PendingCompress = PendingCompress | int(PendingMove.bDuck) << 1;
-        PendingCompress = PendingCompress | int(NewbPendingJumpStatus) << 2;
-        PendingCompress = PendingCompress | int(PendingMove.bDoubleJump) << 3;
-        PendingCompress = PendingCompress | int(NewbRun) << 4;
-        PendingCompress = PendingCompress | int(NewbDuck) << 5;
-        PendingCompress = PendingCompress | int(NewbJumpStatus) << 6;
-        PendingCompress = PendingCompress | int(NewbDoubleJump) << 7;
-        // send two moves simultaneously
-        if ((InAccel == vect(0,0,0)) &&
-            (PendingMove.StartVelocity == vect(0,0,0)) &&
-            (DoubleClickMove == DCLICK_None) &&
-            (PendingMove.Acceleration == vect(0,0,0)) &&
-            (PendingMove.DoubleClickMove == DCLICK_None) &&
-            !PendingMove.bDoubleJump
-        ) {
-            if ( Pawn == None )
-                bCombine = (Velocity == vect(0,0,0));
-            else
-                bCombine = (Pawn.Velocity == vect(0,0,0));
-            if (bCombine) {
-                if (OldTimeDelta == 0) {
-                    UTComp_ShortServerMove(
-                        TimeStamp,
-                        ClientLoc,
-                        NewbRun,
-                        NewbDuck,
-                        NewbJumpStatus,
-                        ClientRoll,
-                        View
-                    );
-                } else {
-                    UTComp_ServerMove(
-                        TimeStamp,
-                        InAccel,
-                        ClientLoc,
-                        NewbRun,
-                        NewbDuck,
-                        NewbJumpStatus,
-                        NewbDoubleJump,
-                        DoubleClickMove,
-                        ClientRoll,
-                        View,
-                        OldTimeDelta,
-                        OldAccel
-                    );
-                }
-                return;
-            }
-        }
-        if ( OldTimeDelta == 0 )
-            UTComp_DualServerMove(
-                PendingMove.TimeStamp,
-                PendingMove.Acceleration * 10,
-                PendingCompress,
-                PendingMove.DoubleClickMove,
-                ((0xFFFF & PendingMove.Rotation.Pitch) << 16) | (0xFFFF & PendingMove.Rotation.Yaw),
-                TimeStamp,
-                InAccel,
-                ClientLoc,
-                DoubleClickMove,
-                ClientRoll,
-                View
-            );
-        else
-            UTComp_DualServerMove(
-                PendingMove.TimeStamp,
-                PendingMove.Acceleration * 10,
-                PendingCompress,
-                PendingMove.DoubleClickMove,
-                ((0xFFFF & PendingMove.Rotation.Pitch) << 16) | (0xFFFF & PendingMove.Rotation.Yaw),
-                TimeStamp,
-                InAccel,
-                ClientLoc,
-                DoubleClickMove,
-                ClientRoll,
-                View,
-                OldTimeDelta,
-                OldAccel
-            );
-    } else if ( OldTimeDelta != 0 ) {
-        UTComp_ServerMove(
-            TimeStamp,
-            InAccel,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            NewbDoubleJump,
-            DoubleClickMove,
-            ClientRoll,
-            View,
-            OldTimeDelta,
-            OldAccel
-        );
-    } else if ((InAccel == vect(0,0,0)) && (DoubleClickMove == DCLICK_None) && !NewbDoubleJump) {
-        UTComp_ShortServerMove(
-            TimeStamp,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            ClientRoll,
-            View
-        );
-    } else {
-        UTComp_ServerMove(
-            TimeStamp,
-            InAccel,
-            ClientLoc,
-            NewbRun,
-            NewbDuck,
-            NewbJumpStatus,
-            NewbDoubleJump,
-            DoubleClickMove,
-            ClientRoll,
-            View
-        );
-    }
-}
-// ShortServerMove()
-// compressed version of server move for bandwidth saving
-//
-function UTComp_ShortServerMove(
-    float TimeStamp,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbJumpStatus,
-    byte ClientRoll,
-    int View
-) {
-    UTComp_ServerMove(TimeStamp,vect(0,0,0),ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,false,DCLICK_None,ClientRoll,View);
-}
-
-// DualServerMove()
-// replicated function sent by client to server - contains client movement and firing info for two moves
-//
-function UTComp_DualServerMove(
-    float TimeStamp0,
-    vector InAccel0,
-    byte PendingCompress,
-    eDoubleClickDir DoubleClickMove0,
-    int View0,
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local bool NewbRun0,NewbDuck0,NewbJumpStatus0,NewbDoubleJump0,
-                NewbRun,NewbDuck,NewbJumpStatus,NewbDoubleJump;
-    NewbRun0 =        (PendingCompress & 0x01) != 0;
-    NewbDuck0 =       (PendingCompress & 0x02) != 0;
-    NewbJumpStatus0 = (PendingCompress & 0x04) != 0;
-    NewbDoubleJump0 = (PendingCompress & 0x08) != 0;
-    NewbRun =         (PendingCompress & 0x10) != 0;
-    NewbDuck =        (PendingCompress & 0x20) != 0;
-    NewbJumpStatus =  (PendingCompress & 0x40) != 0;
-    NewbDoubleJump =  (PendingCompress & 0x80) != 0;
-    UTComp_ServerMove(TimeStamp0,InAccel0,vect(0,0,0),NewbRun0,NewbDuck0,NewbJumpStatus0,NewbDoubleJump0,DoubleClickMove0,
-            ClientRoll,View0);
-    if ( ClientLoc == vect(0,0,0) )
-        ClientLoc = vect(0.1,0,0);
-    UTComp_ServerMove(TimeStamp,InAccel,ClientLoc,NewbRun,NewbDuck,NewbJumpStatus,NewbDoubleJump,DoubleClickMove,ClientRoll,View,OldTimeDelta,OldAccel);
-}
-// ServerMove()
-// replicated function sent by client to server - contains client movement and firing info.
-//
-function UTComp_ServerMove(
-    float TimeStamp,
-    vector InAccel,
-    vector ClientLoc,
-    bool NewbRun,
-    bool NewbDuck,
-    bool NewbJumpStatus,
-    bool NewbDoubleJump,
-    eDoubleClickDir DoubleClickMove,
-    byte ClientRoll,
-    int View,
-    optional byte OldTimeDelta,
-    optional int OldAccel
-) {
-    local float DeltaTime, clientErr, OldTimeStamp;
-    local rotator DeltaRot, Rot, ViewRot;
-    local vector Accel, LocDiff;
-    local int maxPitch, ViewPitch, ViewYaw;
-    local bool NewbPressedJump, OldbRun, OldbDoubleJump;
-    local eDoubleClickDir OldDoubleClickMove;
-    // If this move is outdated, discard it.
-    if ( CurrentTimeStamp >= TimeStamp )
-        return;
-    if ( AcknowledgedPawn != Pawn )
-    {
-        OldTimeDelta = 0;
-        InAccel = vect(0,0,0);
-        GivePawn(Pawn);
-    }
-    // if OldTimeDelta corresponds to a lost packet, process it first
-    if (  OldTimeDelta != 0 )
-    {
-        OldTimeStamp = TimeStamp - float(OldTimeDelta)/500 - 0.001;
-        if ( CurrentTimeStamp < OldTimeStamp - 0.001 )
-        {
-            // split out components of lost move (approx)
-            Accel.X = OldAccel >>> 23;
-            if ( Accel.X > 127 )
-                Accel.X = -1 * (Accel.X - 128);
-            Accel.Y = (OldAccel >>> 15) & 255;
-            if ( Accel.Y > 127 )
-                Accel.Y = -1 * (Accel.Y - 128);
-            Accel.Z = (OldAccel >>> 7) & 255;
-            if ( Accel.Z > 127 )
-                Accel.Z = -1 * (Accel.Z - 128);
-            Accel *= 20;
-            OldbRun = ( (OldAccel & 64) != 0 );
-            OldbDoubleJump = ( (OldAccel & 32) != 0 );
-            NewbPressedJump = ( (OldAccel & 16) != 0 );
-            if ( NewbPressedJump )
-                bJumpStatus = NewbJumpStatus;
-            switch (OldAccel & 7)
-            {
-                case 0:
-                    OldDoubleClickMove = DCLICK_None;
-                    break;
-                case 1:
-                    OldDoubleClickMove = DCLICK_Left;
-                    break;
-                case 2:
-                    OldDoubleClickMove = DCLICK_Right;
-                    break;
-                case 3:
-                    OldDoubleClickMove = DCLICK_Forward;
-                    break;
-                case 4:
-                    OldDoubleClickMove = DCLICK_Back;
-                    break;
-            }
-            //log("Recovered move from "$OldTimeStamp$" acceleration "$Accel$" from "$OldAccel);
-            OldTimeStamp = FMin(OldTimeStamp, CurrentTimeStamp + MaxResponseTime);
-            MoveAutonomous(OldTimeStamp - CurrentTimeStamp, OldbRun, (bDuck == 1), NewbPressedJump, OldbDoubleJump, OldDoubleClickMove, Accel, rot(0,0,0));
-            CurrentTimeStamp = OldTimeStamp;
-        }
-    }
-    // View components
-    ViewPitch = View >>> 16;
-    ViewYaw = View & 0xFFFF;
-    // Make acceleration.
-    Accel = InAccel * 0.1;
-    NewbPressedJump = (bJumpStatus != NewbJumpStatus);
-    bJumpStatus = NewbJumpStatus;
-    // Save move parameters.
-    DeltaTime = FMin(MaxResponseTime,TimeStamp - CurrentTimeStamp);
-    if ( Pawn == None )
-    {
-        ResetTimeMargin();
-    }
-    else if ( !CheckSpeedHack(DeltaTime) )
-    {
-        bWasSpeedHack = true;
-        DeltaTime = 0;
-        Pawn.Velocity = vect(0,0,0);
-    }
-    else if ( bWasSpeedHack )
-    {
-        // if have had a speedhack detection, then modify deltatime if getting too far ahead again
-        if ( (TimeMargin > 0.5 * Level.MaxTimeMargin) && (Level.MaxTimeMargin > 0) )
-            DeltaTime *= 0.8;
-    }
-    CurrentTimeStamp = TimeStamp;
-    ServerTimeStamp = Level.TimeSeconds;
-    ViewRot.Pitch = ViewPitch;
-    ViewRot.Yaw = ViewYaw;
-    ViewRot.Roll = 0;
-    if ( NewbPressedJump || (InAccel != vect(0,0,0)) )
-        LastActiveTime = Level.TimeSeconds;
-    if ( Pawn == None || Pawn.bServerMoveSetPawnRot )
-        SetRotation(ViewRot);
-    if ( AcknowledgedPawn != Pawn )
-        return;
-    if ( (Pawn != None) && Pawn.bServerMoveSetPawnRot )
-    {
-        Rot.Roll = 256 * ClientRoll;
-        Rot.Yaw = ViewYaw;
-        if ( (Pawn.Physics == PHYS_Swimming) || (Pawn.Physics == PHYS_Flying) )
-            maxPitch = 2;
-        else
-            maxPitch = 0;
-        if ( (ViewPitch > maxPitch * RotationRate.Pitch) && (ViewPitch < 65536 - maxPitch * RotationRate.Pitch) )
-        {
-            If (ViewPitch < 32768)
-                Rot.Pitch = maxPitch * RotationRate.Pitch;
-            else
-                Rot.Pitch = 65536 - maxPitch * RotationRate.Pitch;
-        }
-        else
-            Rot.Pitch = ViewPitch;
-        DeltaRot = (Rotation - Rot);
-        Pawn.SetRotation(Rot);
-    }
-    // Perform actual movement
-    if ( (Level.Pauser == None) && (DeltaTime > 0) )
-        MoveAutonomous(DeltaTime, NewbRun, NewbDuck, NewbPressedJump, NewbDoubleJump, DoubleClickMove, Accel, DeltaRot);
-    // Accumulate movement error.
-    if ( ClientLoc == vect(0,0,0) )
-        return;     // first part of double servermove
-    else if ( Level.TimeSeconds - LastUpdateTime > 0.3 )
-        ClientErr = 10000;
-    else if ( Level.TimeSeconds - LastUpdateTime > 180.0/Player.CurrentNetSpeed )
-    {
-        if ( Pawn == None )
-            LocDiff = Location - ClientLoc;
-        else
-            LocDiff = Pawn.Location - ClientLoc;
-        ClientErr = LocDiff Dot LocDiff;
-    }
-    // If client has accumulated a noticeable positional error, correct him.
-    if ( ClientErr > 3 )
-    {
-        if ( Pawn == None )
-        {
-            PendingAdjustment.newPhysics = Physics;
-            PendingAdjustment.NewLoc = Location;
-            PendingAdjustment.NewVel = Velocity;
-        }
-        else
-        {
-            PendingAdjustment.newPhysics = Pawn.Physics;
-            PendingAdjustment.NewVel = Pawn.Velocity;
-            PendingAdjustment.NewBase = Pawn.Base;
-            if ( (Mover(Pawn.Base) != None) || (Vehicle(Pawn.Base) != None) )
-                PendingAdjustment.NewLoc = Pawn.Location - Pawn.Base.Location;
-            else
-                PendingAdjustment.NewLoc = Pawn.Location;
-            PendingAdjustment.NewFloor = Pawn.Floor;
-        }
-        //if ( (ClientErr != 10000) && (Pawn != None) )
-            //Log(" Client Error at "$TimeStamp$" is "$ClientErr$" with acceleration "$Accel$" LocDiff "$LocDiff$" Physics "$Pawn.Physics);
-        LastUpdateTime = Level.TimeSeconds;
-
-        PendingAdjustment.TimeStamp = TimeStamp;
-        PendingAdjustment.newState = GetStateName();
-    }
-    //log("Server moved stamp "$TimeStamp$" location "$Pawn.Location$" Acceleration "$Pawn.Acceleration$" Velocity "$Pawn.Velocity);
-}
-// END UTCOMP movement 
 */
 
 function ServerPlaySound(Sound S, Pawn P)
@@ -3158,91 +1994,6 @@ exec function StopSounds()
     {
         ClientPlaySound(Sound'Fart');
     }
-}
-
-function int FractionCorrection(float in, out float fraction) {
-    local int result;
-    local float tmp;
-
-    tmp = in + fraction;
-    result = int(tmp);
-    fraction = tmp - result;
-
-    return result;
-}
-
-function UpdateRotation(float DeltaTime, float maxPitch)
-{
-    local rotator newRotation, ViewRotation;
-
-    if ( bInterpolating || ((Pawn != None) && Pawn.bInterpolating) )
-    {
-        ViewShake(deltaTime);
-        return;
-    }
-
-    // Added FreeCam control for better view control
-    if (bFreeCam == True)
-    {
-        if (bFreeCamZoom == True)
-        {
-            CameraDeltaRad += FractionCorrection(DeltaTime * 0.25 * aLookUp, PitchFraction);
-        }
-        else if (bFreeCamSwivel == True)
-        {
-            CameraSwivel.Yaw += FractionCorrection(16.0 * DeltaTime * aTurn, YawFraction);
-            CameraSwivel.Pitch += FractionCorrection(16.0 * DeltaTime * aLookUp, PitchFraction);
-        }
-        else
-        {
-            CameraDeltaRotation.Yaw += FractionCorrection(32.0 * DeltaTime * aTurn, YawFraction);
-            CameraDeltaRotation.Pitch += FractionCorrection(32.0 * DeltaTime * aLookUp, PitchFraction);
-        }
-    }
-    else
-    {
-        ViewRotation = Rotation;
-
-        if(Pawn != None && Pawn.Physics != PHYS_Flying) // mmmmm
-        {
-            // Ensure we are not setting the pawn to a rotation beyond its desired
-            if( Pawn.DesiredRotation.Roll < 65535 &&
-                (ViewRotation.Roll < Pawn.DesiredRotation.Roll || ViewRotation.Roll > 0))
-                ViewRotation.Roll = 0;
-            else if( Pawn.DesiredRotation.Roll > 0 &&
-                (ViewRotation.Roll > Pawn.DesiredRotation.Roll || ViewRotation.Roll < 65535))
-                ViewRotation.Roll = 0;
-        }
-
-        DesiredRotation = ViewRotation; //save old rotation
-
-        if ( bTurnToNearest != 0 )
-            TurnTowardNearestEnemy();
-        else if ( bTurn180 != 0 )
-            TurnAround();
-        else
-        {
-            TurnTarget = None;
-            bRotateToDesired = false;
-            bSetTurnRot = false;
-            ViewRotation.Yaw += FractionCorrection(32.0 * DeltaTime * aTurn, YawFraction);
-            ViewRotation.Pitch += FractionCorrection(32.0 * DeltaTime * aLookUp, PitchFraction);
-        }
-        if (Pawn != None)
-            ViewRotation.Pitch = Pawn.LimitPitch(ViewRotation.Pitch);
-
-        SetRotation(ViewRotation);
-
-        ViewShake(deltaTime);
-        ViewFlash(deltaTime);
-
-        NewRotation = ViewRotation;
-        //NewRotation.Roll = Rotation.Roll;
-
-        if ( !bRotateToDesired && (Pawn != None) && (!bFreeCamera || !bBehindView) )
-            Pawn.FaceRotation(NewRotation, deltatime);
-    }
-
 }
 
 // from  https://github.com/EliteTrials/ElitePatch
@@ -3410,13 +2161,13 @@ defaultproperties
      BlueAllyModel="Jakob"
      bAnnounceOverkill=True
      bUseHitSounds=True
-     SoundHit=Sound'3SPNvSoL.Sounds.HitSound'
+     SoundHit=Sound'WS3SPN.Sounds.HitSound'
      SoundHitFriendly=Sound'MenuSounds.denied1'
      SoundHitVolume=0.600000
-     SoundAlone=Sound'3SPNvSoL.Sounds.alone'
+     SoundAlone=Sound'WS3SPN.Sounds.alone'
      SoundAloneVolume=1.000000
      SoundUnlock=Sound'NewWeaponSounds.Newclickgrenade'
-     SoundSpawnProtection=Sound'3SPNvSoL.Sounds.Bleep'
+     SoundSpawnProtection=Sound'WS3SPN.Sounds.Bleep'
      bEnableEnhancedNetCode=True
      ShowInitialMenu=2
      Menu3SPNKey=IK_F7
@@ -3445,50 +2196,20 @@ defaultproperties
      EndCeremonyWeaponClasses(5)=Class'XWeapons.SniperRifle'
      EndCeremonyWeaponClasses(6)=Class'XWeapons.BioRifle'
      EndCeremonyWeaponClasses(7)=Class'UTClassic.ClassicSniperRifle'
-     RedMessageColor=(B=64,G=64,R=255,A=200)
-     GreenMessageColor=(B=128,G=200,R=128,A=200)
-     BlueMessageColor=(B=253,G=200,R=125,A=200)
-     YellowMessageColor=(B=1,G=200,R=200,A=200)
      WhiteMessageColor=(B=200,G=200,R=200,A=200)
      WhiteColor=(B=255,G=255,R=255,A=255)
      bAllowColoredMessages=True
      bEnableColoredNamesInTalk=True
-     CurrentSelectedColoredName=255
-     colorname(0)=(B=255,G=255,R=255,A=255)
-     colorname(1)=(B=255,G=255,R=255,A=255)
-     colorname(2)=(B=255,G=255,R=255,A=255)
-     colorname(3)=(B=255,G=255,R=255,A=255)
-     colorname(4)=(B=255,G=255,R=255,A=255)
-     colorname(5)=(B=255,G=255,R=255,A=255)
-     colorname(6)=(B=255,G=255,R=255,A=255)
-     colorname(7)=(B=255,G=255,R=255,A=255)
-     colorname(8)=(B=255,G=255,R=255,A=255)
-     colorname(9)=(B=255,G=255,R=255,A=255)
-     colorname(10)=(B=255,G=255,R=255,A=255)
-     colorname(11)=(B=255,G=255,R=255,A=255)
-     colorname(12)=(B=255,G=255,R=255,A=255)
-     colorname(13)=(B=255,G=255,R=255,A=255)
-     colorname(14)=(B=255,G=255,R=255,A=255)
-     colorname(15)=(B=255,G=255,R=255,A=255)
-     colorname(16)=(B=255,G=255,R=255,A=255)
-     colorname(17)=(B=255,G=255,R=255,A=255)
-     colorname(18)=(B=255,G=255,R=255,A=255)
-     colorname(19)=(B=255,G=255,R=255,A=255)
      AutoSyncSettings=True
      LastSettingsLoadTimeSeconds=-100.000000
      LastSettingsSaveTimeSeconds=-100.000000
-     PlayerReplicationInfoClass=Class'3SPNvSoL.Misc_PRI'
+     PlayerReplicationInfoClass=Class'WS3SPN.Misc_PRI'
      Adrenaline=0.100000
      AdrenalineMax=120.000000
      ReceiveAwardType=RAT_All
      bConfigureNetSpeed=false
      ConfigureNetSpeedValue=15000
-     bEnableWidescreenFix=false
-     //bEnableDodgeFix=false
 
-     //DesiredNetUpdateRate=90.0
-     //TimeBetweenUpdates=0.011111
- 
      bTeamColorRockets=false
      bTeamColorBio=false
      bTeamColorFlak=false
@@ -3497,7 +2218,7 @@ defaultproperties
      TeamColorRed=(R=255,G=80,B=80,A=255)
      TeamColorBlue=(R=80,G=80,B=255,A=255)
      bTeamColorUseTeam=true
-     bEnableEmoticons=true
+     //bEnableEmoticons=true
      bShowSpectators=true
      bKillingSpreeCheers=true
 

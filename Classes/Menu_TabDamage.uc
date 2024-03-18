@@ -1,6 +1,5 @@
 class Menu_TabDamage extends UT2k3TabPanel;
 
-var automated moComboBox DamageSelect;
 var automated moComboBox ReceiveAward;
 var automated moCheckBox ConfigureNetSpeed;
 var automated GUINumericEdit EditConfigureNetSpeedValue;
@@ -35,12 +34,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	 
 	OldDirty = class'Menu_Menu3SPN'.default.SettingsDirty;
 
-	DamageSelect.AddItem("Disabled");
-	DamageSelect.AddItem("Centered");
-	DamageSelect.AddItem("Floating");
-	DamageSelect.ReadOnly(True);
-	DamageSelect.SetIndex(class'Misc_Player'.default.DamageIndicatorType - 1);
-
 	ReceiveAward.AddItem("Disabled");
 	ReceiveAward.AddItem("Player");
 	ReceiveAward.AddItem("Team");
@@ -49,7 +42,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	ReceiveAward.SetIndex(class'Misc_Player'.default.ReceiveAwardType);
 
     ConfigureNetSpeed.Checked(class'Misc_Player'.default.bConfigureNetSpeed);
-    EnableWidescreenFixes.Checked(class'Misc_Player'.default.bEnableWidescreenFix);
 
     EditConfigureNetSpeedValue.MinValue=9000;
     EditConfigureNetSpeedValue.MaxValue=100000;
@@ -100,10 +92,6 @@ function InternalOnChange( GUIComponent C )
 {
     Switch(C)
     {	
-		case DamageSelect:
-			class'Misc_Player'.default.DamageIndicatorType = DamageSelect.GetIndex() + 1;
-			break;
-
 		case ReceiveAward:
 			class'Misc_Player'.default.ReceiveAwardType = ReceiveAwardTypes(ReceiveAward.GetIndex());
 			break;
@@ -121,20 +109,9 @@ function InternalOnChange( GUIComponent C )
             }
 			break;
 
-		case EnableWidescreenFixes:
-			class'Misc_Player'.default.bEnableWidescreenFix = EnableWidescreenFixes.IsChecked();
-			break;
-
 		case AbortNecro:
 			class'Misc_Player'.default.AbortNecroSoundType = AbortNecroSounds(AbortNecro.GetIndex());
 			break;
-
-        /*
-        case EditNetUpdateRate:
-            class'Misc_Player'.default.DesiredNetUpdateRate = EditNetUpdateRate.GetValue();
-            Misc_Player(PlayerOwner()).SetNetUpdateRate(EditNetUpdateRate.GetValue());
-            break;            
-        */
 
 		case PlayOwnLandings:
             class'Misc_Pawn'.default.bPlayOwnLandings = PlayOwnLandings.IsChecked();
@@ -147,11 +124,6 @@ function InternalOnChange( GUIComponent C )
             }            
 			break;
 
-        /*
-		case EnableDodgeFix:
-			class'Misc_Player'.default.bEnableDodgeFix = EnableDodgeFix.IsChecked();
-			break;
-        */
 		case ShowSpectators:
 			class'Misc_Player'.default.bShowSpectators = ShowSpectators.IsChecked();
 			break;
@@ -167,114 +139,71 @@ function InternalOnChange( GUIComponent C )
 
 defaultproperties
 {
-     Begin Object Class=moComboBox Name=ComboDamageIndicatorType
-         Caption="Damage Indicators:"
-         OnCreateComponent=ComboDamageIndicatorType.InternalOnCreateComponent
-         WinTop=0.350000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     DamageSelect=moComboBox'3SPNvSoL.Menu_TabDamage.ComboDamageIndicatorType'
-
      Begin Object Class=moComboBox Name=ComboReceiveAwardType
          Caption="Receive Awards:"
          OnCreateComponent=ComboReceiveAwardType.InternalOnCreateComponent
-         WinTop=0.410000
+         WinTop=0.35
          WinLeft=0.100000
          WinWidth=0.600000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     ReceiveAward=moComboBox'3SPNvSoL.Menu_TabDamage.ComboReceiveAwardType'
+     ReceiveAward=moComboBox'WS3SPN.Menu_TabDamage.ComboReceiveAwardType'
 
      Begin Object Class=moCheckBox Name=CheckConfigureNetSpeed
          Caption="Auto Set Net Speed:"
          OnCreateComponent=CheckConfigureNetSpeed.InternalOnCreateComponent
-         WinTop=0.470000
+         WinTop=0.410000
          WinLeft=0.100000
          WinWidth=0.400000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     ConfigureNetSpeed=moCheckBox'3SPNvSoL.Menu_TabDamage.CheckConfigureNetSpeed'
+     ConfigureNetSpeed=moCheckBox'WS3SPN.Menu_TabDamage.CheckConfigureNetSpeed'
 
      Begin Object Class=GUINumericEdit Name=InputConfigureNetSpeed
-         WinTop=0.460000
+         WinTop=0.400000
          WinLeft=0.550000
          WinWidth=0.150000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     EditConfigureNetSpeedValue=GUINumericEdit'3SPNvSoL.Menu_TabDamage.InputConfigureNetSpeed'
+     EditConfigureNetSpeedValue=GUINumericEdit'WS3SPN.Menu_TabDamage.InputConfigureNetSpeed'
 
-    Begin Object Class=moCheckBox Name=WidescreenFixCheck
-         Caption="Enable Widescreen fixes:"
-         OnCreateComponent=WidescreenFixCheck.InternalOnCreateComponent
+     Begin Object Class=moCheckBox Name=PlayOwnLandingsCheckBox
+         Caption="Play Own Landing Sounds:"
+         OnCreateComponent=PlayOwnLandingsCheckBox.InternalOnCreateComponent
+         WinTop=0.470000
+         WinLeft=0.100000
+         WinWidth=0.600000
+         OnChange=Menu_TabDamage.InternalOnChange
+     End Object
+     PlayOwnLandings=moCheckBox'WS3SPN.Menu_TabDamage.PlayOwnLandingsCheckBox'
+
+     Begin Object Class=moComboBox Name=AbortNecroSoundTypesCombo
+         Caption="Abort Necro Sound:"
+         OnCreateComponent=ComboReceiveAwardType.InternalOnCreateComponent
          WinTop=0.530000
          WinLeft=0.100000
          WinWidth=0.600000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     EnableWidescreenFixes=moCheckBox'3SPNvSoL.Menu_TabDamage.WidescreenFixCheck'
-
-     Begin Object Class=moComboBox Name=AbortNecroSoundTypesCombo
-         Caption="Abort Necro Sound:"
-         OnCreateComponent=ComboReceiveAwardType.InternalOnCreateComponent
-         WinTop=0.580000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     AbortNecro=moComboBox'3SPNvSoL.Menu_TabDamage.AbortNecroSoundTypesCombo'
-
-     Begin Object Class=moCheckBox Name=PlayOwnLandingsCheckBox
-         Caption="Play Own Landing Sounds:"
-         OnCreateComponent=PlayOwnLandingsCheckBox.InternalOnCreateComponent
-         WinTop=0.630000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     PlayOwnLandings=moCheckBox'3SPNvSoL.Menu_TabDamage.PlayOwnLandingsCheckBox'
-
-    /*
-     Begin Object Class=moNumericEdit Name=InputNetUpdateRate
-         Caption="Net Update Rate (for movement):"
-         WinTop=0.680000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     EditNetUpdateRate=moNumericEdit'3SPNvSoL.Menu_TabDamage.InputNetUpdateRate'
-
-     Begin Object Class=moCheckBox Name=EnableDodgeFixCheckBox
-         Caption="Enable Dodge Fix:"
-         OnCreateComponent=EnableDodgeFixCheckBox.InternalOnCreateComponent
-         //WinTop=0.730000
-         WinTop=0.680000
-         WinLeft=0.100000
-         WinWidth=0.600000
-         OnChange=Menu_TabDamage.InternalOnChange
-     End Object
-     EnableDodgeFix=moCheckBox'3SPNvSoL.Menu_TabDamage.EnableDodgeFixCheckBox'
-     */
+     AbortNecro=moComboBox'WS3SPN.Menu_TabDamage.AbortNecroSoundTypesCombo'
 
      Begin Object Class=moCheckBox Name=ShowSpectatorsCheckBox
          Caption="Show spectators:"
          OnCreateComponent=ShowSpectatorsCheckBox.InternalOnCreateComponent
-         //WinTop=0.730000
-         WinTop=0.680000
+         WinTop=0.58
          WinLeft=0.100000
          WinWidth=0.600000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     ShowSpectators=moCheckBox'3SPNvSoL.Menu_TabDamage.ShowSpectatorsCheckBox'
+     ShowSpectators=moCheckBox'WS3SPN.Menu_TabDamage.ShowSpectatorsCheckBox'
 
      Begin Object Class=moCheckBox Name=KillingSpreeCheersCheckBox
          Caption="Killing spree cheers:"
          OnCreateComponent=KillingSpreeCheersCheckBox.InternalOnCreateComponent
-         WinTop=0.730000
+         WinTop=0.63
          WinLeft=0.100000
          WinWidth=0.600000
          OnChange=Menu_TabDamage.InternalOnChange
      End Object
-     KillingSpreeCheers=moCheckBox'3SPNvSoL.Menu_TabDamage.KillingSpreeCheersCheckBox'
+     KillingSpreeCheers=moCheckBox'WS3SPN.Menu_TabDamage.KillingSpreeCheersCheckBox'
 }

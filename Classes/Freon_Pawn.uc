@@ -370,7 +370,6 @@ simulated function ApplyLowQualityIce()
     Head = new(none)class'Combiner';
 
     SetOverlayMaterial(None, 0.0, true);
-    SetStandardSkin();
 
     Body.CombineOperation = CO_Add;
     Body.Material1 = Skins[0];
@@ -395,7 +394,6 @@ simulated function ApplyHighQualityIce()
     Ice = new(none)class'Combiner';
 
     SetOverlayMaterial(None, 0.0, true);
-	SetStandardSkin();
 
     Ice.CombineOperation = CO_Subtract;
     Ice.Material1 = FrostMap;
@@ -413,13 +411,6 @@ simulated function ApplyHighQualityIce()
     Skins[1] = Head;
 }
 
-simulated function SetSkin(int OverrideTeamIndex)
-{
-    if(bClientFrozen)
-        return;
-
-    Super.SetSkin(OverrideTeamIndex);
-}
 
 function DiedFrozen(Controller Killer, class<DamageType> DamageType, vector HitLocation)
 {

@@ -36,7 +36,7 @@ static function string GetString (optional int Switch, optional PlayerReplicatio
 
 defaultproperties
 {
-     finishmcsound=Sound'3SPNvSoL.Sounds.last_man_standing'
+     finishmcsound=Sound'WS3SPN.Sounds.last_man_standing'
      LmsString="Last Man Standing"
      bIsUnique=True
      bFadeMessage=True

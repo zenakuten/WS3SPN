@@ -116,7 +116,7 @@ defaultproperties
          WinHeight=1.000000
          bNeverFocus=True
      End Object
-     Controls(0)=GUIImage'3SPNvSoL.Menu_TabTournamentAdmin.TabBackground'
+     Controls(0)=GUIImage'WS3SPN.Menu_TabTournamentAdmin.TabBackground'
 
      Begin Object Class=GUIButton Name=ApplyButton
          Caption="Apply Score"
@@ -128,7 +128,7 @@ defaultproperties
          OnClick=Menu_TabTournamentAdmin.OnClick
          OnKeyEvent=ApplyButton.InternalOnKeyEvent
      End Object
-     Controls(1)=GUIButton'3SPNvSoL.Menu_TabTournamentAdmin.ApplyButton'
+     Controls(1)=GUIButton'WS3SPN.Menu_TabTournamentAdmin.ApplyButton'
 
      Begin Object Class=GUILabel Name=RedScoreLabel
          Caption="Red Score:"
@@ -138,7 +138,7 @@ defaultproperties
          WinWidth=0.250000
          WinHeight=0.037500
      End Object
-     Controls(2)=GUILabel'3SPNvSoL.Menu_TabTournamentAdmin.RedScoreLabel'
+     Controls(2)=GUILabel'WS3SPN.Menu_TabTournamentAdmin.RedScoreLabel'
 
      Begin Object Class=GUIEditBox Name=RedScoreEditBox
          WinTop=0.100000
@@ -150,7 +150,7 @@ defaultproperties
          OnKeyType=RedScoreEditBox.InternalOnKeyType
          OnKeyEvent=RedScoreEditBox.InternalOnKeyEvent
      End Object
-     Controls(3)=GUIEditBox'3SPNvSoL.Menu_TabTournamentAdmin.RedScoreEditBox'
+     Controls(3)=GUIEditBox'WS3SPN.Menu_TabTournamentAdmin.RedScoreEditBox'
 
      Begin Object Class=GUILabel Name=BlueScoreLabel
          Caption="Blue Score:"
@@ -160,7 +160,7 @@ defaultproperties
          WinWidth=0.250000
          WinHeight=0.037500
      End Object
-     Controls(4)=GUILabel'3SPNvSoL.Menu_TabTournamentAdmin.BlueScoreLabel'
+     Controls(4)=GUILabel'WS3SPN.Menu_TabTournamentAdmin.BlueScoreLabel'
 
      Begin Object Class=GUIEditBox Name=BlueScoreEditBox
          WinTop=0.160000
@@ -172,7 +172,7 @@ defaultproperties
          OnKeyType=BlueScoreEditBox.InternalOnKeyType
          OnKeyEvent=BlueScoreEditBox.InternalOnKeyEvent
      End Object
-     Controls(5)=GUIEditBox'3SPNvSoL.Menu_TabTournamentAdmin.BlueScoreEditBox'
+     Controls(5)=GUIEditBox'WS3SPN.Menu_TabTournamentAdmin.BlueScoreEditBox'
 
      Begin Object Class=moCheckBox Name=AdminVisionCheck
          Caption="Enable Wall Hack When Spectating."
@@ -183,7 +183,7 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(6)=moCheckBox'3SPNvSoL.Menu_TabTournamentAdmin.AdminVisionCheck'
+     Controls(6)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.AdminVisionCheck'
 
      Begin Object Class=moCheckBox Name=TargetingLineCheck
          Caption="Enable Targeting Tracking When Spectating."
@@ -194,7 +194,7 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(7)=moCheckBox'3SPNvSoL.Menu_TabTournamentAdmin.TargetingLineCheck'
+     Controls(7)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.TargetingLineCheck'
 
      Begin Object Class=moCheckBox Name=NewNetStatsCheck
          Caption="Enable NewNet Stats Reporting (Debug)."
@@ -205,6 +205,6 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(8)=moCheckBox'3SPNvSoL.Menu_TabTournamentAdmin.NewNetStatsCheck'
+     Controls(8)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.NewNetStatsCheck'
 
 }

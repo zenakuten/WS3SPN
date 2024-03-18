@@ -2,17 +2,12 @@ class TAM_HUD extends Team_HUDBase;
 
 #exec TEXTURE IMPORT NAME=Icons FILE=Textures\Icons.dds GROUP=Textures MIPS=On ALPHA=1 DXT=5
 
-/* combo related */
 var bool bDrawCombos;
-
 var NumericWidget ComboAdren;
 var SpriteWidget ComboBack;
 var SpriteWidget ComboDisc;
 var SpriteWidget ComboType[10];
-/* combo related */
 
-#include Classes\Include\DrawAdrenaline.uci
-#include Classes\Include\DrawChargeBar.uci
 
 function DisplayMessages(Canvas C)
 {
@@ -28,7 +23,7 @@ simulated function DrawChargeBar(Canvas C)
 {
     if (!bDrawCombos)
     {
-        if(class'Misc_Player'.default.bEnableWidescreenFix)
+        if(BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
             WideDrawChargeBar(C);
         else
             Super.DrawChargeBar(C);
@@ -45,7 +40,7 @@ simulated function DrawAdrenaline(Canvas C)
     local TeamInfo TRI;
     local Misc_DynComboReplicationInfo CRI;
 
-    if (class'Misc_Player'.default.bEnableWidescreenFix)
+    if(BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
         WideDrawAdrenaline(C);
     else
         Super.DrawAdrenaline(C);
@@ -110,11 +105,11 @@ defaultproperties
 {
      ComboAdren=(RenderStyle=STY_Alpha,TextureScale=0.270000,DrawPivot=DP_MiddleRight,PosX=0.980000,PosY=0.060000,OffsetX=-44,OffsetY=45,Tints[0]=(B=255,G=255,R=255,A=255),Tints[1]=(B=255,G=255,R=255,A=255))
      ComboBack=(WidgetTexture=Texture'HUDContent.Generic.HUD',RenderStyle=STY_Alpha,TextureCoords=(X1=168,Y1=211,X2=334,Y2=255),TextureScale=0.250000,DrawPivot=DP_UpperRight,PosX=0.990000,PosY=0.060000,OffsetY=25,ScaleMode=SM_Left,Scale=1.500000,Tints[0]=(A=150),Tints[1]=(A=150))
-     ComboType(1)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=90,Y1=173,X2=166,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(2)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=174,Y1=5,X2=250,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(3)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=5,Y1=173,X2=81,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(4)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=5,Y1=5,X2=81,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(5)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=174,Y1=173,X2=250,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(6)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=89,Y1=5,X2=165,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
-     ComboType(7)=(WidgetTexture=Texture'3SPNvSoL.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=89,Y1=89,X2=165,Y2=165),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(1)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=90,Y1=173,X2=166,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(2)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=174,Y1=5,X2=250,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(3)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=5,Y1=173,X2=81,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(4)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=5,Y1=5,X2=81,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(5)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=174,Y1=173,X2=250,Y2=249),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(6)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=89,Y1=5,X2=165,Y2=81),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
+     ComboType(7)=(WidgetTexture=Texture'WS3SPN.textures.Icons',RenderStyle=STY_Alpha,TextureCoords=(X1=89,Y1=89,X2=165,Y2=165),TextureScale=0.200000,DrawPivot=DP_UpperRight,PosX=0.987500,PosY=0.060000,OffsetX=10,OffsetY=23,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=200),Tints[1]=(B=255,G=255,R=255,A=200))
 }

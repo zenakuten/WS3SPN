@@ -1,4 +1,4 @@
-class AM_HUD extends HudCDeathMatch;
+class AM_HUD extends UTComp_HudCDeathMatch;
 
 var Texture     TeamTex;
 var Material    TrackedPlayer;
@@ -116,7 +116,8 @@ simulated function UpdateRankAndSpread(Canvas C)
 		class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);	
 
         // draw health dot
-        C.DrawColor = class'Misc_Player'.default.RedOrEnemy * 2.5;
+        //C.DrawColor = class'Misc_Player'.default.RedOrEnemy * 2.5;
+        C.DrawColor = Misc_Player(PlayerOwner).Settings.BlueEnemyUTCompSkinColor * 2.5;
         C.DrawColor.A = 255;
         C.SetPos(posx - (0.0165 * Scale * C.ClipX), posy + (0.0035 * Scale * C.ClipY));
         C.DrawTile(TeamTex, C.ClipX * 0.0165 * Scale, C.ClipY * 0.0185 * Scale, 340, 432, 78, 78);
@@ -277,35 +278,9 @@ simulated function DrawTimer(Canvas C)
 	DrawNumericWidget( C, TimerSeconds, DigitsBig);
 }
 
-simulated function DrawDamageIndicators(Canvas C)
-{
-    local float XL, YL;
-    local string Name;
-    
-    Super.DrawDamageIndicators(C);
-    
-    if(bHideHud || Misc_Player(PlayerOwner) == None || Misc_Player(PlayerOwner).DamageIndicatorType != 2)
-        return;
-
-    if(Misc_Player(PlayerOwner).SumDamageTime + 1 <= Level.TimeSeconds)
-        return;
-    
-    if(C.ClipX >= 1600)
-        C.Font = GetFontSizeIndex(C, -2);
-    else
-        C.Font = GetFontSizeIndex(C, -1);
-
-    C.DrawColor = class'Emitter_Damage'.static.ColorRamp(Misc_Player(PlayerOwner).SumDamage);
-    C.DrawColor.A = Clamp(int(((Misc_Player(PlayerOwner).SumDamageTime + 1) - Level.TimeSeconds) * 200), 1, 200);
-
-    Name = string(Misc_Player(PlayerOwner).SumDamage);
-    C.StrLen(Name, XL, YL);
-    C.SetPos((C.ClipX - XL) * 0.5, (C.ClipY - YL) * 0.46);
-    C.DrawTextClipped(Name);
-}
 
 defaultproperties
 {
      TeamTex=Texture'HUDContent.Generic.HUD'
-     TrackedPlayer=Texture'3SPNvSoL.textures.chair'
+     TrackedPlayer=Texture'WS3SPN.textures.chair'
 }

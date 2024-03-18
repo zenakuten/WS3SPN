@@ -2,7 +2,6 @@ class Misc_PRI extends xPlayerReplicationInfo;
 
 // NR = not automatically replicated
 
-var string ColoredName;
 
 var bool bWarned;               // has been warned for camping (next time will receive penalty) - NR
 var int CampCount;              // the number of times penalized for camping - NR
@@ -35,7 +34,7 @@ var int CurrentDamage;
 var int CurrentDamage2;
 
 var localized string StringDeadNoRez;
-var Misc_PRI OwnerPRI;
+
 /* hitstats */
 struct HitStat
 {
@@ -68,6 +67,7 @@ var float       AveragePercent;
 
 var class<Misc_PawnReplicationInfo> PawnInfoClass;
 var Misc_PawnReplicationInfo PawnReplicationInfo;
+var UTComp_PRI UTCompPRI;
 
 var int ResCount;
 
@@ -83,12 +83,10 @@ var array<VsStats> VsStatsList;
 
 replication
 {
-    reliable if ( Role < ROLE_Authority )
-        SetColoredName;
     reliable if ( Role == ROLE_Authority )
         RegisterDamage, UpdateVsStats;
     unreliable if ( bNetDirty && (Role == ROLE_Authority) )
-        ColoredName,PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo;
+        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI;
 }
 
 event PostBeginPlay()
@@ -96,23 +94,18 @@ event PostBeginPlay()
     Super.PostBeginPlay();
 
     if(!bDeleteMe && Level.NetMode != NM_Client)
+    {
         PawnReplicationInfo = Spawn(PawnInfoClass, self,, vect(0,0,0), rot(0,0,0));
+    }
+    UTCompPRI = class'UTComp_Util'.static.GetUTCompPRI(self);
 }
 
 simulated function string GetColoredName()
 {
-//	local Misc_PlayerDataManager_Local PD;
-	
-//	local string dona;
-//	local string test;
-//	dona = "d";
-//	
-	
-	if(ColoredName=="")
-		
-		return PlayerName;
-		
-	return ColoredName;
+    if(UTCompPRI.ColoredName == "")
+        return PlayerName;
+
+    return UTCompPRI.ColoredName;
 }
 
 simulated function RegisterDamage (int Damage, byte WeaponNum)
@@ -134,17 +127,12 @@ simulated function RegisterDamage (int Damage, byte WeaponNum)
 simulated function string GetColoredName2(Color OrigColor)
 {
     // End:0x12
-    if(ColoredName == "")
+    if(UTCompPRI.ColoredName == "")
     {
         return PlayerName;
     }
-    return ColoredName $ class'DMStatsScreen'.static.MakeColorCode(OrigColor);
+    return UTCompPRI.ColoredName $ class'DMStatsScreen'.static.MakeColorCode(OrigColor);
     //return;    
-}
-
-function SetColoredName(string S)
-{
-    ColoredName=S;
 }
 
 simulated function string GetLocationName()
@@ -281,6 +269,7 @@ function ProcessHitStats()
         AveragePercent += class'Misc_StatBoard'.static.GetPercentage(ClassicSniper.Fired, ClassicSniper.Hit);
         count++;
     }
+    
 
     if(count > 0)
         AveragePercent /= count;
@@ -319,5 +308,5 @@ simulated function UpdateVsStats( string OpponentName, bool bWin )
 defaultproperties
 {
      StringDeadNoRez="Dead [Inactive]"
-     PawnInfoClass=Class'3SPNvSoL.Misc_PawnReplicationInfo'
+     PawnInfoClass=Class'WS3SPN.Misc_PawnReplicationInfo'
 }

@@ -1,4 +1,4 @@
-class Team_HUDBase extends HudCTeamDeathmatch
+class Team_HUDBase extends UTComp_HudCTeamDeathmatch
     abstract;
 
 #exec TEXTURE IMPORT NAME=CHair FILE=Textures\chair.dds     GROUP=Textures MIPS=On ALPHA=1 DXT=5
@@ -34,15 +34,6 @@ var int CurrentStatsList;
 
 var array<vector> TargetingLines;
 var Actor TargetingActor;
-
-#include Classes\Include\_HudCommon.h.uci
-#include Classes\Include\_HudCommon.uci
-#include Classes\Include\DrawCrosshair.uci
-#include Classes\Include\DrawTeamHudPassA.uci
-#include Classes\Include\DrawWeaponBar.uci
-#include Classes\Include\EmoticonsHud.uci
-#include Classes\Include\_HudCommon.p.uci
-
 
 exec function ShowStats()
 {
@@ -119,7 +110,7 @@ function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, f
 
 simulated function DrawCrosshair(Canvas C)
 {
-	if (class'Misc_Player'.default.bEnableWidescreenFix)
+	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
 		WideDrawCrosshair(C);
 	else
 		Super.DrawCrosshair(C);
@@ -127,7 +118,7 @@ simulated function DrawCrosshair(Canvas C)
 
 simulated function DrawWeaponBar(Canvas C)
 {
-	if (class'Misc_Player'.default.bEnableWidescreenFix)
+	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
 		WideDrawWeaponBar(C);
 	else
 		Super.DrawWeaponBar(C);
@@ -135,7 +126,7 @@ simulated function DrawWeaponBar(Canvas C)
 
 simulated function DrawHudPassA(Canvas C)
 {
-	if (class'Misc_Player'.default.bEnableWidescreenFix)
+	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
 		TeamWideDrawHudPassA(C);
 	else
 		Super.DrawHudPassA(C);
@@ -1409,59 +1400,6 @@ simulated function DrawTargetingLine(Canvas C)
   }
 }
 
-/*simulated function DrawTrackedPlayer(Canvas C, Misc_PawnReplicationInfo P, Misc_PRI PRI)
-{
-    local float    SizeScale, SizeX, SizeY;
-    local vector ScreenPos;
-
-    if(DrawPlayerTracking(C, P, false, ScreenPos) && (!p.bInvis || MyOwner.bEnhancedRadar) && PRI != PawnOwner.PlayerReplicationInfo)
-    {
-        if(MyOwner.bEnhancedRadar)
-            C.DrawColor = HudColorTeam[pri.Team.TeamIndex];
-        else
-            C.DrawColor = WhiteColor * 0.8;
-        C.DrawColor.A = 175;
-        C.Style = ERenderStyle.STY_Alpha;
-
-        SizeScale    = 0.2;
-        SizeX        = 32 * SizeScale * ResScaleX;
-        SizeY        = 32 * SizeScale * ResScaleY;
-
-        C.SetPos(ScreenPos.X - SizeX * 0.5, ScreenPos.Y - SizeY * 0.5);
-        C.DrawTile(TrackedPlayer, SizeX, SizeY, 0, 0, 64, 64);
-    }
-}
-
-simulated function bool DrawPlayerTracking( Canvas C, Actor P, bool bOptionalIndicator, out vector ScreenPos )
-{
-    local Vector    CamLoc;
-    local Rotator    CamRot;
-
-    C.GetCameraLocation(CamLoc, CamRot);
-
-    if(IsTargetInFrontOfPlayer(C, P, ScreenPos, CamLoc, CamRot) && !FastTrace(Misc_PawnReplicationInfo(P).Position, CamLoc))
-        return true;
-
-    return false;
-}
-
-static function bool IsTargetInFrontOfPlayer( Canvas C, Actor Target, out Vector ScreenPos,
-                                             Vector CamLoc, Rotator CamRot )
-{
-    // Is Target located behind camera ?
-    if((Misc_PawnReplicationInfo(Target).Position - CamLoc) Dot vector(CamRot) < 0)
-        return false;
-
-    // Is Target on visible canvas area ?
-    ScreenPos = C.WorldToScreen(Misc_PawnReplicationInfo(Target).Position);
-    if(ScreenPos.X <= 0 || ScreenPos.X >= C.ClipX)
-        return false;
-    if(ScreenPos.Y <= 0 || ScreenPos.Y >= C.ClipY)
-        return false;
-
-    return true;
-}*/
-
 function CheckCountdown(GameReplicationInfo GRI)
 {
     local Misc_BaseGRI G;
@@ -1565,14 +1503,12 @@ simulated function DrawTimer(Canvas C)
     DrawNumericTileWidget( C, TimerSeconds, DigitsBig);
 }
 
-/* colored names */
 
 function DisplayEnemyName(Canvas C, PlayerReplicationInfo PRI)
 {
     PlayerOwner.ReceiveLocalizedMessage(class'Message_PlayerName',0,PRI);
 }
 
-/* colored names */
 
 simulated function DisplayLocalMessages( Canvas C )
 {
@@ -1684,38 +1620,11 @@ function NewDraw2DLocationDot(Canvas C, vector Loc, int CenterX, int CenterY, in
     C.DrawTile(LocationDot, dotSize, dotSize, 340, 432, 78, 78);
 }
 
-simulated function DrawDamageIndicators(Canvas C)
-{
-    local float XL, YL;
-    local string Name;
-    
-    Super.DrawDamageIndicators(C);
-    
-    if(bHideHud || Misc_Player(PlayerOwner) == None || Misc_Player(PlayerOwner).DamageIndicatorType != 2)
-        return;
-
-    if(Misc_Player(PlayerOwner).SumDamageTime + 1 <= Level.TimeSeconds)
-        return;
-    
-    if(C.ClipX >= 1600)
-        C.Font = GetFontSizeIndex(C, -2);
-    else
-        C.Font = GetFontSizeIndex(C, -1);
-
-    C.DrawColor = class'Emitter_Damage'.static.ColorRamp(Misc_Player(PlayerOwner).SumDamage);
-    C.DrawColor.A = Clamp(int(((Misc_Player(PlayerOwner).SumDamageTime + 1) - Level.TimeSeconds) * 200), 1, 200);
-
-    Name = string(Misc_Player(PlayerOwner).SumDamage);
-    C.StrLen(Name, XL, YL);
-    C.SetPos((C.ClipX - XL) * 0.5, (C.ClipY - YL) * 0.46);
-    C.DrawTextClipped(Name);
-}
-
 defaultproperties
 {
      TeamTex=Texture'HUDContent.Generic.HUD'
-     Hudzaxis=Texture'3SPNvSoL.textures.Hudzaxis'
-     TrackedPlayer=Texture'3SPNvSoL.textures.chair'
+     Hudzaxis=Texture'WS3SPN.textures.Hudzaxis'
+     TrackedPlayer=Texture'WS3SPN.textures.chair'
      FullHealthColor=(B=200,G=100,A=255)
      NameColor=(B=200,G=200,R=200,A=255)
      LocationColor=(G=130,R=175,A=255)

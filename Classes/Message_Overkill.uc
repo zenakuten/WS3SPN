@@ -31,7 +31,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     OverkillSound=Sound'3SPNvSoL.Sounds.Overkill'
+     OverkillSound=Sound'WS3SPN.Sounds.Overkill'
      Overkill="OVERKILL!"
      bIsUnique=True
      bFadeMessage=True

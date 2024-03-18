@@ -112,7 +112,7 @@ static function ClientReceive (PlayerController P, optional int Switch, optional
     {
       P.myHUD.LocalizedMessage(Default.Class,Switch,RelatedPRI_1,RelatedPRI_2,OptionalObject);
     }
-    if ( P.Role == 4 )
+    if ( P.Role == ROLE_Authority )
     {
       if ( UnrealPlayer(P).MultiKillLevel > 0 )
       {

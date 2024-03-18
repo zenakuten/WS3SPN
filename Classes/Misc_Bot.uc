@@ -1,4 +1,4 @@
-class Misc_Bot extends xBot;
+class Misc_Bot extends UTComp_xBot;
 
 var bool ActiveThisRound;
 
@@ -59,14 +59,6 @@ function TryCombo(string ComboName)
 
     if(!Pawn.InCurrentCombo() && !NeedsAdrenaline())
     {
-
-/* can't use the ComboNames array because it contains all the combos - including disabled ones
-        if(ComboName ~= "Random")
-            ComboName = ComboNames[Rand(ArrayCount(ComboNames))];
-        else if (ComboName ~= "DMRandom")
-            ComboName = ComboNames[1 + Rand(ArrayCount(ComboNames) - 1)];
-*/
-
         // set combo to default then call NewRecommendCombo
         // which will give us enabled combos (or none)
         ComboName = "xGame.Combo";
@@ -117,6 +109,6 @@ function BroadcastAward(class<LocalMessage> message)
 
 defaultproperties
 {
-     PlayerReplicationInfoClass=Class'3SPNvSoL.Misc_PRI'
+     PlayerReplicationInfoClass=Class'WS3SPN.Misc_PRI'
      Adrenaline=0.100000
 }

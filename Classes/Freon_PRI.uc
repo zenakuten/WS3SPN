@@ -96,5 +96,5 @@ defaultproperties
 {
      FrozenColor=(B=210,G=185,R=170,A=255)
      FrozenString="Frozen"
-     PawnInfoClass=Class'3SPNvSoL.Freon_PawnReplicationInfo'
+     PawnInfoClass=Class'WS3SPN.Freon_PawnReplicationInfo'
 }

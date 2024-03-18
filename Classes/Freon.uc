@@ -110,9 +110,9 @@ event InitGame(string options, out string error)
 function string SwapDefaultCombo(string ComboName)
 {
     if(ComboName ~= "xGame.ComboSpeed")
-        return "3SPNvSoL.Freon_ComboSpeed";
+        return "WS3SPN.Freon_ComboSpeed";
     else if(ComboName ~= "xGame.ComboBerserk")
-        return "3SPNvSoL.Misc_ComboBerserk";
+        return "WS3SPN.Misc_ComboBerserk";
 
     return ComboName;
 }
@@ -666,16 +666,16 @@ defaultproperties
      MaxGitsAllowed=1
      KillGitterMsgColour=(B=232,G=2,R=226)
      KillGitterMsg="You will die on Gits from now on."
-     TeleportSound=Sound'3SPNvSoL.Teleport'
+     TeleportSound=Sound'WS3SPN.Teleport'
      bDisableTeamCombos=False
-     TeamAIType(0)=Class'3SPNvSoL.Freon_TeamAI'
-     TeamAIType(1)=Class'3SPNvSoL.Freon_TeamAI'
-     DefaultPlayerClassName="3SPNvSoL.Freon_Pawn"
-     ScoreBoardType="3SPNvSoL.Freon_Scoreboard"
-     HUDType="3SPNvSoL.Freon_HUD"
-     MapListType="3SPNvSoL.MapListFreon"
-     PlayerControllerClassName="3SPNvSoL.Freon_Player"
-     GameReplicationInfoClass=Class'3SPNvSoL.Freon_GRI'
+     TeamAIType(0)=Class'WS3SPN.Freon_TeamAI'
+     TeamAIType(1)=Class'WS3SPN.Freon_TeamAI'
+     DefaultPlayerClassName="WS3SPN.Freon_Pawn"
+     ScoreBoardType="WS3SPN.Freon_Scoreboard"
+     HUDType="WS3SPN.Freon_HUD"
+     MapListType="WS3SPN.MapListFreon"
+     PlayerControllerClassName="WS3SPN.Freon_Player"
+     GameReplicationInfoClass=Class'WS3SPN.Freon_GRI'
      GameName="Freon"
      Description="Freeze the other team, score a point. Chill well and serve."
      Acronym="Freon"

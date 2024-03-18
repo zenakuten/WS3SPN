@@ -38,7 +38,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     HabeneroSound=Sound'3SPNvSoL.Sounds.Habenero'   //todo: get correct Habenaro.wav
+     HabeneroSound=Sound'WS3SPN.Sounds.Habenero'   //todo: get correct Habenaro.wav
      YouAreHabenero="YOU ARE A HABENERO!"
      PlayerIsHabenero="IS A HABENERO!"
      bIsUnique=True

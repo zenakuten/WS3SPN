@@ -86,7 +86,7 @@ function BecomeSpectator()
 function ServerDoCombo(class<Combo> ComboClass)
 {
     if(class<ComboSpeed>(ComboClass) != None)
-        ComboClass = class<Combo>(DynamicLoadObject("3SPNvSoL.Freon_ComboSpeed", class'Class'));
+        ComboClass = class<Combo>(DynamicLoadObject("WS3SPN.Freon_ComboSpeed", class'Class'));
 
     Super.ServerDoCombo(ComboClass);
 }
@@ -293,5 +293,5 @@ defaultproperties
 {
      SoundHitVolume=1.026164
      SoundAloneVolume=1.300000
-     PlayerReplicationInfoClass=Class'3SPNvSoL.Freon_PRI'
+     PlayerReplicationInfoClass=Class'WS3SPN.Freon_PRI'
 }

@@ -1202,8 +1202,8 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
 
 defaultproperties
 {
-     FrozenBeacon=Texture'3SPNvSoL.textures.Flake'
-     CrossBeacon=Texture'3SPNvSoL.textures.Cross'
+     FrozenBeacon=Texture'WS3SPN.textures.Flake'
+     CrossBeacon=Texture'WS3SPN.textures.Cross'
      ThawBarWidth=50.000000
      ThawBarHeight=10.000000
      ThawBackMat=Texture'InterfaceContent.Menu.BorderBoxD'

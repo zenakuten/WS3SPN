@@ -38,7 +38,7 @@ static simulated function ClientReceive(
 
 defaultproperties
 {
-     SpaceHeaterSound=Sound'3SPNvSoL.Sounds.Spaceheater' //TODO:get correct SpaceHeater.wav
+     SpaceHeaterSound=Sound'WS3SPN.Sounds.Spaceheater' //TODO:get correct SpaceHeater.wav
      YouAreSpaceHeater="YOU ARE A SPACE HEATER!"
      PlayerIsSpaceHeater="IS A SPACE HEATER!"
      bIsUnique=True
