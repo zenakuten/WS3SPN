@@ -192,11 +192,11 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "OTDamage", "Overtime Damage", 0, 21, "Text", "3;0:999");
     PI.AddSetting("3SPN", "OTInterval", "Overtime Damage Interval", 0, 22, "Text", "3;0:999");
 
-    PI.AddSetting("3SPN", "CampThreshold", "Camp Area", 0, 30, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "bKickExcessiveCampers", "Kick Excessive Campers", 0, 31, "Check",,, True);
-	PI.AddSetting("3SPN", "bSpecExcessiveCampers", "Spec Excessive Campers", 0, 41, "Check",,, True);
-    PI.AddSetting("3SPN", "bForceRUP", "Force Ready", 0, 40, "Check",,, True);
-    PI.AddSetting("3SPN", "ForceRUPMinPlayers", "Force Ready Min Players", 0, 41, "Text", "3;0;999",, True);
+    PI.AddSetting("3SPN", "CampThreshold", "Camp Area", 0, 30, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "bKickExcessiveCampers", "Kick Excessive Campers", 0, 31, "Check",,, False);
+	PI.AddSetting("3SPN", "bSpecExcessiveCampers", "Spec Excessive Campers", 0, 41, "Check",,, False);
+    PI.AddSetting("3SPN", "bForceRUP", "Force Ready", 0, 40, "Check",,, False);
+    PI.AddSetting("3SPN", "ForceRUPMinPlayers", "Force Ready Min Players", 0, 41, "Text", "3;0;999",, False);
     
     PI.AddSetting("3SPN", "PickupMode", "Spawn Pickup Mode", 0, 50, "Select", default.PickupModeText);
     PI.AddSetting("3SPN", "bDisableSpeed", "Disable Speed", 0, 51, "Check");
@@ -206,20 +206,20 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bDisableNecro", "Disable Necro", 0, 54, "Check");
     PI.AddSetting("3SPN", "bDisableNecroMessage", "Disable 'Mate out RES' message", 0, 54, "Check");
 
-    PI.AddSetting("3SPN", "bModifyShieldGun", "Use Modified Shield Gun", 0, 60, "Check",,, True);
+    PI.AddSetting("3SPN", "bModifyShieldGun", "Use Modified Shield Gun", 0, 60, "Check",,, False);
     PI.AddSetting("3SPN", "ShieldGunSelfForceScale", "Modified Shield Gun Self Force Scale", 0, 61, "Text", "8;0.0:10.0");
     PI.AddSetting("3SPN", "ShieldGunSelfDamageScale", "Modified Shield Gun Self Damage Scale", 0, 62, "Text", "8;0.0:10.0");
     PI.AddSetting("3SPN", "ShieldGunMinSelfDamage", "Modified Shield Gun Minimum Self Damage", 0, 63, "Text", "3;0:999");    
-    PI.AddSetting("3SPN", "AssaultAmmo", "Assault Ammunition", 0, 61, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "AssaultGrenades", "Assault Grenades", 0, 62, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "BioAmmo", "Bio Ammunition", 0, 63, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "ShockAmmo", "Shock Ammunition", 0, 64, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "LinkAmmo", "Link Ammunition", 0, 65, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "MiniAmmo", "Mini Ammunition", 0, 66, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "FlakAmmo", "Flak Ammunition", 0, 67, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "RocketAmmo", "Rocket Ammunition", 0, 68, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, 69, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, 70, "Text", "3;0:999",, True);
+    PI.AddSetting("3SPN", "AssaultAmmo", "Assault Ammunition", 0, 61, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "AssaultGrenades", "Assault Grenades", 0, 62, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "BioAmmo", "Bio Ammunition", 0, 63, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "ShockAmmo", "Shock Ammunition", 0, 64, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "LinkAmmo", "Link Ammunition", 0, 65, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "MiniAmmo", "Mini Ammunition", 0, 66, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "FlakAmmo", "Flak Ammunition", 0, 67, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "RocketAmmo", "Rocket Ammunition", 0, 68, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, 69, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, 70, "Text", "3;0:999",, False);
 }
 
 static event string GetDescriptionText(string PropName)

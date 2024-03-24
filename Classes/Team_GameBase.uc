@@ -399,13 +399,13 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "OTInterval", "Overtime Damage Interval", 0, Weight++, "Text", "3;0:999");
 	PI.AddSetting("3SPN", "EndOfRoundDelay", "End of Round Delay", 0, 22, "Text", "3;0:999");
 
-    PI.AddSetting("3SPN", "CampThreshold", "Camp Area", 0, Weight++, "Text", "8;0:999",, True);
-    PI.AddSetting("3SPN", "bKickExcessiveCampers", "Kick Excessive Campers", 0, Weight++, "Check",,, True);
-	PI.AddSetting("3SPN", "bSpecExcessiveCampers", "Spectate Excessive Campers", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "CampThreshold", "Camp Area", 0, Weight++, "Text", "8;0:999",, False);
+    PI.AddSetting("3SPN", "bKickExcessiveCampers", "Kick Excessive Campers", 0, Weight++, "Check",,, False);
+	PI.AddSetting("3SPN", "bSpecExcessiveCampers", "Spectate Excessive Campers", 0, Weight++, "Check",,, False);
 
-    PI.AddSetting("3SPN", "bForceRUP", "Force Ready", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "ForceRUPMinPlayers", "Force Ready Min Players", 0, Weight++, "Text", "3;0;999",, True);
-    PI.AddSetting("3SPN", "ForceSeconds", "Force Time", 0, Weight++, "Text", "3;0:999",, True);
+    PI.AddSetting("3SPN", "bForceRUP", "Force Ready", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "ForceRUPMinPlayers", "Force Ready Min Players", 0, Weight++, "Text", "3;0;999",, False);
+    PI.AddSetting("3SPN", "ForceSeconds", "Force Time", 0, Weight++, "Text", "3;0:999",, False);
 
     PI.AddSetting("3SPN", "bDisableSpeed", "Disable Speed", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bDisableInvis", "Disable Invis", 0, Weight++, "Check");
@@ -413,43 +413,43 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bDisableBooster", "Disable Booster", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bDisableNecro", "Disable Necro", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bDisableNecroMessage", "Disable 'Mate out res' message", 0, Weight++, "Check");
-    PI.AddSetting("3SPN", "Timeouts", "TimeOuts Per Team", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "TimeOutDuration", "Time Out Duration", 0, Weight++, "Text", "3;0:999",, True);
+    PI.AddSetting("3SPN", "Timeouts", "TimeOuts Per Team", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "TimeOutDuration", "Time Out Duration", 0, Weight++, "Text", "3;0:999",, False);
 
-    PI.AddSetting("3SPN", "bModifyShieldGun", "Use Modified Shield Gun", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bModifyShieldGun", "Use Modified Shield Gun", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "ShieldGunSelfForceScale", "Modified Shield Gun Self Force Scale", 0, Weight++, "Text", "8;0.0:10.0");
     PI.AddSetting("3SPN", "ShieldGunSelfDamageScale", "Modified Shield Gun Self Damage Scale", 0, Weight++, "Text", "8;0.0:10.0");
     PI.AddSetting("3SPN", "ShieldGunMinSelfDamage", "Modified Shield Gun Minimum Self Damage", 0, Weight++, "Text", "3;0:999");    
-    PI.AddSetting("3SPN", "AssaultAmmo", "Assault Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "AssaultGrenades", "Assault Grenades", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "BioAmmo", "Bio Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "ShockAmmo", "Shock Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "LinkAmmo", "Link Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "MiniAmmo", "Mini Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "FlakAmmo", "Flak Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "RocketAmmo", "Rocket Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, Weight++, "Text", "3;0:999",, True);
-    PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, Weight++, "Text", "3;0:999",, True);
+    PI.AddSetting("3SPN", "AssaultAmmo", "Assault Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "AssaultGrenades", "Assault Grenades", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "BioAmmo", "Bio Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "ShockAmmo", "Shock Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "LinkAmmo", "Link Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "MiniAmmo", "Mini Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "FlakAmmo", "Flak Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "RocketAmmo", "Rocket Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "LightningAmmo", "Lightning Ammunition", 0, Weight++, "Text", "3;0:999",, False);
+    PI.AddSetting("3SPN", "ClassicSniperAmmo", "ClassicSniper Ammunition", 0, Weight++, "Text", "3;0:999",, False);
 
     PI.AddSetting("3SPN", "EndCeremonyEnabled", "Enable End Ceremony", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "RoundCanTie", "Rounds Can Tie", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnProtectionOnRez", "Enable Spawn Protection After Resurrection", 0, Weight++, "Check");
 
     PI.AddSetting("3SPN", "AutoBalanceTeams", "Auto Balance At Match Start", 0, Weight++, "Check");
-    PI.AddSetting("3SPN", "AutoBalanceSeconds", "Auto Balance Teams Time", 0, Weight++, "Text", "3;0:300",, True);
+    PI.AddSetting("3SPN", "AutoBalanceSeconds", "Auto Balance Teams Time", 0, Weight++, "Text", "3;0:300",, False);
     PI.AddSetting("3SPN", "AutoBalanceOnJoins", "Auto Balance When New Players Join", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "AllowForceAutoBalance", "Auto Balance By Users Writing 'teams' Into Chat", 0, Weight++, "Check");
-    PI.AddSetting("3SPN", "ForceAutoBalanceCooldown", "Auto Balance Cooldown Timer In Seconds", 0, Weight++, "Text", "3;0:300",, True);
-    PI.AddSetting("3SPN", "AutoBalanceRandomization", "Auto Balance Randomization Percentage", 0, Weight++, "Text", "8;0:100",, True);
-    PI.AddSetting("3SPN", "AutoBalanceAvgPPRWeight", "Auto Balance Avg VS Current PPR Weight (Percent)", 0, Weight++, "Text", "8;0:100",, True);
+    PI.AddSetting("3SPN", "ForceAutoBalanceCooldown", "Auto Balance Cooldown Timer In Seconds", 0, Weight++, "Text", "3;0:300",, False);
+    PI.AddSetting("3SPN", "AutoBalanceRandomization", "Auto Balance Randomization Percentage", 0, Weight++, "Text", "8;0:100",, False);
+    PI.AddSetting("3SPN", "AutoBalanceAvgPPRWeight", "Auto Balance Avg VS Current PPR Weight (Percent)", 0, Weight++, "Text", "8;0:100",, False);
 
     PI.AddSetting("3SPN", "EnforceMaxPlayers", "Enforce Maximum Number Of Players (Tournament)", 0, Weight++, "Check");
 
     PI.AddSetting("3SPN", "AlwaysRestartServerWhenEmpty", "Always Restart Server When The Last Player Leaves", 0, Weight++, "Check");
 
-    PI.AddSetting("3SPN", "ScoreboardCommunityName", "Scoreboard Community Name", 0, Weight++, "Text", "80",, True);
-    PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, True);
-    PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, True);
+    PI.AddSetting("3SPN", "ScoreboardCommunityName", "Scoreboard Community Name", 0, Weight++, "Text", "80",, False);
+    PI.AddSetting("3SPN", "ScoreboardRedTeamName", "Scoreboard Red Team Name", 0, Weight++, "Text", "80",, False);
+    PI.AddSetting("3SPN", "ScoreboardBlueTeamName", "Scoreboard Blue Team Name", 0, Weight++, "Text", "80",, False);
     PI.AddSetting("3SPN", "MinPlayersForStatsRecording", "Number of players before recording stats", 0, Weight++, "Text", "3;0:999");
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
@@ -458,41 +458,41 @@ static function FillPlayInfo(PlayInfo PI)
     //serverlink menu entry
     Weight = 1;
     PI.AddSetting("3SPN ServerLink", "ServerLinkStatus", "ServerLink Status", 0, Weight++, "Select", "SL_DISABLED;Disabled;SL_READONLY;ReadOnly;SL_ENABLED;Enabled");
-    PI.AddSetting("3SPN ServerLink", "ServerLinkAddress", "ServerLink IP", 0, Weight++, "Text", "60",, True);
-    PI.AddSetting("3SPN ServerLink", "ServerLinkPort", "ServerLink Port", 0, Weight++, "Text", "60",, True);
-    PI.AddSetting("3SPN ServerLink", "ServerLinkAccount", "ServerLink Account", 0, Weight++, "Text", "60",, True);
-    PI.AddSetting("3SPN ServerLink", "ServerLinkPassword", "ServerLink Password", 0, Weight++, "Text", "60",, True);
+    PI.AddSetting("3SPN ServerLink", "ServerLinkAddress", "ServerLink IP", 0, Weight++, "Text", "60",, False);
+    PI.AddSetting("3SPN ServerLink", "ServerLinkPort", "ServerLink Port", 0, Weight++, "Text", "60",, False);
+    PI.AddSetting("3SPN ServerLink", "ServerLinkAccount", "ServerLink Account", 0, Weight++, "Text", "60",, False);
+    PI.AddSetting("3SPN ServerLink", "ServerLinkPassword", "ServerLink Password", 0, Weight++, "Text", "60",, False);
     PI.AddSetting("3SPN ServerLink", "EndCeremonyStatsEnabled", "Enable End Ceremony Stats List (ServerLink)", 0, Weight++, "Check");
     PI.AddSetting("3SPN ServerLink", "AllowPersistentStatsWithBots", "Allow Persistent Stats With Bots", 0, Weight++, "Check");
 
     //2003 style
     Weight=1;
-    PI.AddSetting("3SPN 2003 Style", "bFastWeaponSwitching", "Fast Weapon Switching", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN 2003 Style", "bCanBoostDodge", "Can Boost Dodge", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN 2003 Style", "bFastWeaponSwitching", "Fast Weapon Switching", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN 2003 Style", "bCanBoostDodge", "Can Boost Dodge", 0, Weight++, "Check",,, False);
     // stats
-    PI.AddSetting("3SPN Local StatsDB", "ClearOldStats", "Clear Old Stats", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN Local StatsDB", "ClearOldStats", "Clear Old Stats", 0, Weight++, "Check",,, False);
 
     //UFC
     Weight=1;
-    PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
-    PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bAllowPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bAllowSetBehindView", "Allow players to set behind view", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bForceDeadToSpectate", "Force dead players to spectate", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bAllowPauseSounds", "Allow players to pause sounds", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bAllowSetBehindView", "Allow players to set behind view", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bForceDeadToSpectate", "Force dead players to spectate", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "ForceDeadSpectateDelay", "Delay before dead spectate next player", 0, Weight++, "Text", "8;0.0:10.0");
 
-    PI.AddSetting("3SPN", "bEnableAntiAwards", "Enable anti awards", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, True);
-    PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bEnableAntiAwards", "Enable anti awards", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, False);
+    PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "MaxSavedMoves", "Max saved player moves (warping fix)", 0, Weight++, "Text", "3;100:750");
-    PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, True);
+    PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "PasswordPausePassword", "Password pause password", 0, Weight++, "Text", "10");
-    PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,True);
-    PI.AddSetting("3SPN", "bShowNumSpecs", "Players see number of spectators watching them on HUD", 0, Weight++, "Check",,,True);
-    PI.AddSetting("3SPN", "bCheersForSprees", "Players hear applause when getting a killing spree", 0, Weight++, "Check",,,True);
+    PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,False);
+    PI.AddSetting("3SPN", "bShowNumSpecs", "Players see number of spectators watching them on HUD", 0, Weight++, "Check",,,False);
+    PI.AddSetting("3SPN", "bCheersForSprees", "Players hear applause when getting a killing spree", 0, Weight++, "Check",,,False);
     PI.AddSetting("3SPN", "ChallengeModeScale", "0-1 scale for how strong tamdicap is", 0, Weight++, "Text", "8;0.0:1.0");
 }
 
