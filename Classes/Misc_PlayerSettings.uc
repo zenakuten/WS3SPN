@@ -39,6 +39,7 @@ struct MiscSettings
 var config bool Existing;
 var config MiscSettings Misc;
 
+/*
 static function Misc_PlayerSettings LoadPlayerSettings(Misc_Player P)
 {
 	local Misc_PlayerSettings PlayerSettings, NewPlayerSettings;
@@ -87,6 +88,7 @@ static function SavePlayerSettings(Misc_PlayerSettings PlayerSettings)
 	PlayerSettings.SaveConfig();
 	StaticSaveConfig();
 }
+*/
 
 defaultproperties
 {

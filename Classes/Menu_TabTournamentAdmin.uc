@@ -120,7 +120,7 @@ defaultproperties
 
      Begin Object Class=GUIButton Name=ApplyButton
          Caption="Apply Score"
-         StyleName="SquareMenuButton"
+         StyleName="WSButton"
          WinTop=0.100000
          WinLeft=0.490000
          WinWidth=0.400000
@@ -131,6 +131,7 @@ defaultproperties
      Controls(1)=GUIButton'WS3SPN.Menu_TabTournamentAdmin.ApplyButton'
 
      Begin Object Class=GUILabel Name=RedScoreLabel
+         StyleName="WSLabel"
          Caption="Red Score:"
          TextColor=(B=255,G=255,R=255)
          WinTop=0.100000
@@ -141,6 +142,7 @@ defaultproperties
      Controls(2)=GUILabel'WS3SPN.Menu_TabTournamentAdmin.RedScoreLabel'
 
      Begin Object Class=GUIEditBox Name=RedScoreEditBox
+         StyleName="WSEditBox"
          WinTop=0.100000
          WinLeft=0.250000
          WinWidth=0.100000
@@ -153,6 +155,7 @@ defaultproperties
      Controls(3)=GUIEditBox'WS3SPN.Menu_TabTournamentAdmin.RedScoreEditBox'
 
      Begin Object Class=GUILabel Name=BlueScoreLabel
+         StyleName="WSLabel"
          Caption="Blue Score:"
          TextColor=(B=255,G=255,R=255)
          WinTop=0.160000
@@ -163,6 +166,7 @@ defaultproperties
      Controls(4)=GUILabel'WS3SPN.Menu_TabTournamentAdmin.BlueScoreLabel'
 
      Begin Object Class=GUIEditBox Name=BlueScoreEditBox
+         StyleName="WSEditBox"
          WinTop=0.160000
          WinLeft=0.250000
          WinWidth=0.100000
@@ -174,7 +178,7 @@ defaultproperties
      End Object
      Controls(5)=GUIEditBox'WS3SPN.Menu_TabTournamentAdmin.BlueScoreEditBox'
 
-     Begin Object Class=moCheckBox Name=AdminVisionCheck
+     Begin Object Class=wsCheckBox Name=AdminVisionCheck
          Caption="Enable Wall Hack When Spectating."
          OnCreateComponent=AdminVisionCheck.InternalOnCreateComponent
          WinTop=0.280000
@@ -183,9 +187,9 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(6)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.AdminVisionCheck'
+     Controls(6)=wsCheckBox'WS3SPN.Menu_TabTournamentAdmin.AdminVisionCheck'
 
-     Begin Object Class=moCheckBox Name=TargetingLineCheck
+     Begin Object Class=wsCheckBox Name=TargetingLineCheck
          Caption="Enable Targeting Tracking When Spectating."
          OnCreateComponent=TargetingLineCheck.InternalOnCreateComponent
          WinTop=0.340000
@@ -194,9 +198,9 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(7)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.TargetingLineCheck'
+     Controls(7)=wsCheckBox'WS3SPN.Menu_TabTournamentAdmin.TargetingLineCheck'
 
-     Begin Object Class=moCheckBox Name=NewNetStatsCheck
+     Begin Object Class=wsCheckBox Name=NewNetStatsCheck
          Caption="Enable NewNet Stats Reporting (Debug)."
          OnCreateComponent=NewNetStatsCheck.InternalOnCreateComponent
          WinTop=0.400000
@@ -205,6 +209,6 @@ defaultproperties
          WinHeight=0.037500
          OnChange=Menu_TabTournamentAdmin.OnChange
      End Object
-     Controls(8)=moCheckBox'WS3SPN.Menu_TabTournamentAdmin.NewNetStatsCheck'
+     Controls(8)=wsCheckBox'WS3SPN.Menu_TabTournamentAdmin.NewNetStatsCheck'
 
 }

@@ -308,5 +308,5 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="WS3SPN 3.17"
+     Version="WS3SPN v1"
 }

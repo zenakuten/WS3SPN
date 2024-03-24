@@ -168,7 +168,7 @@ defaultproperties
 
      Begin Object Class=GUIButton Name=SaveButton
          Caption="Save"
-         StyleName="SquareMenuButton"
+         StyleName="WSButton"
          Hint="Save settings. Changes will take effect on the next map."
          WinTop=0.850000
          WinLeft=0.300000
@@ -181,7 +181,7 @@ defaultproperties
 
      Begin Object Class=GUIButton Name=LoadButton
          Caption="Load Map"
-         StyleName="SquareMenuButton"
+         StyleName="WSButton"
          Hint="Force a map change."
          WinTop=0.850000
          WinLeft=0.550000
@@ -192,7 +192,7 @@ defaultproperties
      End Object
      Controls(2)=GUIButton'WS3SPN.Menu_TabTAMAdmin.LoadButton'
 
-     Begin Object Class=moComboBox Name=MapBox
+     Begin Object Class=wsComboBox Name=MapBox
          CaptionWidth=0.200000
          Caption="Map:"
          OnCreateComponent=MapBox.InternalOnCreateComponent
@@ -201,9 +201,9 @@ defaultproperties
          WinWidth=0.600000
          WinHeight=0.037500
      End Object
-     Controls(3)=moComboBox'WS3SPN.Menu_TabTAMAdmin.MapBox'
+     Controls(3)=wsComboBox'WS3SPN.Menu_TabTAMAdmin.MapBox'
 
-     Begin Object Class=moEditBox Name=HealthBox
+     Begin Object Class=wsEditBox Name=HealthBox
          CaptionWidth=0.600000
          Caption="Health:"
          OnCreateComponent=HealthBox.InternalOnCreateComponent
@@ -213,9 +213,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(4)=moEditBox'WS3SPN.Menu_TabTAMAdmin.HealthBox'
+     Controls(4)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.HealthBox'
 
-     Begin Object Class=moEditBox Name=ArmorBox
+     Begin Object Class=wsEditBox Name=ArmorBox
          CaptionWidth=0.600000
          Caption="Armor:"
          OnCreateComponent=ArmorBox.InternalOnCreateComponent
@@ -225,9 +225,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(5)=moEditBox'WS3SPN.Menu_TabTAMAdmin.ArmorBox'
+     Controls(5)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.ArmorBox'
 
-     Begin Object Class=moCheckBox Name=ChallengeCheck
+     Begin Object Class=wsCheckBox Name=ChallengeCheck
          Caption="Challenge Mode"
          OnCreateComponent=ChallengeCheck.InternalOnCreateComponent
          WinTop=0.100000
@@ -235,9 +235,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(6)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.ChallengeCheck'
+     Controls(6)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.ChallengeCheck'
 
-     Begin Object Class=moEditBox Name=MaxHealthBox
+     Begin Object Class=wsEditBox Name=MaxHealthBox
          CaptionWidth=0.600000
          Caption="Max Health:"
          OnCreateComponent=MaxHealthBox.InternalOnCreateComponent
@@ -247,9 +247,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(7)=moEditBox'WS3SPN.Menu_TabTAMAdmin.MaxHealthBox'
+     Controls(7)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.MaxHealthBox'
 
-     Begin Object Class=moEditBox Name=MinsBox
+     Begin Object Class=wsEditBox Name=MinsBox
          CaptionWidth=0.600000
          Caption="Seconds Per Round:"
          OnCreateComponent=MinsBox.InternalOnCreateComponent
@@ -259,9 +259,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(8)=moEditBox'WS3SPN.Menu_TabTAMAdmin.MinsBox'
+     Controls(8)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.MinsBox'
 
-     Begin Object Class=moEditBox Name=OTDamBox
+     Begin Object Class=wsEditBox Name=OTDamBox
          CaptionWidth=0.600000
          Caption="Overtime Damage:"
          OnCreateComponent=OTDamBox.InternalOnCreateComponent
@@ -271,9 +271,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(9)=moEditBox'WS3SPN.Menu_TabTAMAdmin.OTDamBox'
+     Controls(9)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.OTDamBox'
 
-     Begin Object Class=moEditBox Name=OTIntBox
+     Begin Object Class=wsEditBox Name=OTIntBox
          CaptionWidth=0.600000
          Caption="Damage Interval:"
          OnCreateComponent=OTIntBox.InternalOnCreateComponent
@@ -283,9 +283,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(10)=moEditBox'WS3SPN.Menu_TabTAMAdmin.OTIntBox'
+     Controls(10)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.OTIntBox'
 
-     Begin Object Class=moCheckBox Name=TeamCombosCheck
+     Begin Object Class=wsCheckBox Name=TeamCombosCheck
          Caption="Disable Team Combos"
          OnCreateComponent=TeamCombosCheck.InternalOnCreateComponent
          WinTop=0.350000
@@ -293,9 +293,9 @@ defaultproperties
          WinWidth=0.900000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(11)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.TeamCombosCheck'
+     Controls(11)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.TeamCombosCheck'
 
-     Begin Object Class=moCheckBox Name=SpeedCheck
+     Begin Object Class=wsCheckBox Name=SpeedCheck
          Caption="Disable Speed"
          OnCreateComponent=SpeedCheck.InternalOnCreateComponent
          WinTop=0.400000
@@ -303,9 +303,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(12)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.SpeedCheck'
+     Controls(12)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.SpeedCheck'
 
-     Begin Object Class=moCheckBox Name=InvisCheck
+     Begin Object Class=wsCheckBox Name=InvisCheck
          Caption="Disable Invis"
          OnCreateComponent=InvisCheck.InternalOnCreateComponent
          WinTop=0.400000
@@ -313,9 +313,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(13)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.InvisCheck'
+     Controls(13)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.InvisCheck'
 
-     Begin Object Class=moCheckBox Name=BerserkCheck
+     Begin Object Class=wsCheckBox Name=BerserkCheck
          Caption="Disable Berserk"
          OnCreateComponent=BerserkCheck.InternalOnCreateComponent
          WinTop=0.450000
@@ -323,9 +323,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(14)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.BerserkCheck'
+     Controls(14)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.BerserkCheck'
 
-     Begin Object Class=moCheckBox Name=BoosterCheck
+     Begin Object Class=wsCheckBox Name=BoosterCheck
          Caption="Disable Booster"
          OnCreateComponent=BoosterCheck.InternalOnCreateComponent
          WinTop=0.450000
@@ -333,9 +333,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(15)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.BoosterCheck'
+     Controls(15)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.BoosterCheck'
 
-     Begin Object Class=moCheckBox Name=KickCheck
+     Begin Object Class=wsCheckBox Name=KickCheck
          Caption="Kick Excessive Campers"
          OnCreateComponent=KickCheck.InternalOnCreateComponent
          WinTop=0.600000
@@ -343,9 +343,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(16)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.KickCheck'
+     Controls(16)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.KickCheck'
 
-     Begin Object Class=moEditBox Name=CampBox
+     Begin Object Class=wsEditBox Name=CampBox
          CaptionWidth=0.600000
          Caption="Camp Area:"
          OnCreateComponent=CampBox.InternalOnCreateComponent
@@ -355,9 +355,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(17)=moEditBox'WS3SPN.Menu_TabTAMAdmin.CampBox'
+     Controls(17)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.CampBox'
 
-     Begin Object Class=moCheckBox Name=ForceCheck
+     Begin Object Class=wsCheckBox Name=ForceCheck
          Caption="Force Ready"
          OnCreateComponent=ForceCheck.InternalOnCreateComponent
          WinTop=0.700000
@@ -365,9 +365,9 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(18)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.ForceCheck'
+     Controls(18)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.ForceCheck'
 
-     Begin Object Class=moComboBox Name=PickupModeBox
+     Begin Object Class=wsComboBox Name=PickupModeBox
          CaptionWidth=0.600000
          Caption="Pickup Mode:"
          OnCreateComponent=PickupModeBox.InternalOnCreateComponent
@@ -376,9 +376,9 @@ defaultproperties
          WinWidth=0.400000
          WinHeight=0.060000
      End Object
-     Controls(19)=moComboBox'WS3SPN.Menu_TabTAMAdmin.PickupModeBox'
+     Controls(19)=wsComboBox'WS3SPN.Menu_TabTAMAdmin.PickupModeBox'
 
-     Begin Object Class=moEditBox Name=TOBox
+     Begin Object Class=wsEditBox Name=TOBox
          CaptionWidth=0.600000
          Caption="Timeouts:"
          OnCreateComponent=TOBox.InternalOnCreateComponent
@@ -388,9 +388,9 @@ defaultproperties
          WinHeight=0.060000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(20)=moEditBox'WS3SPN.Menu_TabTAMAdmin.TOBox'
+     Controls(20)=wsEditBox'WS3SPN.Menu_TabTAMAdmin.TOBox'
 
-     Begin Object Class=moCheckBox Name=KickCheck2
+     Begin Object Class=wsCheckBox Name=KickCheck2
          Caption="Spectate Excessive Campers"
          OnCreateComponent=KickCheck2.InternalOnCreateComponent
          WinTop=0.650000
@@ -398,6 +398,6 @@ defaultproperties
          WinWidth=0.400000
          OnChange=Menu_TabTAMAdmin.OnChange
      End Object
-     Controls(21)=moCheckBox'WS3SPN.Menu_TabTAMAdmin.KickCheck2'
+     Controls(21)=wsCheckBox'WS3SPN.Menu_TabTAMAdmin.KickCheck2'
 
 }

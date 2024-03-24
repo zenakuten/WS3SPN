@@ -1,5 +1,7 @@
 class Menu_TabInfo extends UT2k3TabPanel;
 
+#exec TEXTURE IMPORT NAME=Display99 GROUP=GUI FILE=Textures\Display99.dds MIPS=off ALPHA=1 DXT=5
+
 var automated GUISectionBackground SectionBackg;
 var automated GUIScrollTextBox TextBox;
 
@@ -39,10 +41,11 @@ defaultproperties
          bScaleToParent=True
          bNeverFocus=True
          OnPreDraw=SectionBackgObj.InternalPreDraw
+         HeaderBase=Texture'WS3SPN.GUI.Display99'
      End Object
      SectionBackg=AltSectionBackground'WS3SPN.Menu_TabInfo.SectionBackgObj'
 
-     Begin Object Class=GUIScrollTextBox Name=TextBoxObj
+     Begin Object Class=wsGUIScrollTextBox Name=TextBoxObj
          bNoTeletype=True
          Separator="þ"
          OnCreateComponent=TextBoxObj.InternalOnCreateComponent
@@ -55,7 +58,7 @@ defaultproperties
          bScaleToParent=True
          bNeverFocus=True
      End Object
-     TextBox=GUIScrollTextBox'WS3SPN.Menu_TabInfo.TextBoxObj'
+     TextBox=wsGUIScrollTextBox'WS3SPN.Menu_TabInfo.TextBoxObj'
 
      InfoText(0)="Greetings!"
      InfoText(1)="======="

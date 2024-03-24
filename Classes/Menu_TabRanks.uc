@@ -1,5 +1,7 @@
 class Menu_TabRanks extends UT2k3TabPanel;
 
+#exec TEXTURE IMPORT NAME=Display99 GROUP=GUI FILE=Textures\Display99.dds MIPS=off ALPHA=1 DXT=5
+
 var automated AltSectionBackground BackG;
 var automated GUIVertScrollBar ScrollBar;
 
@@ -47,7 +49,7 @@ delegate OnRender(Canvas C)
 			
 		C.SetPos(0,iconY);
 		C.DrawTile(RankTex[i], 64,64, 0,0,64,64);
-		C.SetPos(128,iconY);
+		C.SetPos(128,iconY+16);
 		C.DrawText(RankTitle[i]);
 		
 		iconY += 64;
@@ -67,10 +69,11 @@ defaultproperties
          WinHeight=1.000000
          OnPreDraw=BackGObj.InternalPreDraw
          OnRendered=Menu_TabRanks.OnRender
+         HeaderBase=Texture'WS3SPN.GUI.Display99'
      End Object
      BackG=AltSectionBackground'WS3SPN.Menu_TabRanks.BackGObj'
 
-     Begin Object Class=GUIVertScrollBar Name=ScrollBarObj
+     Begin Object Class=wsGUIVertScrollBar Name=ScrollBarObj
          ItemsPerPage=5
          PositionChanged=Menu_TabRanks.PositionChanged
          WinTop=0.050000
@@ -79,7 +82,7 @@ defaultproperties
          WinHeight=0.900000
          OnPreDraw=ScrollBarObj.GripPreDraw
      End Object
-     ScrollBar=GUIVertScrollBar'WS3SPN.Menu_TabRanks.ScrollBarObj'
+     ScrollBar=wsGUIVertScrollBar'WS3SPN.Menu_TabRanks.ScrollBarObj'
 
      RankTex(0)=Texture'WS3SPN.textures.Rank1'
      RankTex(1)=Texture'WS3SPN.textures.Rank2'
