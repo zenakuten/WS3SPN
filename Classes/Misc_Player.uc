@@ -78,11 +78,6 @@ var Pawn OldPawn;
 
 /* sounds */
 var config bool  bAnnounceOverkill;
-var config bool  bUseHitsounds;
-
-var config Sound SoundHit;
-var config Sound SoundHitFriendly;
-var config float SoundHitVolume;
 
 var Sound ServerSoundAlone;
 var config Sound SoundAlone;
@@ -1699,10 +1694,6 @@ simulated function ReloadDefaults()
 	bAutoScreenShot = class'Misc_Player'.default.bAutoScreenShot;
 	
 	bAnnounceOverkill = class'Misc_Player'.default.bAnnounceOverkill;
-	bUseHitsounds = class'Misc_Player'.default.bUseHitsounds;
-	SoundHit = class'Misc_Player'.default.SoundHit;
-	SoundHitFriendly = class'Misc_Player'.default.SoundHitFriendly;
-	SoundHitVolume = class'Misc_Player'.default.SoundHitVolume;
 	SoundAlone = class'Misc_Player'.default.SoundAlone; 
 	SoundAloneVolume = class'Misc_Player'.default.SoundAloneVolume;
     SoundSpawnProtection = class'Misc_Player'.default.SoundSpawnProtection;
@@ -2160,10 +2151,6 @@ defaultproperties
      RedEnemyModel="Gorge"
      BlueAllyModel="Jakob"
      bAnnounceOverkill=True
-     bUseHitSounds=True
-     SoundHit=Sound'WS3SPN.Sounds.HitSound'
-     SoundHitFriendly=Sound'MenuSounds.denied1'
-     SoundHitVolume=0.600000
      SoundAlone=Sound'WS3SPN.Sounds.alone'
      SoundAloneVolume=1.000000
      SoundUnlock=Sound'NewWeaponSounds.Newclickgrenade'

@@ -181,9 +181,6 @@ var Sound OvertimeSound;
 //var config bool UseZAxisRadar; // don't make a config option
 var bool UseZAxisRadar;
 
-var config bool bFastWeaponSwitching;
-var config bool bCanBoostDodge;
-
 var config int MinPlayersForStatsRecording;
 
 struct ControllerArray
@@ -294,9 +291,6 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).UseZAxisRadar = UseZAxisRadar;
     Misc_BaseGRI(GameReplicationInfo).ServerLinkStatus = ServerLinkStatus;
-
-    Misc_BaseGRI(GameReplicationInfo).bFastWeaponSwitching = bFastWeaponSwitching;
-    Misc_BaseGRI(GameReplicationInfo).bCanBoostDodge = bCanBoostDodge;
 
     Misc_BaseGRI(GameReplicationInfo).FootstepVolume = FootstepVolume;
     Misc_BaseGRI(GameReplicationInfo).FootstepRadius = FootstepRadius;
@@ -464,12 +458,6 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN ServerLink", "ServerLinkPassword", "ServerLink Password", 0, Weight++, "Text", "60",, False);
     PI.AddSetting("3SPN ServerLink", "EndCeremonyStatsEnabled", "Enable End Ceremony Stats List (ServerLink)", 0, Weight++, "Check");
     PI.AddSetting("3SPN ServerLink", "AllowPersistentStatsWithBots", "Allow Persistent Stats With Bots", 0, Weight++, "Check");
-
-    //2003 style
-    Weight=1;
-    PI.AddSetting("3SPN 2003 Style", "bFastWeaponSwitching", "Fast Weapon Switching", 0, Weight++, "Check",,, False);
-    PI.AddSetting("3SPN 2003 Style", "bCanBoostDodge", "Can Boost Dodge", 0, Weight++, "Check",,, False);
-    // stats
     PI.AddSetting("3SPN Local StatsDB", "ClearOldStats", "Clear Old Stats", 0, Weight++, "Check",,, False);
 
     //UFC
@@ -569,10 +557,6 @@ static event string GetDescriptionText(string PropName)
       case "ScoreboardRedTeamName":    return "Scoreboard Red Team Name";
       case "ScoreboardBlueTeamName":   return "Scoreboard Blue Team Name";
       case "MinPlayersForStatsRecording": return "Number of players before recording stats";
-
-//      case "UseZAxisRadar":            return "Extended Player HUD Includes Z Axis For Allies";
-      case "bFastWeaponSwitching": return "UT2003 style fast weapon switching";
-      case "bCanBoostDodge": return "UT2003 style boost dodging";
 
       case "FootstepVolume": return "Volume of player footstep sound";
       case "FootstepRadius": return "Radius of player footstep sound";
@@ -4097,8 +4081,6 @@ defaultproperties
      OvertimeSound=Sound'WS3SPN.Sounds.overtime'
      UseZAxisRadar=True
      bScoreTeamKills=False
-     bFastWeaponSwitching=True
-     bCanBoostDodge=False
      MinPlayersForStatsRecording=2
      FootstepVolume=0.15
      FootstepRadius=400

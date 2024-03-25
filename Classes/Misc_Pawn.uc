@@ -119,9 +119,6 @@ simulated event PostBeginPlay()
 		return;
 	
     ActivateSpawnProtection();
-
-    if(Misc_BaseGRI(Level.GRI) != None)
-        bCanBoostDodge=Misc_BaseGRI(Level.GRI).bCanBoostDodge;
 }
 
 

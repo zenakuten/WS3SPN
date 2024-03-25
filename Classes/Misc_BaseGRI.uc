@@ -54,7 +54,6 @@ var string SoundSpawnProtectionName;
 
 var Team_GameBase.EServerLinkStatus ServerLinkStatus; //enum type dependson Team_GameBase
 
-var bool bCanBoostDodge;
 var float FootstepVolume;
 var int FootstepRadius;
 
@@ -86,7 +85,7 @@ replication
         OTInterval, CampThreshold, bKickExcessiveCampers, bSpecExcessiveCampers, bForceRUP, ForceRUPMinPlayers,
         TimeOuts, Acronym, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
-        SoundSpawnProtectionName,UseZAxisRadar, bCanBoostDodge,
+        SoundSpawnProtectionName,UseZAxisRadar,
         FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
