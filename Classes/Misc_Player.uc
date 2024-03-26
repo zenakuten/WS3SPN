@@ -37,24 +37,7 @@ enum AbortNecroSounds
 
 var config AbortNecroSounds AbortNecroSoundType;
 
-var config bool bMatchHUDToSkins;       // sets HUD color to brightskins color
-/* HUD related */
-
 /* brightskins related */
-var config bool bUseBrightSkins;        // self-explanatory
-var config bool bUseTeamColors;         // use red and blue for brightkins
-var config Color RedOrEnemy;            // brightskin color for the red or enemy team
-var config Color BlueOrAlly;            // brightskin color for the blue or own team
-var config Color Yellow;                // brightskin color for spawn protection
-/* brightskins related */
-
-/* model related */
-var config bool bForceRedEnemyModel;    // force a model for the red/enemy team
-var config bool bForceBlueAllyModel;    // force a model for the blue/ally team
-var config bool bUseTeamModels;         // force models by team color (opposed to enemy/ally)
-var config string RedEnemyModel;        // character name for the red team's model
-var config string BlueAllyModel;        // character name for the blue team's model
-/* model related */
 
 /* misc related */
 var bool bAdminVisionInSpec;
@@ -91,10 +74,6 @@ var Sound ServerSoundSpawnProtection;
 var config Sound SoundSpawnProtection;
 /* sounds */
 
-/* newnet */
-var config bool bEnableEnhancedNetCode;
-/* newnet */
-
 var config int ShowInitialMenu;
 var config Interactions.EInputKey Menu3SPNKey;
 
@@ -112,16 +91,12 @@ var int EndCeremonyPlayerCount;
 var Team_GameBase.SEndCeremonyInfo EndCeremonyInfo[10];
 var Pawn EndCeremonyPawns[10];
 
-/* persistent stats */
-var float LoginTime;
 var Misc_PlayerData PlayerData;
 var bool ActiveThisRound;
-/* persistent stats */
 
 var float NextRezTime;
 var float LastRezTime;
 
-/* colored names */
 var bool PlayerInitialized;
 
 var Color WhiteMessageColor;
@@ -130,13 +105,6 @@ var Color WhiteColor;
 var config bool bAllowColoredMessages;
 var config bool bEnableColoredNamesInTalk;
 var config bool bEnableColoredNamesOnEnemies;
-
-
-/* persistent settings */
-var config bool AutoSyncSettings;
-var float LastSettingsLoadTimeSeconds;
-var float LastSettingsSaveTimeSeconds;
-/* persistent settings */
 
 var config bool bConfigureNetSpeed;
 var config int ConfigureNetSpeedValue;
@@ -149,24 +117,15 @@ var config bool bTeamColorSniper;
 var config Color TeamColorRed, TeamColorBlue;
 var config bool bTeamColorUseTeam;
 
-//var config bool bEnableDodgeFix;
-
 var AudioSubsystem AudioSubsystem;
 var int LastNetSpeed;
 
 var float BufferedClickTimer; 
 var Actor.eDoubleClickDir BufferedClickDir;
 
-
 var int NumSpectators;
 var config bool bShowSpectators;
 var config bool bKillingSpreeCheers;
-
-/* persistent stats */
-delegate OnPlayerDataReceivedCallback(string PlayerName, string OwnerID, int LastActiveTime, int Score, int Kills, int Thaws, int Deaths);
-delegate OnPlayerDataRemovedCallback(string PlayerName);
-/* persistent stats */
-
 
 replication
 {
@@ -1423,24 +1382,6 @@ function TakeShot()
     bShotTaken = true;
 }
 
-exec function SetSkins(byte r1, byte g1, byte b1, byte r2, byte g2, byte b2, byte r3, byte g3, byte b3)
-{
-    class'Misc_Player'.default.RedOrEnemy.R = Clamp(r1, 0, 100);
-    class'Misc_Player'.default.RedOrEnemy.G = Clamp(g1, 0, 100);
-    class'Misc_Player'.default.RedOrEnemy.B = Clamp(b1, 0, 100);
-
-    class'Misc_Player'.default.BlueOrAlly.R = Clamp(r2, 0, 100);
-    class'Misc_Player'.default.BlueOrAlly.G = Clamp(g2, 0, 100);
-    class'Misc_Player'.default.BlueOrAlly.B = Clamp(b2, 0, 100);
-
-    class'Misc_Player'.default.Yellow.R = Clamp(r3, 0, 100);
-    class'Misc_Player'.default.Yellow.G = Clamp(g3, 0, 100);
-    class'Misc_Player'.default.Yellow.B = Clamp(b3, 0, 100);
-
-    class'Misc_Player'.static.StaticSaveConfig();
-}
-
-
 function ServerSay(string Msg)
 {
   local bool isAdmin; //pass player admin status if they say 'teams'
@@ -1676,18 +1617,7 @@ simulated function ReloadDefaults()
 	
 	bShowTeamInfo = class'Misc_Player'.default.bShowTeamInfo;
 	bExtendedInfo = class'Misc_Player'.default.bExtendedInfo;	
-	bMatchHUDToSkins = class'Misc_Player'.default.bMatchHUDToSkins;
-	bUseBrightSkins = class'Misc_Player'.default.bUseBrightSkins;
-	bUseTeamColors = class'Misc_Player'.default.bUseTeamColors;
-	RedOrEnemy = class'Misc_Player'.default.RedOrEnemy;
-	BlueOrAlly = class'Misc_Player'.default.BlueOrAlly;
-	Yellow = class'Misc_Player'.default.Yellow;
 	
-	bForceRedEnemyModel = class'Misc_Player'.default.bForceRedEnemyModel;
-	bForceBlueAllyModel = class'Misc_Player'.default.bForceBlueAllyModel;
-	bUseTeamModels = class'Misc_Player'.default.bUseTeamModels;
-	RedEnemyModel = class'Misc_Player'.default.RedEnemyModel;
-	BlueAllyModel = class'Misc_Player'.default.BlueAllyModel;
     DamageIndicatorType = class'Misc_Player'.default.DamageIndicatorType;
     ReceiveAwardType = class'Misc_Player'.default.ReceiveAwardType;
 	bDisableAnnouncement = class'Misc_Player'.default.bDisableAnnouncement;
@@ -1700,7 +1630,6 @@ simulated function ReloadDefaults()
 	SoundTMDeath = class'Misc_Player'.default.SoundTMDeath;
 	SoundUnlock = class'Misc_Player'.default.SoundUnlock;
 	
-	bEnableEnhancedNetCode = class'Misc_Player'.default.bEnableEnhancedNetCode;
 	ShowInitialMenu = class'Misc_Player'.default.ShowInitialMenu;
 	Menu3SPNKey = class'Misc_Player'.default.Menu3SPNKey;
 	bDisableEndCeremonySound = class'Misc_Player'.default.bDisableEndCeremonySound;
@@ -1709,7 +1638,6 @@ simulated function ReloadDefaults()
 	bEnableColoredNamesInTalk = class'Misc_Player'.default.bEnableColoredNamesInTalk;
 	bEnableColoredNamesOnEnemies = class'Misc_Player'.default.bEnableColoredNamesOnEnemies;
 
-	AutoSyncSettings = class'Misc_Player'.default.AutoSyncSettings;
     bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
 
@@ -2142,20 +2070,11 @@ defaultproperties
      bShowTeamInfo=True
      bExtendedInfo=True
      DamageIndicatorType=1
-     bUseBrightSkins=True
-     bUseTeamColors=True
-     RedOrEnemy=(R=100,A=128)
-     BlueOrAlly=(B=100,G=25,A=128)
-     Yellow=(G=100,A=128)
-     bUseTeamModels=True
-     RedEnemyModel="Gorge"
-     BlueAllyModel="Jakob"
      bAnnounceOverkill=True
      SoundAlone=Sound'WS3SPN.Sounds.alone'
      SoundAloneVolume=1.000000
      SoundUnlock=Sound'NewWeaponSounds.Newclickgrenade'
      SoundSpawnProtection=Sound'WS3SPN.Sounds.Bleep'
-     bEnableEnhancedNetCode=True
      ShowInitialMenu=2
      Menu3SPNKey=IK_F7
      EndCeremonyAnimNames(0)="gesture_point"
@@ -2187,9 +2106,6 @@ defaultproperties
      WhiteColor=(B=255,G=255,R=255,A=255)
      bAllowColoredMessages=True
      bEnableColoredNamesInTalk=True
-     AutoSyncSettings=True
-     LastSettingsLoadTimeSeconds=-100.000000
-     LastSettingsSaveTimeSeconds=-100.000000
      PlayerReplicationInfoClass=Class'WS3SPN.Misc_PRI'
      Adrenaline=0.100000
      AdrenalineMax=120.000000

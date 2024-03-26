@@ -1750,9 +1750,7 @@ event PlayerController Login
         if(Misc_Player(PC)!=None)
         {
             Misc_Player(PC).NextRezTime = Level.TimeSeconds+5; // don't allow resurrecting for 5 seconds after joining the server
-            Misc_Player(PC).LoginTime = Level.TimeSeconds;
         }
-
     }
 
     return PC;

@@ -850,9 +850,6 @@ event PlayerController Login
 	{
 		if(Misc_PRI(PC.PlayerReplicationInfo)!=None)
 			Misc_PRI(PC.PlayerReplicationInfo).UTCompPRI.ColoredName = InName;
-			
-		if(Misc_Player(PC)!=None)
-			Misc_Player(PC).LoginTime = Level.TimeSeconds;
 	}
 	
 	return PC;

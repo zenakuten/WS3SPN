@@ -116,7 +116,6 @@ simulated function UpdateRankAndSpread(Canvas C)
 		class'Misc_Util'.static.DrawTextClipped(C, name, MaxNamePos);	
 
         // draw health dot
-        //C.DrawColor = class'Misc_Player'.default.RedOrEnemy * 2.5;
         C.DrawColor = Misc_Player(PlayerOwner).Settings.BlueEnemyUTCompSkinColor * 2.5;
         C.DrawColor.A = 255;
         C.SetPos(posx - (0.0165 * Scale * C.ClipX), posy + (0.0035 * Scale * C.ClipY));

@@ -1280,7 +1280,7 @@ simulated function UpdateHUD()
         }
     }
 
-    if(class'Misc_Player'.default.bMatchHUDToSkins)
+    if(MyOwner.HUDSettings.bMatchHudColor)
     {
         if(MyOwner.PlayerReplicationInfo.bOnlySpectator)
         {
@@ -1292,12 +1292,12 @@ simulated function UpdateHUD()
         else
             team = MyOwner.GetTeamNum();
 
-        red = class'Misc_Player'.default.RedOrEnemy * 2;
-        blue = class'Misc_Player'.default.BlueOrAlly * 2;
+        red = HudColorRed * 2;
+        blue = HudColorBlue * 2;
         red.A = HudColorRed.A;
         blue.A = HudColorBlue.A;
 
-        if(!class'Misc_Player'.default.bUseTeamColors)
+        if(MyOwner.Settings.bEnemyBasedSkins)
         {
             if(team == 0)
             {

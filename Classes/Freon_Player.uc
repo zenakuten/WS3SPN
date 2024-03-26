@@ -291,7 +291,6 @@ function TakeShot()
 
 defaultproperties
 {
-     SoundHitVolume=1.026164
      SoundAloneVolume=1.300000
      PlayerReplicationInfoClass=Class'WS3SPN.Freon_PRI'
 }
