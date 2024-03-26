@@ -883,6 +883,7 @@ Begin:
     {
         Sleep(Misc_BaseGRI(GameReplicationInfo).ForceDeadSpectateDelay);
         ServerViewNextPlayer();
+        GotoState('Spectating');
     }
 }
 
