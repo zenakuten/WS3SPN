@@ -1,5 +1,8 @@
 class Menu_Settings extends UT2k3TabPanel;
 
+#exec texture Import File=textures\SPNLogo.TGA Name=SPNLogo Mips=Off Alpha=1
+
+var automated GUIImage i_SPNLogo;
 var automated moComboBox ReceiveAward;
 var automated moCheckBox ConfigureNetSpeed;
 var automated GUINumericEdit EditConfigureNetSpeedValue;
@@ -196,6 +199,17 @@ function bool InternalOnClick(GUIComponent C)
 
 defaultproperties
 {
+    Begin Object class=GUIImage name=SPNLogo
+     ImageStyle=ISTY_Scaled
+         ImageRenderStyle=MSTY_Alpha
+		WinWidth=0.375000
+		WinHeight=0.125000
+		WinLeft=0.312500
+		WinTop=0.01
+        Image=Texture'SPNLogo'
+     End Object
+     i_SPNLogo=GUIImage'SPNLogo'
+
      Begin Object Class=wsComboBox Name=ComboReceiveAwardType
          Caption="Receive Awards:"
          OnCreateComponent=ComboReceiveAwardType.InternalOnCreateComponent
