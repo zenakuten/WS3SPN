@@ -126,6 +126,7 @@ var Actor.eDoubleClickDir BufferedClickDir;
 var int NumSpectators;
 var config bool bShowSpectators;
 var config bool bKillingSpreeCheers;
+var bool bOverlayInitialized;
 
 replication
 {
@@ -349,6 +350,13 @@ function PlayerTick(float DeltaTime)
         SetInitialNetSpeed();
 		PlayerInitialized = true;
 	}
+
+    if(Overlay != None && !bOverlayInitialized)
+    {
+        // utcomp overlay conflicts
+        Overlay.OverlayEnabled = false;
+        bOverlayInitialized = true;
+    }
 
     //enforce rolloff
     if (Level.NetMode == NM_Client && Misc_BaseGRI(Level.GRI) != none) 
