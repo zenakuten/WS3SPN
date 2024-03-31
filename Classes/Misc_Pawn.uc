@@ -2,6 +2,7 @@ class Misc_Pawn extends UTComp_xPawn;
 
 var Misc_Player MyOwner;
 
+var Material OrigBody;
 var float SpawnedIconTimer;
 var VJustSpawnedIcon SpawnedIcon;
 var Vector ShockBall_FireLocation;
@@ -121,6 +122,24 @@ simulated event PostBeginPlay()
     ActivateSpawnProtection();
 }
 
+simulated function SetStandardSkin()
+{
+	if(OrigBody != None)
+		Skins[0] = OrigBody;
+
+	bUnlit = true;
+}
+
+simulated function Setup(xUtil.PlayerRecord rec, optional bool bLoadNow)
+{
+    super.Setup(rec, bLoadNow);
+
+    if(Level.NetMode == NM_DedicatedServer)
+        return;
+
+    if(OrigBody == None)
+        OrigBody = Skins[0];
+}
 
 function PossessedBy(Controller C)
 {
@@ -379,10 +398,10 @@ simulated function Tick(float DeltaTime)
 
 simulated event PlayDying(class<DamageType> DamageType, vector HitLoc)
 {
+    SetStandardSkin();
 	bUnlit = false;
 	Super.PlayDying(DamageType, HitLoc);
 }
-
 
 simulated function bool IsSpawnProtectionEnabled()
 {

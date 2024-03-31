@@ -370,6 +370,7 @@ simulated function ApplyLowQualityIce()
     Head = new(none)class'Combiner';
 
     SetOverlayMaterial(None, 0.0, true);
+    SetStandardSkin();
 
     Body.CombineOperation = CO_Add;
     Body.Material1 = Skins[0];
@@ -394,6 +395,7 @@ simulated function ApplyHighQualityIce()
     Ice = new(none)class'Combiner';
 
     SetOverlayMaterial(None, 0.0, true);
+    SetStandardSkin();
 
     Ice.CombineOperation = CO_Subtract;
     Ice.Material1 = FrostMap;

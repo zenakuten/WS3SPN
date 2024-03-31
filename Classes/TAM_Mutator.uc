@@ -303,7 +303,55 @@ function ResetWeaponsToDefaults(bool bModifyShieldGun,float ShieldGunSelfForceSc
     class'FlakAltFire'.default.ProjectileClass = class'XWeapons.FlakShell';
     class'ShockProjFire'.default.ProjectileClass = class'XWeapons.ShockProjectile';
 }
+
+function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
+{
+    bSuperRelevant = 0;
 	
+    if(Other.IsA('Pickup') && !Other.IsA('Misc_PickupHealth') && !Other.IsA('Misc_PickupShield') && !(Other.IsA('Misc_PickupAdren')))
+        return false;
+		
+    if(Other.IsA('xPickupBase') && !Other.IsA('Misc_PickupBase'))
+        Other.bHidden = true;
+		
+    return true;
+}
+
+function bool ReplaceWith(actor Other, string aClassName)
+{
+	local Actor A;
+	local class<Actor> aClass;
+
+	if ( aClassName == "" )
+		return true;
+
+	aClass = class<Actor>(DynamicLoadObject(aClassName, class'Class'));
+	if ( aClass != None )
+		A = Spawn(aClass,Other.Owner,Other.tag,Other.Location, Other.Rotation);
+	if ( Other.IsA('Pickup') )
+	{
+		if ( Pickup(Other).MyMarker != None )
+		{
+			Pickup(Other).MyMarker.markedItem = Pickup(A);
+			if ( Pickup(A) != None )
+			{
+				Pickup(A).MyMarker = Pickup(Other).MyMarker;
+				A.SetLocation(A.Location
+					+ (A.CollisionHeight - Other.CollisionHeight) * vect(0,0,1));
+			}
+			Pickup(Other).MyMarker = None;
+		}
+		else if ( A.IsA('Pickup') && !A.IsA('WeaponPickup') )
+			Pickup(A).Respawntime = 0.0;
+	}
+	if ( A != None )
+	{
+		A.event = Other.event;
+		A.tag = Other.tag;
+		return true;
+	}
+	return false;
+}	
 
 function GiveWeapons(Pawn P)
 {
