@@ -485,12 +485,6 @@ State Frozen
         PlaySound(default.ImpactSounds[Rand(6)], SLOT_Pain, 1.5 * TransientSoundVolume);
     }
     
-    event Tick( float DeltaTime )
-    {
-        if(Physics==PHYS_Walking || Physics==PHYS_Swimming || Physics==PHYS_None)
-            bGivesGit = true;
-        Super.Tick(DeltaTime);
-    }
 
     function TakeDamage( int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Momentum, class<DamageType> DamageType )
     {
@@ -537,6 +531,9 @@ State Frozen
 
     function BeginState()
     {
+        if(Physics==PHYS_Walking || Physics==PHYS_Swimming || Physics==PHYS_None)
+            bGivesGit = true;
+
         SetPhysics(PHYS_Falling);
 
         LastHitBy = None;

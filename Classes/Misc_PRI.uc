@@ -102,7 +102,7 @@ event PostBeginPlay()
 
 simulated function string GetColoredName()
 {
-    if(UTCompPRI.ColoredName == "")
+    if(UTCompPRI == None || UTCompPRI.ColoredName == "")
         return PlayerName;
 
     return UTCompPRI.ColoredName;
@@ -127,7 +127,7 @@ simulated function RegisterDamage (int Damage, byte WeaponNum)
 simulated function string GetColoredName2(Color OrigColor)
 {
     // End:0x12
-    if(UTCompPRI.ColoredName == "")
+    if(UTCompPRI == None || UTCompPRI.ColoredName == "")
     {
         return PlayerName;
     }

@@ -314,7 +314,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
     if(Other.IsA('xPickupBase') && !Other.IsA('Misc_PickupBase'))
         Other.bHidden = true;
 		
-    return true;
+    return super.CheckReplacement(Other, bSuperRelevant);
 }
 
 function bool ReplaceWith(actor Other, string aClassName)

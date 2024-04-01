@@ -423,7 +423,8 @@ simulated function ClientStartCeremony(int PlayerCount, int WinningTeamIndex, st
 			i2 = Rand(EndCeremonyWeaponNames.Length); 
 			Misc_Pawn(P).GiveWeapon(EndCeremonyWeaponNames[i2]);
 			Misc_Pawn(P).PendingWeapon = Weapon(Misc_Pawn(P).FindInventoryType(EndCeremonyWeaponClasses[i2]));
-			Misc_Pawn(P).ChangedWeapon();			
+			Misc_Pawn(P).ChangedWeapon();
+            Misc_Pawn(P).DefaultSkin();
 			Misc_Pawn(P).bNetNotify = false;
 			Misc_Pawn(P).SetAnimAction('None');
 

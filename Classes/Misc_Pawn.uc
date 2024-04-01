@@ -132,13 +132,22 @@ simulated function SetStandardSkin()
 
 simulated function Setup(xUtil.PlayerRecord rec, optional bool bLoadNow)
 {
-    super.Setup(rec, bLoadNow);
+    local int TeamNum;
 
     if(Level.NetMode == NM_DedicatedServer)
+    {
+        super.Setup(rec, bLoadNow);
         return;
+    }
 
-    if(OrigBody == None)
-        OrigBody = Skins[0];
+    TeamNum=0;
+    if ( (PlayerReplicationInfo != None) && (PlayerReplicationInfo.Team != None) )
+        TeamNum = PlayerReplicationInfo.Team.TeamIndex;
+
+    class'SpeciesType'.static.SetTeamSkin(self, rec, TeamNum);
+
+    OrigBody = Skins[0];
+    super.Setup(rec, bLoadNow);
 }
 
 function PossessedBy(Controller C)
@@ -394,6 +403,15 @@ simulated function Tick(float DeltaTime)
     if(bPlayedDeath)
 		return;
 
+}
+
+simulated function DefaultSkin()
+{
+    local int i;
+    for(i=0;i<Skins.Length;i++)
+    {
+        Skins[i] = MakeDMSkin(Skins[i]);
+    }
 }
 
 simulated event PlayDying(class<DamageType> DamageType, vector HitLoc)
