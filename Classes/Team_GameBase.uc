@@ -3365,6 +3365,16 @@ function bool CanSpectate(PlayerController Viewer, bool bOnlySpectator, actor Vi
                 (bEndOfRound || (xPawn(ViewTarget).GetTeamNum() == Viewer.GetTeamNum()) && Viewer.GetTeamNum() != 255));
 }
 
+function bool InWarmup()
+{
+    if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInWarmup)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 // check if all other players are out
 function bool CheckMaxLives(PlayerReplicationInfo Scorer)
 {
@@ -3378,12 +3388,14 @@ function bool CheckMaxLives(PlayerReplicationInfo Scorer)
     if(!RoundCanTie && (Scorer != None) && !Scorer.bOutOfLives)
         Living = Scorer;
 
+    If(InWarmup())
+        Living = None;
+
     bNoneLeft = true;
     for(C = Level.ControllerList; C != None; C = C.NextController)
     {
         if((C.PlayerReplicationInfo != None) && C.bIsPlayer
             && !C.PlayerReplicationInfo.bOutOfLives
-            && C.PlayerReplicationInfo.NumLives > 0
             && !C.PlayerReplicationInfo.bOnlySpectator)
         {
           if(Living == None)
@@ -3398,10 +3410,9 @@ function bool CheckMaxLives(PlayerReplicationInfo Scorer)
 
     if(bNoneLeft)
     {
-        if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInWarmup)
+        if(InWarmup())
         {
-            if(Scorer != None)
-                EndRound(Living);
+            EndRound(None);
             return false;
         }
 
