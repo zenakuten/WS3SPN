@@ -679,6 +679,4 @@ defaultproperties
      GameName="Freon"
      Description="Freeze the other team, score a point. Chill well and serve."
      Acronym="Freon"
-     MapPrefix="FR"
-     BeaconName="FR"
 }
