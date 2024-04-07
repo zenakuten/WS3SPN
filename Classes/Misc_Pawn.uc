@@ -134,11 +134,10 @@ simulated function Setup(xUtil.PlayerRecord rec, optional bool bLoadNow)
 {
     local int TeamNum;
 
+    super.Setup(rec, bLoadNow);
+
     if(Level.NetMode == NM_DedicatedServer)
-    {
-        super.Setup(rec, bLoadNow);
         return;
-    }
 
     TeamNum=0;
     if ( (PlayerReplicationInfo != None) && (PlayerReplicationInfo.Team != None) )
