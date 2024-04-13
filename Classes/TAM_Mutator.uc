@@ -315,11 +315,35 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
     if(Other.IsA('xPickupBase') && !Other.IsA('Misc_PickupBase'))
         Other.bHidden = true;
 
-    if(Other.IsA('ShieldGun'))
-        ReplaceWith(Other, "WS3SPN.NewNet_ShieldGun");
-		
     return super.CheckReplacement(Other, bSuperRelevant);
 }
+
+function string GetInventoryClassOverride(string InventoryClassName)
+{
+    local int x;
+
+    if(InventoryClassName ~= "xWeapons.ShieldGun")
+        return "WS3SPN.NewNet_ShieldGun";
+
+    if(bEnhancedNetCodeEnabledAtStartOfMap)
+    {
+        for(x=0; x<ArrayCount(WeaponClassNames); x++)
+           if(InventoryClassName ~= WeaponClassNames[x])
+               return string(WeaponClasses[x]);
+    }
+    else
+    {
+         for(x=0; x<ArrayCount(WeaponClassNames); x++)
+           if(InventoryClassName ~= WeaponClassNames[x])
+               return string(WeaponClassesUTComp[x]);
+    }
+
+    if ( NextMutator != None )
+		return NextMutator.GetInventoryClassOverride(InventoryClassName);
+
+	return InventoryClassName;
+}
+
 
 function bool ReplaceWith(actor Other, string aClassName)
 {

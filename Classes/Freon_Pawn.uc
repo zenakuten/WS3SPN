@@ -345,14 +345,17 @@ simulated function Tick(float DeltaTime)
 		bPhysicsAnimUpdate = false;
 		bClientFrozen = true;
 		StopAnimating(true);
+        ApplyIce();
+		bScriptPostRender = true;
+    }
+}
 
+simulated function ApplyIce()
+{
 		if(Level.bDropDetail || Level.DetailMode == DM_Low)
 			ApplyLowQualityIce();
 		else
 			ApplyHighQualityIce();
-
-		bScriptPostRender = true;
-    }
 }
 
 simulated function ApplyLowQualityIce()
@@ -413,6 +416,12 @@ simulated function ApplyHighQualityIce()
     Skins[1] = Head;
 }
 
+simulated function ColorSkins()
+{
+    super.ColorSkins();
+    if(bFrozen)
+        ApplyIce();
+}
 
 function DiedFrozen(Controller Killer, class<DamageType> DamageType, vector HitLocation)
 {
