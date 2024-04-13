@@ -200,6 +200,7 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
         class'NewNet_ShockBeamFire'.Default.DamageType = class'DamType_ShockBeam';
         class'NewNet_ShockProjectile'.Default.MyDamageType = class'DamType_ShockBall';
         class'NewNet_ShockProjectile'.Default.ComboDamageType = class'DamType_ShockBeam';
+        class'NewNet_ShockProjectile'.Default.ComboRadiusDamageType = class'DamType_ShockCombo';
 		class'NewNet_LinkFire'.Default.DamageType = Class'DamType_LinkShaft';
 		class'NewNet_LinkProjectile'.Default.MyDamageType = Class'DamType_LinkPlasma';
 		class'NewNet_MiniGunFire'.Default.DamageType = Class'DamType_MinigunBullet';
