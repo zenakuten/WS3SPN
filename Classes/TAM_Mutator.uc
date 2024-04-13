@@ -314,6 +314,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
 		
     if(Other.IsA('xPickupBase') && !Other.IsA('Misc_PickupBase'))
         Other.bHidden = true;
+
+    if(Other.IsA('ShieldGun'))
+        ReplaceWith(Other, "WS3SPN.NewNet_ShieldGun");
 		
     return super.CheckReplacement(Other, bSuperRelevant);
 }
