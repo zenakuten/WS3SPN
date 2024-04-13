@@ -3923,9 +3923,11 @@ function ProcessServerTravel(string URL, bool bItems)
 
 function RegisterMatchStats()
 {
-   if ( MatchStatsRegistered )
-  
-    return;
+    if ( MatchStatsRegistered )
+        return;
+
+    if(InWarmup())
+        return;
   
   if ( PlayerDataManager_ServerLink != None )
   {

@@ -2072,6 +2072,14 @@ function bool AllowVoiceMessage(name MessageType)
     return super.AllowVoiceMessage(MessageType);
 }
 
+// Reset TAM stats when UTComp stats get reset (warmup etc)
+simulated function ResetUTCompStats()
+{
+    super.ResetUTCompStats();
+    If(Misc_PRI(PlayerReplicationInfo) != None)
+        Misc_PRI(PlayerReplicationInfo).ResetStats();
+}
+
 /* settings */
 
 defaultproperties

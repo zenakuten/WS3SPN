@@ -305,6 +305,75 @@ simulated function UpdateVsStats( string OpponentName, bool bWin )
     VsStatsList[VsStatsList.Length] = NewVsStats;
 }
 
+simulated function ResetStats()
+{
+    Assault.Primary.Fired = 0;
+    Assault.Primary.Hit = 0;
+    Assault.Primary.Damage = 0;
+
+    Assault.Secondary.Fired = 0;
+    Assault.Secondary.Hit = 0;
+    Assault.Secondary.Damage = 0;
+
+    Bio.Fired = 0;
+    Bio.Hit = 0;
+    Bio.Damage = 0;
+
+    Shock.Primary.Fired = 0;
+    Shock.Primary.Hit = 0;
+    Shock.Primary.Damage = 0;
+
+    Shock.Secondary.Fired = 0;
+    Shock.Secondary.Hit = 0;
+    Shock.Secondary.Damage = 0;
+
+    Combo.Fired = 0;
+    Combo.Hit = 0;
+    Combo.Damage = 0;
+
+    Link.Primary.Fired = 0;
+    Link.Primary.Hit = 0;
+    Link.Primary.Damage = 0;
+
+    Link.Secondary.Fired = 0;
+    Link.Secondary.Hit = 0;
+    Link.Secondary.Damage = 0;
+
+    Mini.Primary.Fired = 0;
+    Mini.Primary.Hit = 0;
+    Mini.Primary.Damage = 0;
+
+    Mini.Secondary.Fired = 0;
+    Mini.Secondary.Hit = 0;
+    Mini.Secondary.Damage = 0;
+
+    Flak.Primary.Fired = 0;
+    Flak.Primary.Hit = 0;
+    Flak.Primary.Damage = 0;
+
+    Flak.Secondary.Fired = 0;
+    Flak.Secondary.Hit = 0;
+    Flak.Secondary.Damage = 0;
+
+    Rockets.Fired = 0;
+    Rockets.Hit = 0;
+    Rockets.Damage = 0;
+
+    Sniper.Fired = 0;
+    Sniper.Hit = 0;
+    Sniper.Damage = 0;
+
+    ClassicSniper.Fired = 0;
+    ClassicSniper.Hit = 0;
+    ClassicSniper.Damage = 0;
+
+    SGDamage = 0;
+    HeadShots = 0;
+    AveragePercent = 0.0;
+
+    VsStatsList.Length = 0;
+}
+
 defaultproperties
 {
      StringDeadNoRez="Dead [Inactive]"
