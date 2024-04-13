@@ -147,6 +147,7 @@ var int ForceAutoBalanceTimer;
 var bool TeamsAutoBalanced;
 var array<Controller> DontAutoBalanceList;
 var bool ForceAutoBalance;
+var bool bWarmupEnded;
 
 enum EServerLinkStatus
 {
@@ -1656,6 +1657,11 @@ function StartMatch()
     RoundTime = SecsPerRound;
     Misc_BaseGRI(GameReplicationInfo).RoundTime = RoundTime;
     RespawnTime = 2;
+    if(bWarmupEnded)
+    {
+        RespawnTime = 0;
+        bWarmupEnded = false;
+    }
     LockTime = default.LockTime;
 
     EndOfRoundTime = 0;
@@ -1715,7 +1721,6 @@ function StartNewRound()
       BroadcastLocalizedMessage(Class'Message_WinningRound',2,,,GameReplicationInfo);
     }
   }
-	
 }
 
 event PlayerController Login

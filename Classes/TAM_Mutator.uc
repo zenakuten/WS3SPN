@@ -409,6 +409,13 @@ function ServerTraveling(string URL, bool bItems)
     Super.ServerTraveling(URL, bItems);
 }
 
+function WarmupEnded()
+{
+	if(Team_GameBase(Level.Game) != None)
+        Team_GameBase(Level.Game).bWarmupEnded = true;
+}
+
+
 defaultproperties
 {
      WeaponInfo(0)=(WeaponName="xWeapons.ShockRifle",Ammo[0]=20,MaxAmmo[0]=1.500000)
