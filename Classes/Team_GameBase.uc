@@ -317,6 +317,7 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
     Misc_BaseGRI(GameReplicationInfo).bShowNumSpecs = bShowNumSpecs;
     Misc_BaseGRI(GameReplicationInfo).ChallengeModeScale = ChallengeModeScale;
+    Misc_BaseGRI(GameReplicationInfo).bDisableNecroMessage = bDisableNecroMessage;
 
 
     if(bEnableEmoticons)
