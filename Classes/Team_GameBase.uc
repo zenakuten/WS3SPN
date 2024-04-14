@@ -1619,7 +1619,7 @@ function StartMatch()
 {	
     local Controller C;
     local int CountPlayers;
-  
+
     Super(DeathMatch).StartMatch();
 
     if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
@@ -1648,7 +1648,11 @@ function StartMatch()
         } else if (CountPlayers >= MinPlayersForStatsRecording) {Misc_BaseGRI(GameReplicationInfo).stat = true; }
 		
     }
-		
+
+    if(InWarmup())
+    {
+        GameReplicationInfo.bMatchHasBegun = false;
+    }
 	
     CurrentRound = 1;
     Misc_BaseGRI(GameReplicationInfo).CurrentRound = 1;
@@ -2596,6 +2600,10 @@ function RestartPlayer(Controller C)
         Misc_Bot(C).ActiveThisRound = true;
 
     Super.RestartPlayer(C);
+
+    if(InWarmup() && C != None && C.PlayerReplicationInfo != None && !C.PlayerReplicationInfo.bOnlySpectator)
+        C.PlayerReplicationInfo.bReadyToPlay=false;
+
 }
 
 /*
