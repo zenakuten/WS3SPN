@@ -1621,7 +1621,12 @@ function StartMatch()
     local Controller C;
     local int CountPlayers;
 
-    Super(DeathMatch).StartMatch();
+    if(bWarmupEnded)
+    {
+        StartMatchAfterWarmup();
+    }
+    else
+        Super(DeathMatch).StartMatch();
 
     if((PlayerDataManager_ServerLink != none) && !DisablePersistentStatsForMatch)
     {
@@ -1664,11 +1669,6 @@ function StartMatch()
     RoundTime = SecsPerRound;
     Misc_BaseGRI(GameReplicationInfo).RoundTime = RoundTime;
     RespawnTime = 2;
-    if(bWarmupEnded)
-    {
-        RespawnTime = 0;
-        bWarmupEnded = false;
-    }
     LockTime = default.LockTime;
 
     EndOfRoundTime = 0;
@@ -1677,6 +1677,48 @@ function StartMatch()
     NextRoundTime = 0;
 
     GameReplicationInfo.bStopCountdown = false;
+    if(bWarmupEnded)
+    {
+        RespawnTime = 0;
+        bWarmupEnded = false;
+    }
+}
+
+function StartMatchAfterWarmup()
+{
+    local bool bTemp;
+	local int Num;
+    local Actor A;
+
+    GotoState('MatchInProgress');
+    if ( Level.NetMode == NM_Standalone )
+        RemainingBots = InitialBots;
+    else
+        RemainingBots = 0;
+    GameReplicationInfo.RemainingMinute = RemainingTime;
+
+    /////////////////////
+    // GameInfo.StartMatch but without restarting players
+	if (GameStats!=None)
+		GameStats.StartGame();
+
+    // tell all actors the game is starting
+    ForEach AllActors(class'Actor', A)
+        A.MatchStarting();
+
+    bWaitingToStartMatch = false;
+	GameReplicationInfo.bMatchHasBegun = true;    
+    ////////////////////
+    bTemp = bMustJoinBeforeStart;
+    bMustJoinBeforeStart = false;
+    while ( NeedPlayers() && (Num<16) )
+    {
+		if ( AddBot() )
+			RemainingBots--;
+		Num++;
+    }
+    bMustJoinBeforeStart = bTemp;
+    log("START MATCH (after warmup)");    
 }
 
 function StartNewRound()
