@@ -1640,14 +1640,16 @@ function StartMatch()
             goto J0x32;
         }
         // End:0xAD
-        if(CountPlayers < MinPlayersForStatsRecording)
+        if(CountPlayers < MinPlayersForStatsRecording || InWarmup())
         {
             BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled');
-            NoStatsForThisMatch = true; Misc_BaseGRI(GameReplicationInfo).stat = false;
+            NoStatsForThisMatch = true; 
+            Misc_BaseGRI(GameReplicationInfo).stat = false;
 			
-			
-        } else if (CountPlayers >= MinPlayersForStatsRecording) {Misc_BaseGRI(GameReplicationInfo).stat = true; }
-		
+        } else if (CountPlayers >= MinPlayersForStatsRecording && !InWarmup()) 
+        {
+            Misc_BaseGRI(GameReplicationInfo).stat = true; 
+        }
     }
 
     if(InWarmup())
