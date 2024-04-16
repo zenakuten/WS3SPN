@@ -372,6 +372,24 @@ simulated function ResetStats()
     AveragePercent = 0.0;
 
     VsStatsList.Length = 0;
+
+    bWarned = false;
+    EnemyDamage = 0;
+    AllyDamage = 0;
+    ReverseFF = 0;
+    MinigunCount = 0;
+    FlawlessCount = 0;
+    OverkillCount = 0;
+    DarkHorseCount = 0;
+    HatTrickCount = 0;
+    LinkCount = 0;
+    RoxCount = 0;
+    rocketsuicide = 0;
+    ShieldCount = 0;
+    GrenCount = 0;
+    BioCount = 0;
+    CurrentDamage = 0;
+    CurrentDamage2 = 0;
 }
 
 defaultproperties

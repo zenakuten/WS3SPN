@@ -3976,6 +3976,9 @@ function RegisterMatchStats()
 
     if(InWarmup())
         return;
+    
+    if(bWarmupEnded)
+        return;
   
   if ( PlayerDataManager_ServerLink != None )
   {
