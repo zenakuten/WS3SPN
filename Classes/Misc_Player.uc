@@ -418,7 +418,8 @@ simulated function ClientStartCeremony(int PlayerCount, int WinningTeamIndex, st
 		{		
 			P.Role = ROLE_Authority;
 			P.RemoteRole = ROLE_None;
-			
+
+            Misc_Pawn(P).bInEndCeremony=true;
 			Misc_Pawn(P).Setup(class'xUtil'.static.FindPlayerRecord(EndCeremonyInfo[i].CharacterName), true);
 			i2 = Rand(EndCeremonyWeaponNames.Length); 
 			Misc_Pawn(P).GiveWeapon(EndCeremonyWeaponNames[i2]);

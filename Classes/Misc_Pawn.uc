@@ -19,6 +19,7 @@ var bool bSpawnKilled;
 var xEmitter InvisEmitter;
 
 var config bool bPlayOwnLandings;
+var bool bInEndCeremony;
 
 replication
 {
@@ -128,6 +129,13 @@ simulated function SetStandardSkin()
 		Skins[0] = OrigBody;
 
 	bUnlit = true;
+}
+
+simulated function ColorSkins()
+{
+    if(bInEndCeremony)
+        return;
+    super.ColorSkins();
 }
 
 simulated function Setup(xUtil.PlayerRecord rec, optional bool bLoadNow)
