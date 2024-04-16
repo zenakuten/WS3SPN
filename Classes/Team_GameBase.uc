@@ -1715,7 +1715,7 @@ function StartNewRound()
 {
     local Controller C;
 
-    if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInFinalCountdown)
+    if(MutTAM != None && MutTAM.WarmupInfo != None && MutTAM.WarmupInfo.bInFinalCountdown)
         return;
 
     RespawnTime = 4;
@@ -3415,7 +3415,7 @@ function bool CanSpectate(PlayerController Viewer, bool bOnlySpectator, actor Vi
 
 function bool InWarmup()
 {
-    if(MutTAM != None && MutTAM.WarmupClass != None && MutTAM.WarmupClass.bInWarmup)
+    if(MutTAM != None && MutTAM.WarmupInfo != None && MutTAM.WarmupInfo.bInWarmup)
     {
         return true;
     }

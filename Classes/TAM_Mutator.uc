@@ -473,4 +473,5 @@ defaultproperties
      bAlwaysRelevant=True
      RemoteRole=ROLE_SimulatedProxy
      bAlwaysTick=True
+     WarmupClass=class'TAM_Warmup'
 }
