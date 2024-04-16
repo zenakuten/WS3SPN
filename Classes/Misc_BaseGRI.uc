@@ -57,9 +57,6 @@ var Team_GameBase.EServerLinkStatus ServerLinkStatus; //enum type dependson Team
 var float FootstepVolume;
 var int FootstepRadius;
 
-var bool bAllowColorWeapons;
-var bool bKeepMomentumOnLanding;
-
 var bool bLockRolloff;
 var float RolloffMinValue;
 
@@ -86,12 +83,11 @@ replication
         TimeOuts, Acronym, ShieldTextureName, ShowServerName,
         FlagTextureEnabled, FlagTextureName, ScoreboardRedTeamName, ScoreboardBlueTeamName, FlagTextureShowAcronym, SoundAloneName,
         SoundSpawnProtectionName,UseZAxisRadar,
-        FootstepVolume, FootstepRadius, bAllowColorWeapons, bKeepMomentumOnLanding,
+        FootstepVolume, FootstepRadius,
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
         bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves,
         bShowNumSpecs, ChallengeModeScale;
-        //UseNetUpdateRate, MinNetUpdateRate, MaxNetUpdateRate, 
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;

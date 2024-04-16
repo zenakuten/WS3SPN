@@ -198,9 +198,6 @@ var config float FootstepVolume;
 var config int FootstepRadius;
 var config bool ClearOldStats;
 
-var config bool bAllowColorWeapons;
-var config bool bKeepMomentumOnLanding;
-
 var config bool bLockRolloff;
 var config float RolloffMinValue;
 
@@ -295,9 +292,6 @@ function InitGameReplicationInfo()
 
     Misc_BaseGRI(GameReplicationInfo).FootstepVolume = FootstepVolume;
     Misc_BaseGRI(GameReplicationInfo).FootstepRadius = FootstepRadius;
-
-    Misc_BaseGRI(GameReplicationInfo).bAllowColorWeapons = bAllowColorWeapons;
-    Misc_BaseGRI(GameReplicationInfo).bKeepMomentumOnLanding = bKeepMomentumOnLanding;
 
     Misc_BaseGRI(GameReplicationInfo).bLockRolloff = bLockRolloff;
     Misc_BaseGRI(GameReplicationInfo).RollOffMinValue = RollOffMinValue;
@@ -464,8 +458,6 @@ static function FillPlayInfo(PlayInfo PI)
 
     //UFC
     Weight=1;
-    PI.AddSetting("3SPN", "bAllowColorWeapons", "Allow Color Weapons", 0, Weight++, "Check",,, False);
-    PI.AddSetting("3SPN", "bKeepMomentumOnLanding", "Keep momentum on landing (gliding)", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "bLockRolloff", "Lock Rolloff", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "RolloffMinValue", "Minimum value for Audio Rolloff", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "bBoostedAltShieldJump", "Boosted Alt-Shield Jumping", 0, Weight++, "Check",,, False);
@@ -564,8 +556,6 @@ static event string GetDescriptionText(string PropName)
       case "FootstepRadius": return "Radius of player footstep sound";
 
       case "ClearOldStats": return "Clear stats after 24 hours";
-      case "bAllowColorWeapons": return "Allow players to use colored weapons";
-      case "bKeepMomentumOnLanding": return "No slow down when landing from jump/dodge";
       case "bLockRolloff": return "Lock the sound rolloff value";
       case "RolloffMinValue": return "Minimum value for sound rolloff (0.4)";
 
@@ -4155,8 +4145,6 @@ defaultproperties
      FootstepRadius=400
      FriendlyFireScale=0.500000
      ClearOldStats=false
-     bAllowColorWeapons=true
-     bKeepMomentumOnLanding=true
      bLockRolloff=true
      RollOffMinValue=0.4
      bBoostedAltShieldJump=true
