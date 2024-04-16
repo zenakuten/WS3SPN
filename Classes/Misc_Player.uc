@@ -2081,6 +2081,15 @@ simulated function ResetUTCompStats()
         Misc_PRI(PlayerReplicationInfo).ResetStats();
 }
 
+simulated function bool IsGroupedDamageType(class<DamageType> DamageType)
+{
+    return DamageType == class'DamType_FlakChunk'
+        || DamageType == class'DamType_FlakShell'
+        || DamageType == class'DamType_Rocket'
+        || DamageType == class'DamType_RocketHoming'
+        || super.IsGroupedDamageType(DamageType);
+}
+
 /* settings */
 
 defaultproperties
