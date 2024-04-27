@@ -563,7 +563,7 @@ simulated event DrawScoreBoard(Canvas C)
         // location (ready/not ready/dead)
         if(!GRI.bMatchHasBegun)
         {
-            if(TmpPRI.bReadyToPlay)
+            if(TmpPRI.bReadyToPlay || TmpPRI.UTCompPRI.bIsReady)
                 name = class'TAM_Scoreboard'.default.ReadyText;
             else
                 name = class'TAM_Scoreboard'.default.NotReadyText;

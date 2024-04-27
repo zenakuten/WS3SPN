@@ -2619,20 +2619,20 @@ function RestartLevel()
 function RestartPlayer(Controller C)
 {
     local Misc_Player MP;
-
-//    RestartPlayerDelayed(C, 0);
+    local bool bInWarmup;
 
     MP = Misc_Player(C);
+    bInWarmup = InWarmup();
     if(MP != None)
     {
-        MP.ActiveThisRound = true;
+        MP.ActiveThisRound = !bInWarmup;
 
         if(MP.PlayerData != None && MP.PlayerReplicationInfo.Team != None)
             MP.PlayerData.TeamIdx = MP.PlayerReplicationInfo.Team.TeamIndex;
     }
 
     if(Misc_Bot(C) != None)
-        Misc_Bot(C).ActiveThisRound = true;
+        Misc_Bot(C).ActiveThisRound = !bInWarmup;
 
     Super.RestartPlayer(C);
 

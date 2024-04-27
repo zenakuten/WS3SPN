@@ -1288,10 +1288,13 @@ function CleanUpPawns()
 
 function RestartPlayer(Controller C)
 {
+    local bool bInWarmup;
+
+    bInWarmup = InWarmup();
 	if(Misc_Player(C) != None)
-		Misc_Player(C).ActiveThisRound = true;
+		Misc_Player(C).ActiveThisRound = !bInWarmup;
 	if(Misc_Bot(C) != None)
-		Misc_Bot(C).ActiveThisRound = true;
+		Misc_Bot(C).ActiveThisRound = !bInWarmup;
 		
 	Super.RestartPlayer(C);
 }
@@ -1831,6 +1834,16 @@ function ResetDefaults()
         //saveconfig();
         NextMapString = "";
     }	
+}
+
+function bool InWarmup()
+{
+    if(MutTAM != None && MutTAM.WarmupInfo != None && MutTAM.WarmupInfo.bInWarmup)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 defaultproperties

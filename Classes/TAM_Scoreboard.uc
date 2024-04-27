@@ -625,7 +625,7 @@ simulated function DrawPlayerBar(Canvas C, int BarX, int BarY, int BarW, int Bar
 	
 	if(!GRI.bMatchHasBegun)
 	{
-		if(PRI.bReadyToPlay)
+		if(PRI.bReadyToPlay || (Misc_PRI(PRI) != None && Misc_PRI(PRI).UTCompPRI.bIsReady))
 			name = ReadyText;
 		else
 			name = NotReadyText;
