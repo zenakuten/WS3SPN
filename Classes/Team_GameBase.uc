@@ -1181,7 +1181,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
     if(DamageType == Class'DamTypeSuperShockBeam')
         return Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
 
-    if(Misc_Pawn(instigatedBy) != None && instigatedBy.Controller != None && injured.GetTeamNum() != 255 && instigatedBy.GetTeamNum() != 255)
+    if(injured != None && Misc_Pawn(instigatedBy) != None && instigatedBy.Controller != None && injured.GetTeamNum() != 255 && instigatedBy.GetTeamNum() != 255)
     {
         PRI = Misc_PRI(instigatedBy.PlayerReplicationInfo);
         if(PRI == None)
@@ -2692,7 +2692,7 @@ function bool DestroyActor(Actor A)
 {
     if(Projectile(A) != None)
         return true;
-    else if(Pawn(A) != None && (xPawn(A).Controller == None || xPawn(A).PlayerReplicationInfo == None))
+    else if(xPawn(A) != None && (xPawn(A).Controller == None || xPawn(A).PlayerReplicationInfo == None))
         return true;
     else if(Inventory(A) != None)
         return true;
