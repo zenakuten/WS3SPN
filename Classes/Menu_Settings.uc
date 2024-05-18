@@ -61,8 +61,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     ConfigureNetSpeed.Checked(class'Misc_Player'.default.bConfigureNetSpeed);
 
     EditConfigureNetSpeedValue.MinValue=9000;
-    EditConfigureNetSpeedValue.MaxValue=100000;
-    EditConfigureNetSpeedValue.MyEditBox.MaxWidth=6;
+    EditConfigureNetSpeedValue.MaxValue=1000000;
+    EditConfigureNetSpeedValue.MyEditBox.MaxWidth=7;
     EditConfigureNetSpeedValue.SetValue(class'Misc_Player'.default.ConfigureNetSpeedValue);
 
     AbortNecro.AddItem("None");
