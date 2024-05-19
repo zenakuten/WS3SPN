@@ -328,6 +328,10 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 {
     local vector zeroVec;
     zeroVec = vect(0.0,0.0,0.0);
+
+    if(instigatedBy == self)
+        zeroVec = momentum;
+
 	if(IsSpawnProtectionEnabled())
         Super.TakeDamage(0, instigatedBy, hitlocation, zeroVec, damageType);
     else

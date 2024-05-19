@@ -1,4 +1,4 @@
-class NewNet_ShieldGun extends ShieldGun
+class NewNet_ShieldGun extends UTComp_ShieldGun
 	HideDropDown
 	CacheExempt;
 
