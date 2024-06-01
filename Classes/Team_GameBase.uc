@@ -4171,14 +4171,14 @@ defaultproperties
      DefaultEnemyRosterClass="WS3SPN.TAM_TeamInfo"
      ADR_MinorError=-5.000000
      LoginMenuClass="WS3SPN.Menu_TAMLoginMenu"
-     LocalStatsScreenClass=Class'WS3SPN.Misc_StatBoard'
+     LocalStatsScreenClass=Class'Misc_StatBoard'
      DefaultPlayerClassName="WS3SPN.Misc_Pawn"
      ScoreBoardType="WS3SPN.TAM_Scoreboard"
      HUDType="WS3SPN.TAM_HUD"
      MapListType="3SPNRU-B2.MapListTeamArenaMaster"
      GoalScore=10
      TimeLimit=0
-     DeathMessageClass=Class'WS3SPN.Misc_DeathMessage'
+     DeathMessageClass=Class'UTComp_xDeathMessage'
      //MutatorClass="WS3SPN.TAM_Mutator"
      MutatorClass="UnrealGame.DMMutator"
      PlayerControllerClassName="WS3SPN.Misc_Player"

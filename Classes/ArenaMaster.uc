@@ -1882,7 +1882,7 @@ defaultproperties
      OvertimeSound=Sound'WS3SPN.Sounds.overtime'
      ADR_MinorError=-5.000000
      LoginMenuClass="WS3SPN.Menu_TAMLoginMenu"
-     LocalStatsScreenClass=Class'WS3SPN.Misc_StatBoard'
+     LocalStatsScreenClass=Class'Misc_StatBoard'
      DefaultPlayerClassName="WS3SPN.Misc_Pawn"
      ScoreBoardType="WS3SPN.AM_Scoreboard"
      HUDType="WS3SPN.AM_HUD"
@@ -1890,7 +1890,7 @@ defaultproperties
      GoalScore=5
      MaxLives=1
      TimeLimit=0
-     DeathMessageClass=Class'WS3SPN.Misc_DeathMessage'
+     DeathMessageClass=Class'UTComp_xDeathMessage'
      MutatorClass="UnrealGame.DMMutator"
      PlayerControllerClassName="WS3SPN.Misc_Player"
      GameReplicationInfoClass=Class'WS3SPN.TAM_GRI'

@@ -60,7 +60,7 @@ function TakeDamage(int Damage, Pawn InstigatedBy, Vector HitLocation, Vector Mo
 
     zeroVec = vect(0.0,0.0,0.0);
     //if(Level.TimeSeconds-SpawnTime < DeathMatch(Level.Game).SpawnProtectionTime)
-	if(IsSpawnProtectionEnabled())
+	if(IsSpawnProtectionEnabled() && instigatedBy != self)
     {
         Super.TakeDamage(0, instigatedBy, hitlocation, zeroVec, damageType);
         return;
