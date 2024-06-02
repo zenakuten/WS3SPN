@@ -4,5 +4,6 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 V4 
 - Fix camp count after warmpup changes
 - Fix self damage for spawn protected
+- Use UTComp death messages and config
 
 
