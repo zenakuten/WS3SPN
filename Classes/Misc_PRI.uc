@@ -390,6 +390,8 @@ simulated function ResetStats()
     BioCount = 0;
     CurrentDamage = 0;
     CurrentDamage2 = 0;
+    CampCount = 0;
+    ConsecutiveCampCount = 0;
 }
 
 defaultproperties
