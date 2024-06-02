@@ -211,9 +211,6 @@ var config float ForceDeadSpectateDelay;
 var config bool bEnableAntiAwards;
 var config bool bEnableExtraAwards;
 
-var config bool bEnableEmoticons;
-var Emoticons EmoteActor;
-var config int MaxSavedMoves;
 var config bool bEnablePasswordPause;
 var config string PasswordPausePassword;
 var config bool bSpecsKeepAdren;
@@ -306,18 +303,9 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bEnableAntiAwards = bEnableAntiAwards;
     Misc_BaseGRI(GameReplicationInfo).bEnableExtraAwards = bEnableExtraAwards;
 
-    Misc_BaseGRI(GameReplicationInfo).bEnableEmoticons = bEnableEmoticons;
-
-    Misc_BaseGRI(GameReplicationInfo).MaxSavedMoves = MaxSavedMoves;
     Misc_BaseGRI(GameReplicationInfo).bShowNumSpecs = bShowNumSpecs;
     Misc_BaseGRI(GameReplicationInfo).ChallengeModeScale = ChallengeModeScale;
     Misc_BaseGRI(GameReplicationInfo).bDisableNecroMessage = bDisableNecroMessage;
-
-
-    if(bEnableEmoticons)
-    {
-        EmoteActor = spawn(class'Emoticons', self);
-    } 
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -468,8 +456,6 @@ static function FillPlayInfo(PlayInfo PI)
 
     PI.AddSetting("3SPN", "bEnableAntiAwards", "Enable anti awards", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "bEnableExtraAwards", "Enable extra awards", 0, Weight++, "Check",,, False);
-    PI.AddSetting("3SPN", "bEnableEmoticons", "Enable emoticons", 0, Weight++, "Check",,, False);
-    PI.AddSetting("3SPN", "MaxSavedMoves", "Max saved player moves (warping fix)", 0, Weight++, "Text", "3;100:750");
     PI.AddSetting("3SPN", "bEnablePasswordPause", "Enable pausing the game w/password.  Use 'passpause <passwd>' console command", 0, Weight++, "Check",,, False);
     PI.AddSetting("3SPN", "PasswordPausePassword", "Password pause password", 0, Weight++, "Text", "10");
     PI.AddSetting("3SPN", "bSpecsKeepAdren", "Players keep adrenaline when returning from spectate", 0, Weight++, "Check",,,False);
@@ -568,8 +554,6 @@ static event string GetDescriptionText(string PropName)
       case "bEnableAntiAwards": return "Enable anti awards";
       case "bEnableExtraAwards": return "Enable extra awards";
 
-      case "bEnableEmoticons": return "Enable emoticons";
-      case "MaxSavedMoves": return "Max saved moves for player (warping fix)";
       case "bEnablePasswordPause": return "Enable pausing the game w/password.  Use 'pausepass <passwd>' console command";
       case "PasswordPausePassword": return "Password pause password";
       case "bSpecsKeepAdren": return "Players keep adrenaline when returning from spectate";
@@ -4159,8 +4143,6 @@ defaultproperties
      ForceDeadSpectateDelay=1.0
      bEnableAntiAwards=true
      bEnableExtraAwards=true
-     bEnableEmoticons=false
-     MaxSavedMoves=200
      bEnablePasswordPause=false
      PasswordPausePassword=""
      bSpecsKeepAdren=true

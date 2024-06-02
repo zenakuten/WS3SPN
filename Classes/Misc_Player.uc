@@ -2149,7 +2149,6 @@ defaultproperties
      TeamColorRed=(R=255,G=80,B=80,A=255)
      TeamColorBlue=(R=80,G=80,B=255,A=255)
      bTeamColorUseTeam=true
-     //bEnableEmoticons=true
      bShowSpectators=true
      bKillingSpreeCheers=true
 

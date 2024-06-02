@@ -32,7 +32,6 @@ struct MiscSettings
     var int ReceiveAwardType;
     var bool bConfigureNetSpeed;
     var int ConfigureNetSpeedValue;
-    var bool bEnableEmoticons;
     var bool bKillingSpreeCheers;
 };
 

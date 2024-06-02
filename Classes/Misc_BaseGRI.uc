@@ -69,8 +69,6 @@ var float ForceDeadSpectateDelay;
 var bool bEnableAntiAwards;
 var bool bEnableExtraAwards;
 
-var bool bEnableEmoticons;
-var int MaxSavedMoves;
 var bool bShowNumSpecs;
 var float ChallengeModeScale;
 
@@ -86,7 +84,7 @@ replication
         FootstepVolume, FootstepRadius,
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
-        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, bEnableEmoticons, MaxSavedMoves,
+        bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, 
         bShowNumSpecs, ChallengeModeScale;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
