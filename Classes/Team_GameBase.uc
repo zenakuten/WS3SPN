@@ -3715,17 +3715,11 @@ function AnnounceBest()
     {
         if(accuracy.Team.TeamIndex == 0)
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                acc = Text$"Most Accurate:"@Red$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
-            else
-                acc = Text$"Most Accurate:"@Red$accuracy.PlayerName$Text$";"@accuracy.AveragePercent$"%";
+            acc = Text$"Most Accurate:"@Red$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
         }
         else
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                acc = Text$"Most Accurate:"@Blue$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
-            else
-                acc = Text$"Most Accurate:"@Blue$accuracy.PlayerName$Text$";"@accuracy.AveragePercent$"%";
+            acc = Text$"Most Accurate:"@Blue$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
         }
     }
 
@@ -3733,17 +3727,11 @@ function AnnounceBest()
     {
         if(damage.Team.TeamIndex == 0)
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                dam = Text$"Most Damage:"@Red$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
-            else
-                dam = Text$"Most Damage:"@Red$damage.PlayerName$Text$";"@damage.EnemyDamage;
+            dam = Text$"Most Damage:"@Red$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
         }
         else
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                dam = Text$"Most Damage:"@Blue$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
-            else
-                dam = Text$"Most Damage:"@Blue$damage.PlayerName$Text$";"@damage.EnemyDamage;
+            dam = Text$"Most Damage:"@Blue$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
         }
     }
 
@@ -3751,17 +3739,11 @@ function AnnounceBest()
     {
         if(headshots.Team.TeamIndex == 0)
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                hs =  Text$"Most Headshots:"@Red$headshots.GetColoredName()$Text$";"@headshots.Headshots;
-            else
-                hs =  Text$"Most Headshots:"@Red$headshots.PlayerName$Text$";"@headshots.Headshots;
+            hs =  Text$"Most Headshots:"@Red$headshots.GetColoredName()$Text$";"@headshots.Headshots;
         }
         else
         {
-            if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-                hs =  Text$"Most Headshots:"@Blue$headshots.GetColoredName()$Text$";"@headshots.Headshots;
-            else
-                hs =  Text$"Most Headshots:"@Blue$headshots.PlayerName$Text$";"@headshots.Headshots;
+            hs =  Text$"Most Headshots:"@Blue$headshots.GetColoredName()$Text$";"@headshots.Headshots;
         }
     }
 

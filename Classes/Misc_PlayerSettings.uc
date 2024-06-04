@@ -1,5 +1,5 @@
 class Misc_PlayerSettings extends Object
-	config(PlayerSettings3SPNCW)
+	config(WS3SPN)
 	PerObjectConfig;
 	
 struct ColoredNamesSettings
@@ -7,8 +7,6 @@ struct ColoredNamesSettings
 	var bool bEnableColoredNamesInTalk;
 	var bool bEnableColoredNamesOnScoreboard;
 	var bool bEnableColoredNamesOnHUD;
-	var bool bAllowColoredMessages;
-	var bool bEnableColoredNamesOnEnemies;
 	var bool bEnableTeamColoredDeaths;
 	var bool bDrawColoredNamesInDeathMessages;
 	var Color ColorName[20];

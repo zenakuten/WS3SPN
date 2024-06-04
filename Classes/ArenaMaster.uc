@@ -1684,26 +1684,17 @@ function AnnounceBest()
 
     if(accuracy != None && accuracy.AveragePercent > 0.0)
 	{
-		if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-			acc = Text$"Most Accurate:"@Green$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
-		else
-			acc = Text$"Most Accurate:"@Green$accuracy.PlayerName$Text$";"@accuracy.AveragePercent$"%";
+        acc = Text$"Most Accurate:"@Green$accuracy.GetColoredName()$Text$";"@accuracy.AveragePercent$"%";
 	}
 
     if(damage != None && damage.EnemyDamage > 0)
 	{
-		if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-			dam = Text$"Most Damage:"@Green$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
-		else
-			dam = Text$"Most Damage:"@Green$damage.PlayerName$Text$";"@damage.EnemyDamage;
+        dam = Text$"Most Damage:"@Green$damage.GetColoredName()$Text$";"@damage.EnemyDamage;
 	}
 
     if(headshots != None && headshots.Headshots > 0)
 	{
-		if(class'Misc_Player'.default.bEnableColoredNamesInTalk)
-			hs =  Text$"Most Headshots:"@Green$headshots.GetColoredName()$Text$";"@headshots.Headshots;
-		else
-			hs =  Text$"Most Headshots:"@Green$headshots.PlayerName$Text$";"@headshots.Headshots;
+        hs =  Text$"Most Headshots:"@Green$headshots.GetColoredName()$Text$";"@headshots.Headshots;
 	}
 
 	for(C = Level.ControllerList; C != None; C = C.NextController)

@@ -102,20 +102,8 @@ var bool PlayerInitialized;
 var Color WhiteMessageColor;
 var Color WhiteColor;
 
-var config bool bAllowColoredMessages;
-var config bool bEnableColoredNamesInTalk;
-var config bool bEnableColoredNamesOnEnemies;
-
 var config bool bConfigureNetSpeed;
 var config int ConfigureNetSpeedValue;
-
-var config bool bTeamColorRockets;
-var config bool bTeamColorBio;
-var config bool bTeamColorFlak;
-var config bool bTeamColorShock;
-var config bool bTeamColorSniper;
-var config Color TeamColorRed, TeamColorBlue;
-var config bool bTeamColorUseTeam;
 
 var AudioSubsystem AudioSubsystem;
 var int LastNetSpeed;
@@ -1561,60 +1549,6 @@ simulated function Message( PlayerReplicationInfo PRI, coerce string Msg, name M
 		myHud.AddTextMessage(Msg,LocalMessageClass2,PRI);
 }
 
-event TeamMessage( PlayerReplicationInfo PRI, coerce string S, name Type  )
-{
-	local string c;
-    local int k;
-	
-	// Wait for player to be up to date with replication when joining a server, before stacking up messages
-	if ( Level.NetMode == NM_DedicatedServer || GameReplicationInfo == None )
-		return;
-
-	if( AllowTextToSpeech(PRI, Type) )
-		TextToSpeech( S, TextToSpeechVoiceVolume );
-	if ( Type == 'TeamSayQuiet' )
-		Type = 'TeamSay';
-
-    //replace the color codes
-    if(class'Misc_Player'.default.bAllowColoredMessages)
-    {
-       for(k=7; k>=0; k--)
-       {
-          S=Repl(S, "^"$k, class'Misc_Util'.static.ColorReplace(k));
-       }
-       S=Repl(S, "^r", class'Misc_Util'.static.RandomColor());
-    }
-    else
-    {
-       for(k=7; k>=0; k--)
-       {
-          S=Repl(S, "^"$k, "");
-       }
-       S=Repl(S, "^r", "");
-    }
-    if ( myHUD != None )
-	{   if (class'Misc_Player'.default.bEnableColoredNamesInTalk)
-    	   Message( PRI, c$S, Type );
-    	else 
-			myHud.Message( PRI, c$S, Type );
-    }
-	if ( (Player != None) && (Player.Console != None) )
-	{
-		if ( PRI!=None )
-		{
-			if ( PRI.Team!=None && GameReplicationInfo.bTeamGame)
-			{
-    			if (PRI.Team.TeamIndex==0)
-					c = chr(27)$chr(200)$chr(1)$chr(1);
-    			else if (PRI.Team.TeamIndex==1)
-        			c = chr(27)$chr(125)$chr(200)$chr(253);
-			}
-            S = PRI.PlayerName$": "$S;
-		}
-		Player.Console.Chat( c$s, 6.0, PRI );
-	}
-}
-
 simulated function ReloadDefaults()
 {
 	
@@ -1645,15 +1579,8 @@ simulated function ReloadDefaults()
 	Menu3SPNKey = class'Misc_Player'.default.Menu3SPNKey;
 	bDisableEndCeremonySound = class'Misc_Player'.default.bDisableEndCeremonySound;
 	
-	bAllowColoredMessages = class'Misc_Player'.default.bAllowColoredMessages;
-	bEnableColoredNamesInTalk = class'Misc_Player'.default.bEnableColoredNamesInTalk;
-	bEnableColoredNamesOnEnemies = class'Misc_Player'.default.bEnableColoredNamesOnEnemies;
-
     bConfigureNetSpeed = class'Misc_Player'.default.bConfigureNetSpeed;
     ConfigureNetSpeedValue = class'Misc_Player'.default.ConfigureNetSpeedValue;
-
-    TeamColorRed = class'Misc_Player'.default.TeamColorRed;
-    TeamColorBlue = class'Misc_Player'.default.TeamColorBlue;
 
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
     bShowSpectators = class'Misc_Player'.default.bShowSpectators;
@@ -2132,8 +2059,6 @@ defaultproperties
      EndCeremonyWeaponClasses(7)=Class'UTClassic.ClassicSniperRifle'
      WhiteMessageColor=(B=200,G=200,R=200,A=200)
      WhiteColor=(B=255,G=255,R=255,A=255)
-     bAllowColoredMessages=True
-     bEnableColoredNamesInTalk=True
      PlayerReplicationInfoClass=Class'WS3SPN.Misc_PRI'
      Adrenaline=0.100000
      AdrenalineMax=120.000000
@@ -2141,14 +2066,6 @@ defaultproperties
      bConfigureNetSpeed=false
      ConfigureNetSpeedValue=15000
 
-     bTeamColorRockets=false
-     bTeamColorBio=false
-     bTeamColorFlak=false
-     bTeamColorShock=false
-     bTeamColorSniper=false
-     TeamColorRed=(R=255,G=80,B=80,A=255)
-     TeamColorBlue=(R=80,G=80,B=255,A=255)
-     bTeamColorUseTeam=true
      bShowSpectators=true
      bKillingSpreeCheers=true
 

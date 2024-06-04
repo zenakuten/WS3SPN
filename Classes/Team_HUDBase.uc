@@ -1506,7 +1506,7 @@ simulated function DrawTimer(Canvas C)
 
 function DisplayEnemyName(Canvas C, PlayerReplicationInfo PRI)
 {
-    PlayerOwner.ReceiveLocalizedMessage(class'Message_PlayerName',0,PRI);
+    PlayerOwner.ReceiveLocalizedMessage(class'UTComp_PlayerNameMessage',0,PRI);
 }
 
 
