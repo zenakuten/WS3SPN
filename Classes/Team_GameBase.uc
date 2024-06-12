@@ -783,13 +783,6 @@ event InitGame(string Options, out string Error)
   //SaveConfig();
 }
 
-static function bool AllowMutator(string MutatorClassName)
-{
-    if(MutatorClassName == "" || InStr(MutatorClassName, "UTComp") != -1)
-        return false;
-
-    return Super.AllowMutator(MutatorClassName);
-}
 
 event PreLogin
 (
