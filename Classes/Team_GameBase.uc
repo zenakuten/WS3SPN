@@ -4093,7 +4093,7 @@ defaultproperties
      AllowForceAutoBalance=True
      ForceAutoBalanceCooldown=120
      ServerLinkStatus=SL_ENABLED
-     ScoreboardCommunityName="RU Community"
+     ScoreboardCommunityName="Community"
      ScoreboardRedTeamName="Red"
      ScoreboardBlueTeamName="Blue"
      ShowServerName=True
