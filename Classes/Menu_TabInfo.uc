@@ -25,7 +25,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     TextBox.MyScrollText.bNeverFocus=True;
     
     Content = JoinArray(InfoText, TextBox.Separator, True);
-    Content = Repl(Content, "[3SPNVersion]", class'Misc_BaseGRI'.default.Version);
+    Content = Repl(Content, "[3SPNVersion]", class'Misc_BaseGRI'.default.VersionName$" "$class'Misc_BaseGRI'.default.VersionNumber);
     Content = Repl(Content, "[Menu3SPNKey]", class'Interactions'.static.GetFriendlyName(class'Misc_Player'.default.Menu3SPNKey));
     TextBox.SetContent(Content, TextBox.Separator);
 }

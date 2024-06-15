@@ -37,7 +37,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     bAdmin = PlayerOwner().PlayerReplicationInfo!=None && (PlayerOwner().PlayerReplicationInfo.bAdmin || PlayerOwner().Level.NetMode == NM_Standalone);
 	
-	GUITitleBar(Controls[1]).Caption = "3SPN "@class'Misc_BaseGRI'.default.Version@"Configuration";	
+	GUITitleBar(Controls[1]).Caption = class'Misc_BaseGRI'.default.VersionName$" 3SPN "@class'Misc_BaseGRI'.default.VersionNumber@"Configuration";	
 		
     TabC = wsGUITabControl(Controls[2]);
 	InfoTab = Menu_TabInfo(TabC.AddStyledTab("WSButton", "Info", "WS3SPN.Menu_TabInfo",, "General Information", DefaultToInfoTab));
@@ -79,7 +79,7 @@ defaultproperties
      StyleName="WSButton"
      Begin Object Class=GUIImage Name=MenuBack
          Image=Texture'WS3SPN.GUI.Display98'
-         ImageColor=(B=10,G=10,R=10,A=64)
+         ImageColor=(B=10,G=10,R=10,A=255)
          ImageStyle=ISTY_Stretched
          ImageRenderStyle=MSTY_Normal
          WinTop=0.100000

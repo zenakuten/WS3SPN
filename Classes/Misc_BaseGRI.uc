@@ -1,6 +1,7 @@
 class Misc_BaseGRI extends GameReplicationInfo DependsOn(Team_GameBase);
 
-var string Version;
+var string VersionName;
+var string VersionNumber;
 var string Acronym;
 
 var int RoundTime;
@@ -301,5 +302,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     Version="WS3SPN V6"
+     VersionName="Wicked Sick"
+     VersionNumber="V6"
 }

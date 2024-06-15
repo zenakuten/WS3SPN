@@ -312,7 +312,7 @@ function GetServerDetails(out ServerResponseLine ServerState)
 {
     Super.GetServerDetails(ServerState);
 
-    AddServerDetail(ServerState, "3SPN Version", class'Misc_BaseGRI'.default.Version);
+    AddServerDetail(ServerState, "3SPN Version", class'Misc_BaseGRI'.default.VersionName$" "$class'Misc_BaseGRI'.default.VersionNumber);
 }
 
 function GetServerPlayers(out ServerResponseLine ServerState)

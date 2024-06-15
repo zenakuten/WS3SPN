@@ -172,7 +172,7 @@ function GetServerDetails(out ServerResponseLine ServerState)
 {
     Super.GetServerDetails(ServerState);
 
-    AddServerDetail(ServerState, "3SPN Version", class'TAM_GRI'.default.Version);
+    AddServerDetail(ServerState, "3SPN Version", class'TAM_GRI'.default.VersionName$" "$class'TAM_GRI'.default.VersionNumber);
     AddServerDetail(ServerState, "Challenge Mode", bChallengeMode);
     AddServerDetail(ServerState, "Pickup Mode", PickupModeDescription(PickupMode));
 }
