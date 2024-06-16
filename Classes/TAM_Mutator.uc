@@ -470,6 +470,7 @@ defaultproperties
      bAddToServerPackages=True
      FriendlyName="3SPN"
      Description="3SPN"
+     GroupName="UTComp"
      bNetTemporary=True
      bAlwaysRelevant=True
      RemoteRole=ROLE_SimulatedProxy

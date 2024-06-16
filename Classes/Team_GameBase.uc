@@ -4124,8 +4124,7 @@ defaultproperties
      GoalScore=10
      TimeLimit=0
      DeathMessageClass=Class'UTComp_xDeathMessage'
-     //MutatorClass="WS3SPN.TAM_Mutator"
-     MutatorClass="UnrealGame.DMMutator"
+     MutatorClass="WS3SPN.TAM_Mutator"
      PlayerControllerClassName="WS3SPN.Misc_Player"
      GameReplicationInfoClass=Class'WS3SPN.Misc_BaseGRI'
      GameName="BASE"
