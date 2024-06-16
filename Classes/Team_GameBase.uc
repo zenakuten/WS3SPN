@@ -1272,7 +1272,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 // overkill
             }
 			
-				if ((Damage > 200) && ((DamageType == class'DamTypeBioGlob') || (DamageType == class'DamType_BioGlob')))
+            if ((Damage > 200) && ((DamageType == class'DamTypeBioGlob') || (DamageType == class'DamType_BioGlob')))
             {
                // PRI.OverkillCount++;
                // SpecialEvent(PRI, "Overkill");
@@ -1382,7 +1382,14 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
         }
     }
 
-    return Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
+    Damage = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
+    if ((Damage > 85 && (injured.Health-Damage) <= 0) && ((DamageType == class'DamTypeFlakShell') || (DamageType == class'DamType_FlakShell')))
+    {
+        if(Misc_Player(instigatedBy.Controller) != None)
+            Misc_Player(instigatedBy.Controller).ReceiveLocalizedMessage(class'Message_BallsDeep',1);
+    }
+
+    return Damage;
 }
 
 
@@ -4124,7 +4131,8 @@ defaultproperties
      GoalScore=10
      TimeLimit=0
      DeathMessageClass=Class'UTComp_xDeathMessage'
-     MutatorClass="WS3SPN.TAM_Mutator"
+     //MutatorClass="WS3SPN.TAM_Mutator"
+     MutatorClass="UnrealGame.DMMutator"
      PlayerControllerClassName="WS3SPN.Misc_Player"
      GameReplicationInfoClass=Class'WS3SPN.Misc_BaseGRI'
      GameName="BASE"
