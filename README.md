@@ -3,6 +3,11 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 
 V6 
 - Remove restriction on allowing mutators with 'UTComp' in the name like WeaponConfig
+- Remove voice taunt ban feature, move similar to UTComp
+- UI updates, darken menu was too transparent
+- add Balls Deep message
+- Alter how inventory is given, don't use RequiredInventory
+- *breaking* inventory now includes ClassicSniperRifle, set Ammo to 0 to retain old behavior
 
 V5
 - Rename client config from `PlayerSettings3SPNCW.ini` to `WS3SPN.ini`
