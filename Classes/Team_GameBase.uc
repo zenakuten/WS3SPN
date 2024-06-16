@@ -1383,7 +1383,8 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
     }
 
     Damage = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
-    if ((Damage > 85 && (injured.Health-Damage) <= 0) && ((DamageType == class'DamTypeFlakShell') || (DamageType == class'DamType_FlakShell')))
+    RealDamage = PawnShieldAbsorb(xPawn(injured), DamageType, Damage);
+    if ((Damage > 80 && (injured.Health-RealDamage) <= 0) && ((DamageType == class'DamTypeFlakShell') || (DamageType == class'DamType_FlakShell')))
     {
         if(Misc_Player(instigatedBy.Controller) != None)
             Misc_Player(instigatedBy.Controller).ReceiveLocalizedMessage(class'Message_BallsDeep',1);
@@ -1392,6 +1393,78 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
     return Damage;
 }
 
+// used to calculate actual damage taken to know if this was killing hit
+function int PawnShieldAbsorb( xPawn p, class<DamageType> dt, int dam )
+{
+	local float Interval, damage, Remaining;
+    local int ShieldStrength, SmallShieldStrength;
+
+    if(!dt.default.bArmorStops)
+        return dam;
+
+    if(p == None)
+        return dam;
+
+	damage = dam;
+
+    ShieldStrength = p.ShieldStrength;
+    SmallShieldStrength = p.SmallShieldStrength;
+	
+    if ( ShieldStrength == 0 )
+    {
+        return damage;
+    }
+	//SetOverlayMaterial( ShieldHitMat, ShieldHitMatTime, false );
+	//PlaySound(sound'WeaponSounds.ArmorHit', SLOT_Pain,2*TransientSoundVolume,,400);
+    if ( ShieldStrength > 100 )
+    {
+		Interval = ShieldStrength - 100;
+		if ( Interval >= damage )
+		{
+			ShieldStrength -= damage;
+			return 0;
+		}
+		else
+		{
+			ShieldStrength = 100;
+			damage -= Interval;
+		}
+	}
+    if ( ShieldStrength > SmallShieldStrength )
+    {
+		Interval = ShieldStrength - SmallShieldStrength;
+		if ( Interval >= 0.75 * damage )
+		{
+			ShieldStrength -= 0.75 * damage;
+			if ( ShieldStrength < SmallShieldStrength )
+				SmallShieldStrength = ShieldStrength;
+			return (0.25 * Damage);
+		}
+		else
+		{
+			ShieldStrength = SmallShieldStrength;
+			damage -= Interval;
+			Remaining = 0.33 * Interval;
+			if ( Remaining <= damage )
+				return damage;
+			damage -= Remaining;
+		}
+	}
+	if ( ShieldStrength >= 0.5 * damage )
+	{
+		ShieldStrength -= 0.5 * damage;
+		SmallShieldStrength = ShieldStrength;
+		return Remaining + (0.5 * damage);
+	}
+	else
+	{
+		damage -= ShieldStrength;
+		ShieldStrength = 0;
+		SmallShieldStrength = 0;
+	}
+
+	return damage + Remaining;
+}
 
 function int ReduceDamage (int Damage, Pawn injured, Pawn instigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType)
 {
