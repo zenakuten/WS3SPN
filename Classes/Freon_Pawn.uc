@@ -569,4 +569,6 @@ defaultproperties
      ImpactSounds(3)=Sound'PlayerSounds.BFootsteps.BFootstepSnow4'
      ImpactSounds(4)=Sound'PlayerSounds.BFootsteps.BFootstepSnow5'
      ImpactSounds(5)=Sound'PlayerSounds.BFootsteps.BFootstepSnow6'
+     RequiredEquipment(0)="XWeapons.ShieldGun"
+     RequiredEquipment(1)="XWeapons.AssaultRifle"     
 }

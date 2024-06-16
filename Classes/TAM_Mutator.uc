@@ -108,24 +108,24 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
         if(WeaponInfo[i].WeaponName ~= "")
             continue;
 
-        if(WeaponInfo[i].WeaponName ~= "xWeapons.AssaultRifle")
+        if(WeaponInfo[i].WeaponName ~= "XWeapons.AssaultRifle")
         {
             WeaponInfo[i].Ammo[0] = AssaultAmmo;
             WeaponInfo[i].Ammo[1] = AssaultGrenades;
         }
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.BioRifle")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.BioRifle")
 				WeaponInfo[i].Ammo[0] = BioAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.ShockRifle")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.ShockRifle")
             WeaponInfo[i].Ammo[0] = ShockAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.LinkGun")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.LinkGun")
             WeaponInfo[i].Ammo[0] = LinkAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.MiniGun")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.MiniGun")
             WeaponInfo[i].Ammo[0] = MiniAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.FlakCannon")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.FlakCannon")
             WeaponInfo[i].Ammo[0] = FlakAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.RocketLauncher")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.RocketLauncher")
             WeaponInfo[i].Ammo[0] = RocketAmmo;
-        else if(WeaponInfo[i].WeaponName ~= "xWeapons.SniperRifle")
+        else if(WeaponInfo[i].WeaponName ~= "XWeapons.SniperRifle")
             WeaponInfo[i].Ammo[0] = LightningAmmo;
        else if(WeaponInfo[i].WeaponName ~= "UTClassic.ClassicSniperRifle")
             WeaponInfo[i].Ammo[0] = ClassicSniperAmmo;			
@@ -172,8 +172,9 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 			}
 		}
 		
-		class'Freon_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
-		class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
+        //Use GiveWeapons() instead of relying on RequiredEquipment hack
+		//class'Freon_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
+		//class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
     }
 	
 	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
@@ -322,7 +323,7 @@ function string GetInventoryClassOverride(string InventoryClassName)
 {
     local int x;
 
-    if(InventoryClassName ~= "xWeapons.ShieldGun")
+    if(InventoryClassName ~= "XWeapons.ShieldGun")
         return "WS3SPN.NewNet_ShieldGun";
 
     if(bEnhancedNetCodeEnabledAtStartOfMap)
@@ -446,16 +447,16 @@ function WarmupEnded()
 
 defaultproperties
 {
-     WeaponInfo(0)=(WeaponName="xWeapons.ShockRifle",Ammo[0]=20,MaxAmmo[0]=1.500000)
-     WeaponInfo(1)=(WeaponName="xWeapons.LinkGun",Ammo[0]=100,MaxAmmo[0]=1.500000)
-     WeaponInfo(2)=(WeaponName="xWeapons.MiniGun",Ammo[0]=75,MaxAmmo[0]=1.500000)
-     WeaponInfo(3)=(WeaponName="xWeapons.FlakCannon",Ammo[0]=12,MaxAmmo[0]=1.500000)
-     WeaponInfo(4)=(WeaponName="xWeapons.RocketLauncher",Ammo[0]=12,MaxAmmo[0]=1.500000)
-     WeaponInfo(5)=(WeaponName="xWeapons.SniperRifle",Ammo[0]=10,MaxAmmo[0]=1.500000)
-     WeaponInfo(6)=(WeaponName="xWeapons.BioRifle",Ammo[0]=20,MaxAmmo[0]=1.500000)
-     WeaponInfo(7)=(WeaponName="xWeapons.AssaultRifle",Ammo[0]=999,Ammo[1]=5,MaxAmmo[0]=1.500000)
-     WeaponInfo(8)=(WeaponName="xWeapons.ShieldGun",Ammo[1]=100,MaxAmmo[0]=1.000000,MaxAmmo[1]=1.000000)
-     WeaponInfo(9)=(WeaponName="UTClassic.ClassicSniperRifle",Ammo[0]=10,MaxAmmo[0]=1.500000)
+     WeaponInfo(0)=(WeaponName="XWeapons.ShockRifle",Ammo[0]=20,MaxAmmo[0]=1.500000)
+     WeaponInfo(1)=(WeaponName="XWeapons.LinkGun",Ammo[0]=100,MaxAmmo[0]=1.500000)
+     WeaponInfo(2)=(WeaponName="XWeapons.MiniGun",Ammo[0]=75,MaxAmmo[0]=1.500000)
+     WeaponInfo(3)=(WeaponName="XWeapons.FlakCannon",Ammo[0]=12,MaxAmmo[0]=1.500000)
+     WeaponInfo(4)=(WeaponName="XWeapons.RocketLauncher",Ammo[0]=12,MaxAmmo[0]=1.500000)
+     WeaponInfo(5)=(WeaponName="XWeapons.SniperRifle",Ammo[0]=10,MaxAmmo[0]=1.500000)
+     WeaponInfo(6)=(WeaponName="XWeapons.BioRifle",Ammo[0]=20,MaxAmmo[0]=1.500000)
+     WeaponInfo(7)=(WeaponName="XWeapons.AssaultRifle",Ammo[0]=999,Ammo[1]=5,MaxAmmo[0]=1.500000)
+     WeaponInfo(8)=(WeaponName="XWeapons.ShieldGun",Ammo[1]=100,MaxAmmo[0]=1.000000,MaxAmmo[1]=1.000000)
+     WeaponInfo(9)=(WeaponName="UTClassic.ClassicSniperRifle",Ammo[0]=0,MaxAmmo[0]=1.500000)
      BaseWeaponClasses(0)=Class'XWeapons.ShockRifle'
      BaseWeaponClasses(1)=Class'XWeapons.LinkGun'
      BaseWeaponClasses(2)=Class'XWeapons.Minigun'

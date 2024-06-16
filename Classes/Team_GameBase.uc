@@ -1985,6 +1985,7 @@ function AddGameSpecificInventory(Pawn P)
 function AddDefaultInventory(Pawn P)
 {
     Super.AddDefaultInventory(P);
+    MutTAM.GiveWeapons(P);
     MutTAM.GiveAmmo(P);
 }
 
