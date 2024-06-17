@@ -1383,11 +1383,15 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
     }
 
     Damage = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
-    RealDamage = PawnShieldAbsorb(xPawn(injured), DamageType, Damage);
-    if ((Damage > 80 && (injured.Health-RealDamage) <= 0) && ((DamageType == class'DamTypeFlakShell') || (DamageType == class'DamType_FlakShell')))
+
+    if(injured != None && instigatedBy != none)
     {
-        if(Misc_Player(instigatedBy.Controller) != None)
-            Misc_Player(instigatedBy.Controller).ReceiveLocalizedMessage(class'Message_BallsDeep',1);
+        RealDamage = PawnShieldAbsorb(xPawn(injured), DamageType, Damage);
+        if ((Damage > 80 && (injured.Health-RealDamage) <= 0) && ((DamageType == class'DamTypeFlakShell') || (DamageType == class'DamType_FlakShell')))
+        {
+            if(Misc_Player(instigatedBy.Controller) != None)
+                Misc_Player(instigatedBy.Controller).ReceiveLocalizedMessage(class'Message_BallsDeep',1);
+        }
     }
 
     return Damage;
@@ -2065,7 +2069,6 @@ function AddGameSpecificInventory(Pawn P)
 function AddDefaultInventory(Pawn P)
 {
     Super.AddDefaultInventory(P);
-    MutTAM.GiveWeapons(P);
     MutTAM.GiveAmmo(P);
 }
 

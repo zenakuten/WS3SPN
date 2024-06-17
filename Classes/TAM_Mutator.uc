@@ -172,9 +172,8 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 			}
 		}
 		
-        //Use GiveWeapons() instead of relying on RequiredEquipment hack
-		//class'Freon_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
-		//class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
+		class'Freon_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
+		class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
     }
 	
 	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
