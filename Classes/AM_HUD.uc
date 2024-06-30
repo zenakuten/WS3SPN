@@ -105,7 +105,7 @@ simulated function UpdateRankAndSpread(Canvas C)
         C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
 
         // draw name
-		if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+        if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
 			name = PRI.GetColoredName();
 		else
 			name = PRI.PlayerName;

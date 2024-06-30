@@ -6,7 +6,6 @@ struct ColoredNamesSettings
 {
 	var bool bEnableColoredNamesInTalk;
 	var bool bEnableColoredNamesOnScoreboard;
-	var bool bEnableColoredNamesOnHUD;
 	var bool bEnableTeamColoredDeaths;
 	var bool bDrawColoredNamesInDeathMessages;
 	var Color ColorName[20];

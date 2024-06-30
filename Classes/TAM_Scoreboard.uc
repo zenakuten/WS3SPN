@@ -61,7 +61,6 @@ var int	  MaxTeamPlayers;
 var int	  MaxSpectators;
 
 var config bool bEnableColoredNamesOnScoreboard;
-var config bool bEnableColoredNamesOnHUD;
 
 simulated function SetCustomBarColor(out Color C, PlayerReplicationInfo PRI, bool bOwner);
 simulated function SetCustomLocationColor(out Color C, PlayerReplicationInfo PRI, bool bOwner);
@@ -1273,5 +1272,4 @@ defaultproperties
      MaxTeamSize=12
      MaxSpectators=19
      bEnableColoredNamesOnScoreboard=True
-     bEnableColoredNamesOnHUD=True
 }

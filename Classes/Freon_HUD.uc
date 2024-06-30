@@ -103,7 +103,7 @@ function DrawCustomBeacon(Canvas C, Pawn P, float ScreenLocX, float ScreenLocY)
     {
         C.Font = C.SmallFont;
 
-        if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+        if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
             name = Misc_PRI(P.PlayerReplicationInfo).GetColoredName();
         else
             name = P.PlayerReplicationInfo.PlayerName;
@@ -280,7 +280,7 @@ simulated function DrawPlayers(Canvas C)
             C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
 
             // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)            
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -323,8 +323,8 @@ simulated function DrawPlayers(Canvas C)
             C.DrawColor = default.WhiteColor;
             C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
 
-            // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            // draw name            
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -434,7 +434,7 @@ simulated function DrawPlayersExtended(Canvas C)
             C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
 
             // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -518,7 +518,7 @@ simulated function DrawPlayersExtended(Canvas C)
             C.DrawTile(TeamTex, C.ClipX * 0.0195 * Scale, C.ClipY * 0.026 * Scale, 119, 258, 54, 55);
 
             // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -649,7 +649,7 @@ simulated function DrawPlayersZAxis(Canvas C)
             //
             // draw player name
             //
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -752,7 +752,7 @@ simulated function DrawPlayersZAxis(Canvas C)
             C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
 
             // draw name
-            if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+            if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
                 name = PRI.GetColoredName();
             else
                 name = PRI.PlayerName;
@@ -869,7 +869,7 @@ simulated function DrawPlayersExtendedZAxisTeam(Canvas C, int posx, int posy, in
         //
         // draw player name
         //
-        if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+        if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
             name = PRI.GetColoredName();
         else
             name = PRI.PlayerName;
@@ -1035,7 +1035,7 @@ simulated function DrawPlayersExtendedZAxisEnemy(Canvas C, int posx, int posy, i
         C.DrawTile(TeamTex, width, height, 168, 211, 166, 44);
 
         // draw name
-        if(class'TAM_ScoreBoard'.default.bEnableColoredNamesOnHUD)
+        if(Misc_Player(PlayerOwner).Settings.bEnableColoredNamesOnHUD)
             name = PRI.GetColoredName();
         else
             name = PRI.PlayerName;
