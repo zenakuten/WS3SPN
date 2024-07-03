@@ -6,8 +6,7 @@ V6
 - Remove voice taunt ban feature, move similar to UTComp
 - UI updates, darken menu was too transparent
 - add Balls Deep message
-- Alter how inventory is given, don't use RequiredInventory
-- *breaking* inventory now includes ClassicSniperRifle, set Ammo to 0 to retain old behavior
+- add possible fix for no weapon issue
 
 V5
 - Rename client config from `PlayerSettings3SPNCW.ini` to `WS3SPN.ini`
