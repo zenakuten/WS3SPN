@@ -224,6 +224,8 @@ function GiveWeaponClass(class<Weapon> WeaponClass)
         NewWeapon.GiveTo(self);
 }
 
+/*
+snarf - this is 100% copy/paste from xpawn and pawn, not needed
 function ServerChangedWeapon(Weapon OldWeapon, Weapon NewWeapon)
 {
 	local float InvisTime;
@@ -277,6 +279,7 @@ function ServerChangedWeapon(Weapon OldWeapon, Weapon NewWeapon)
 			Weapon.StopBerserk();
 	}
 }
+*/
 
 // changed to save adren
 function RemovePowerups()
@@ -552,4 +555,12 @@ defaultproperties
      RagGravScale=1.000001
      RequiredEquipment(0)="XWeapons.ShieldGun"
      RequiredEquipment(1)="XWeapons.AssaultRifle"
+     RequiredEquipment(2)="XWeapons.BioRifle"
+     RequiredEquipment(3)="XWeapons.ShockRifle"
+     RequiredEquipment(4)="XWeapons.LinkGun"
+     RequiredEquipment(5)="XWeapons.MiniGun"
+     RequiredEquipment(6)="XWeapons.FlakCannon"
+     RequiredEquipment(7)="XWeapons.RocketLauncher"
+     RequiredEquipment(8)="XWeapons.SniperRifle"
+
 }
