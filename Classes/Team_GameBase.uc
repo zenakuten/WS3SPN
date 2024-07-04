@@ -2063,6 +2063,9 @@ function AddGameSpecificInventory(Pawn P)
     if(p == None || p.Controller == None || p.Controller.PlayerReplicationInfo == None)
         return;
 
+    MutTAM.GiveWeapons(P);
+    MutTAM.GiveAmmo(P);
+
     SetupPlayer(P);
 }
 
@@ -2078,12 +2081,6 @@ function AcceptInventory(pawn PlayerPawn)
     PlayerPawn.SelectedItem = None;
     AddDefaultInventory( PlayerPawn );
     */
-}
-
-function AddDefaultInventory(Pawn P)
-{
-    Super.AddDefaultInventory(P);
-    MutTAM.GiveAmmo(P);
 }
 
 function SetupPlayer(Pawn P)

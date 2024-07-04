@@ -569,13 +569,4 @@ defaultproperties
      ImpactSounds(3)=Sound'PlayerSounds.BFootsteps.BFootstepSnow4'
      ImpactSounds(4)=Sound'PlayerSounds.BFootsteps.BFootstepSnow5'
      ImpactSounds(5)=Sound'PlayerSounds.BFootsteps.BFootstepSnow6'
-     RequiredEquipment(0)="XWeapons.ShieldGun"
-     RequiredEquipment(1)="XWeapons.AssaultRifle"
-     RequiredEquipment(2)="XWeapons.BioRifle"
-     RequiredEquipment(3)="XWeapons.ShockRifle"
-     RequiredEquipment(4)="XWeapons.LinkGun"
-     RequiredEquipment(5)="XWeapons.MiniGun"
-     RequiredEquipment(6)="XWeapons.FlakCannon"
-     RequiredEquipment(7)="XWeapons.RocketLauncher"
-     RequiredEquipment(8)="XWeapons.SniperRifle"     
 }

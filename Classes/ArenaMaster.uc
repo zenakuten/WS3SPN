@@ -1016,13 +1016,24 @@ function AddGameSpecificInventory(Pawn P)
     if(p == None || p.Controller == None || p.Controller.PlayerReplicationInfo == None)
         return;
 
+    MutTAM.GiveWeapons(P);
+    MutTAM.GiveAmmo(P);
+
     SetupPlayer(P);
 }
 
-function AddDefaultInventory(Pawn P)
+function AcceptInventory(pawn PlayerPawn)
 {
-	Super.AddDefaultInventory(P);
-    MutTAM.GiveAmmo(P);
+    // snarf attempt to fix no weapon issue
+    // default behavior from class Deathmatch below
+    /* 
+    while ( PlayerPawn.Inventory != None )
+        PlayerPawn.Inventory.Destroy();
+
+    PlayerPawn.Weapon = None;
+    PlayerPawn.SelectedItem = None;
+    AddDefaultInventory( PlayerPawn );
+    */
 }
 
 function SetupPlayer(Pawn P)

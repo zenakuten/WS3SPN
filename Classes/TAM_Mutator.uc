@@ -40,6 +40,7 @@ var WeaponData  WeaponDefaults[10];
 /* weapons */
 	
 var class<Weapon> BaseWeaponClasses[10];
+var class<Weapon> NewNetWeaponClasses[10];
 
 	
 function PreBeginPlay()
@@ -171,10 +172,6 @@ function InitWeapons(int AssaultAmmo,int AssaultGrenades,int BioAmmo,int ShockAm
 				WeaponClass.default.FireModeClass[1].default.AmmoClass.default.MaxAmmo = Min(999, WeaponInfo[i].Ammo[1] * WeaponInfo[i].MaxAmmo[0]);
 			}
 		}
-		
-        //hard coded in each class now
-		//class'Freon_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
-		//class'Misc_Pawn'.default.RequiredEquipment[i + 1] = WeaponInfo[i].WeaponName;
     }
 	
 	class'ShieldFire'.Default.DamageType = Class'DamType_ShieldImpact';
@@ -393,10 +390,20 @@ function GiveWeapons(Pawn P)
 		
     for(i = 0; i < ArrayCount(WeaponInfo); i++)
     {
-        if(BaseWeaponClasses[i]==None || (WeaponInfo[i].Ammo[0]<=0 && WeaponInfo[i].Ammo[1]<=0))
-            continue;
-			
-		xP.GiveWeaponClass(BaseWeaponClasses[i]);
+        if(bEnhancedNetCodeEnabledAtStartOfMap)
+        {
+            if(NewNetWeaponClasses[i]==None || (WeaponInfo[i].Ammo[0]<=0 && WeaponInfo[i].Ammo[1]<=0))
+                continue;
+                
+            xP.GiveWeaponClass(NewNetWeaponClasses[i]);
+        }
+        else
+        {
+            if(BaseWeaponClasses[i]==None || (WeaponInfo[i].Ammo[0]<=0 && WeaponInfo[i].Ammo[1]<=0))
+                continue;
+                
+            xP.GiveWeaponClass(BaseWeaponClasses[i]);
+        }
     }
 }
 
@@ -457,16 +464,26 @@ defaultproperties
      WeaponInfo(7)=(WeaponName="XWeapons.AssaultRifle",Ammo[0]=999,Ammo[1]=5,MaxAmmo[0]=1.500000)
      WeaponInfo(8)=(WeaponName="XWeapons.ShieldGun",Ammo[1]=100,MaxAmmo[0]=1.000000,MaxAmmo[1]=1.000000)
      WeaponInfo(9)=(WeaponName="UTClassic.ClassicSniperRifle",Ammo[0]=0,MaxAmmo[0]=1.500000)
-     BaseWeaponClasses(0)=Class'XWeapons.ShockRifle'
-     BaseWeaponClasses(1)=Class'XWeapons.LinkGun'
-     BaseWeaponClasses(2)=Class'XWeapons.Minigun'
-     BaseWeaponClasses(3)=Class'XWeapons.FlakCannon'
-     BaseWeaponClasses(4)=Class'XWeapons.RocketLauncher'
-     BaseWeaponClasses(5)=Class'XWeapons.SniperRifle'
-     BaseWeaponClasses(6)=Class'XWeapons.BioRifle'
-     BaseWeaponClasses(7)=Class'XWeapons.AssaultRifle'
-     BaseWeaponClasses(8)=Class'XWeapons.ShieldGun'
-     BaseWeaponClasses(9)=Class'UTClassic.ClassicSniperRifle'
+     BaseWeaponClasses(0)=Class'UTComp_ShockRifle'
+     BaseWeaponClasses(1)=Class'UTComp_LinkGun'
+     BaseWeaponClasses(2)=Class'UTComp_Minigun'
+     BaseWeaponClasses(3)=Class'UTComp_FlakCannon'
+     BaseWeaponClasses(4)=Class'UTComp_RocketLauncher'
+     BaseWeaponClasses(5)=Class'UTComp_SniperRifle'
+     BaseWeaponClasses(6)=Class'UTComp_BioRifle'
+     BaseWeaponClasses(7)=Class'UTComp_AssaultRifle'
+     BaseWeaponClasses(8)=Class'UTComp_ShieldGun'
+     BaseWeaponClasses(9)=Class'UTComp_ClassicSniperRifle'
+     NewNetWeaponClasses(0)=Class'NewNet_ShockRifle'
+     NewNetWeaponClasses(1)=Class'NewNet_LinkGun'
+     NewNetWeaponClasses(2)=Class'NewNet_Minigun'
+     NewNetWeaponClasses(3)=Class'NewNet_FlakCannon'
+     NewNetWeaponClasses(4)=Class'NewNet_RocketLauncher'
+     NewNetWeaponClasses(5)=Class'NewNet_SniperRifle'
+     NewNetWeaponClasses(6)=Class'NewNet_BioRifle'
+     NewNetWeaponClasses(7)=Class'NewNet_AssaultRifle'
+     NewNetWeaponClasses(8)=Class'NewNet_ShieldGun'
+     NewNetWeaponClasses(9)=Class'NewNet_ClassicSniperRifle'
      bAddToServerPackages=True
      FriendlyName="3SPN"
      Description="3SPN"
