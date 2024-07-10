@@ -2004,6 +2004,7 @@ simulated function bool IsGroupedDamageType(class<DamageType> DamageType)
         || DamageType == class'DamType_FlakShell'
         || DamageType == class'DamType_Rocket'
         || DamageType == class'DamType_RocketHoming'
+        || DamageType == class'DamType_SniperShot'
         || super.IsGroupedDamageType(DamageType);
 }
 

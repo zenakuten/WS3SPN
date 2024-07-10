@@ -1022,20 +1022,6 @@ function AddGameSpecificInventory(Pawn P)
     SetupPlayer(P);
 }
 
-function AcceptInventory(pawn PlayerPawn)
-{
-    // snarf attempt to fix no weapon issue
-    // default behavior from class Deathmatch below
-    /* 
-    while ( PlayerPawn.Inventory != None )
-        PlayerPawn.Inventory.Destroy();
-
-    PlayerPawn.Weapon = None;
-    PlayerPawn.SelectedItem = None;
-    AddDefaultInventory( PlayerPawn );
-    */
-}
-
 function SetupPlayer(Pawn P)
 {
     local byte won;

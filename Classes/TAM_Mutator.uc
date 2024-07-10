@@ -405,6 +405,9 @@ function GiveWeapons(Pawn P)
             xP.GiveWeaponClass(BaseWeaponClasses[i]);
         }
     }
+
+    xp.NetUpdateTime = Level.TimeSeconds - 1;
+    xp.Inventory.NetUpdateTime = Level.TimeSeconds - 1;
 }
 
 function GiveAmmo(Pawn P)
