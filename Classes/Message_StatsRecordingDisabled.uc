@@ -2,6 +2,7 @@ class Message_StatsRecordingDisabled extends LocalMessage;
 
 var localized string disabled;
 var localized string recor;
+var localized string warmup;
 static function string GetString(
 	optional int SwitchNum,
 	optional PlayerReplicationInfo RelatedPRI_1, 
@@ -9,7 +10,12 @@ static function string GetString(
 	optional Object OptionalObject 
 	)
 {
-	return "Stats are disabled cause Player < 6";
+    switch(SwitchNum)
+    {
+        case 0: return default.disabled;
+        case 1: return default.recor;
+        case 2: return default.Warmup;
+    }
 }
 
 static simulated function ClientReceive( 
@@ -30,6 +36,7 @@ defaultproperties
 {
      Disabled="ÿ Stats are disabled"
      recor="ÿ Stats are recorded"
+     Warmup="ÿ Stats are disabled in warmup"
      bIsUnique=True
      bFadeMessage=True
      StackMode=SM_Down

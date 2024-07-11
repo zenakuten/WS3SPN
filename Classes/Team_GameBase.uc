@@ -1669,7 +1669,8 @@ function float RatePlayerStart(NavigationPoint N, byte Team, Controller Player)
 function StartMatch()
 {	
     local Controller C;
-    local int CountPlayers;
+    local int CountPlayers, SwitchNum;
+    local bool bInWarmup;
 
     if(bWarmupEnded)
     {
@@ -1695,16 +1696,24 @@ function StartMatch()
             goto J0x32;
         }
         // End:0xAD
-        if(CountPlayers < MinPlayersForStatsRecording || InWarmup())
+        bInWarmup = InWarmup();
+        if(CountPlayers < MinPlayersForStatsRecording || bInWarmup)
         {
-            BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled');
+            if(bInWarmup)
+                SwitchNum = 2;
+            else
+                SwitchNum = 0;
+
             NoStatsForThisMatch = true; 
             Misc_BaseGRI(GameReplicationInfo).stat = false;
 			
-        } else if (CountPlayers >= MinPlayersForStatsRecording && !InWarmup()) 
+        } else if (CountPlayers >= MinPlayersForStatsRecording && !bInWarmup)
         {
+            NoStatsForThisMatch = false; 
             Misc_BaseGRI(GameReplicationInfo).stat = true; 
+            SwitchNum = 1;
         }
+        BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled', SwitchNum);
     }
 
     if(InWarmup())
@@ -2049,7 +2058,7 @@ function bool AddBot(optional string botName)
         !AllowPersistentStatsWithBots          && 
         !DisablePersistentStatsForMatch)
     {
-        BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled');
+        BroadcastLocalizedMessage(class'Message_StatsRecordingDisabled', 0);
         DisablePersistentStatsForMatch = true;
     }
 
@@ -4025,7 +4034,7 @@ function RegisterMatchStats()
     {
       if ( NoStatsForThisMatch )
       {
-        BroadcastLocalizedMessage(Class'Message_StatsRecordingDisabled');
+        BroadcastLocalizedMessage(Class'Message_StatsRecordingDisabled', 0);
       } else {
         if ( (Teams[0].Score != 0) || (Teams[1].Score != 0) )
         {

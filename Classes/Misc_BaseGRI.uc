@@ -112,12 +112,6 @@ function UpdateServerRecorder ()
 {
   local string NewText;
   local string Text;
-//  local bool teste;
- // local bool stat;
-	//stat = TGB.NoStatsForThisMatch;
- // if (teste)
- // {Text = (class'Message_StatsRecordingDisabled'.Default.recor);}
- // else if (!teste) { Text =(class'Message_StatsRecordingDisabled'.Default.disabled);}
   
   if ( Class'Misc_PlayerDataManager_Local'.Default.TopScore > 0 )
   {
@@ -131,14 +125,13 @@ function UpdateServerRecorder ()
   }
 }
 
-simulated function string onoff () {
+simulated function string onoff() {
   local string Text;
 
-
   if (stat)
- {Text = (class'Message_StatsRecordingDisabled'.Default.recor);}
-  else { Text =(class'Message_StatsRecordingDisabled'.Default.disabled);}
- // statsenableddisabled = Text;
+    Text = class'Message_StatsRecordingDisabled'.Default.recor;
+  else 
+    Text =class'Message_StatsRecordingDisabled'.Default.disabled;
  
   return Text;
 }
