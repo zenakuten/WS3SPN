@@ -383,6 +383,7 @@ function GiveWeapons(Pawn P)
 {
     local int i;
 	local Misc_Pawn xP;
+    local Inventory Inv;
 
 	xP = Misc_Pawn(P);
 	if(xP==None)
@@ -406,8 +407,19 @@ function GiveWeapons(Pawn P)
         }
     }
 
+    // snarf - weapon bug...
+    // force pawn and all inventory to replicate
+    // also force instigator onto each weapon
     xp.NetUpdateTime = Level.TimeSeconds - 1;
-    xp.Inventory.NetUpdateTime = Level.TimeSeconds - 1;
+    Inv = xp.Inventory;
+    i = 0;
+    while(Inv != None && i < 500)
+    {
+        Inv.Instigator = xp;
+        Inv.NetUpdateTime = Level.TimeSeconds - 1;
+        Inv = Inv.Inventory;
+        i = i + 1;
+    }
 }
 
 function GiveAmmo(Pawn P)
