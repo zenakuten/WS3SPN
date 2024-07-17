@@ -279,10 +279,12 @@ simulated function UpdateVsStats( string OpponentName, bool bWin )
 {
     local int i;
     local VsStats NewVsStats;
+    local string ID;
 
+    ID=class'Misc_Util'.static.StripColor(OpponentName);
     for ( i = 0; i < VsStatsList.Length; i++ )
     {
-        if ( VsStatsList[i].OpponentName == OpponentName ) {
+        if ( class'Misc_Util'.static.StripColor(VsStatsList[i].OpponentName) == ID ) {
 
             if ( bWin ) {
                 VsStatsList[i].Wins++;
