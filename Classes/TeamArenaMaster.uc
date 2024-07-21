@@ -10,7 +10,6 @@ var config int         PickupMode;
 var string             PickupModeText;
 var Misc_PickupSpawner PickupSpawner;
 
-var config bool     bPureRFF;
 /* general and misc */
 
 function InitGameReplicationInfo()
@@ -42,7 +41,6 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bChallengeMode", "Challenge Mode", 0, 110, "Check");
     PI.AddSetting("3SPN", "PickupMode", "Spawn Pickup Mode", 0, 111, "Select", default.PickupModeText);
     PI.AddSetting("3SPN", "bDisableTeamCombos", "No Team Combos", 0, 112, "Check");
-    PI.AddSetting("3SPN", "bPureRFF", "2.57 style RFF", 0, 113, "Check");
 }
 
 static event string GetDescriptionText(string PropName)
@@ -52,7 +50,6 @@ static event string GetDescriptionText(string PropName)
         case "bChallengeMode":      return "Round winners take a health/armor penalty.";
         case "bDisableTeamCombos":  return "Turns off team combos. Only the user gets the combo.";
         case "PickupMode":          return "Pickup mode to spawn three pickups which give random effect when picked up: Health +10/20, Shield +10/20 or Adren +10";
-        case "bPureRFF":            return "All teammate damage is reflected back.";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -90,9 +87,6 @@ function ParseOptions(string Options)
     if(InOpt != "")
         PickupMode = ParsePickupMode(InOpt);
 
-    InOpt = ParseOption(Options, "PureRFF");
-    if(InOpt != "")
-        bPureRFF = bool(InOpt);
 }
 
 function int ParsePickupMode(coerce string Opt)
@@ -177,14 +171,6 @@ event InitGame(string Options, out string Error)
         AdrenalinePerDamage -= 0.25;
     if(!bDisableTeamCombos)
         AdrenalinePerDamage += 0.25;
-}
-
-event PostLogin(PlayerController NewPlayer)
-{
-    Super.PostLogin(NewPlayer);
-
-    if(bPureRFF && Misc_PRI(NewPlayer.PlayerReplicationInfo) != None)
-        Misc_PRI(NewPlayer.PlayerReplicationInfo).ReverseFF = 1.0;
 }
 
 function RestartPlayer(Controller C)

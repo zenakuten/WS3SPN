@@ -217,7 +217,8 @@ var config bool bSpecsKeepAdren;
 var config bool bShowNumSpecs;
 var config bool bCheersForSprees;
 var config float ChallengeModeScale;
-
+var config bool bPureRFF;
+var config float PureRFFScale;
 /*
 struct RestartInfo
 {
@@ -431,6 +432,8 @@ static function FillPlayInfo(PlayInfo PI)
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
+    PI.AddSetting("3SPN", "bPureRFF", "Reverse friendly fire", 0, 113, "Check");
+    PI.AddSetting("3SPN", "PureRFFScale", "Reverse friendly fire scale", 0, Weight++, "Text", "8;0.0:2.0");
 
     //serverlink menu entry
     Weight = 1;
@@ -559,6 +562,8 @@ static event string GetDescriptionText(string PropName)
       case "bShowNumSpecs": return "Players see number of spectators watching them on HUD";
       case "bCheersForSprees": return "Players hear applause for killing sprees";
       case "ChallengeModeScale": return "0-1 scale for how strong tamdicap is";
+      case "bPureRFF": return "Teammate damage is reflected back.";
+      case "PureRFFScale": return "scale of reflected back damage.";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -684,6 +689,14 @@ function ParseOptions(string Options)
     InOpt = ParseOption(Options, "LightningAmmo");
     if(InOpt != "")
         LightningAmmo = int(InOpt);
+
+    InOpt = ParseOption(Options, "PureRFF");
+    if(InOpt != "")
+        bPureRFF = bool(InOpt);
+
+    InOpt = ParseOption(Options, "PureRFFScale");
+    if(InOpt != "")
+        PureRFFScale = float(InOpt);
 }		   
 									 
 event InitGame(string Options, out string Error)
@@ -1139,9 +1152,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
     local int NewDamage;
     local int RealDamage;
     local int Result;
-    local float Score;
-    local float RFF;
-    local float FF;
+    local float Score, FF;
 
     local vector EyeHeight;
 
@@ -1164,18 +1175,19 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             return Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
 
         /* same teams */
-        if(injured.GetTeamNum() == instigatedBy.GetTeamNum() && FriendlyFireScale > 0.0)
+        if(injured.GetTeamNum() == instigatedBy.GetTeamNum())
         {
-            RFF = PRI.ReverseFF;
-
-            if(RFF > 0.0 && injured != instigatedBy)
+            if(bPureRFF)
             {
-                instigatedBy.TakeDamage(Damage * RFF * FriendlyFireScale, instigatedBy, HitLocation, Momentum, DamageType);
-                Damage -= (Damage * RFF * FriendlyFireScale);
+                if(injured != instigatedBy)
+                {
+                    PRI.ReverseFF += Damage * PureRFFScale;
+                    instigatedBy.TakeDamage(Damage * PureRFFScale, instigatedBy, HitLocation, Momentum, DamageType);
+                }
             }
 
             OldDamage = PRI.AllyDamage;
-            
+
             RealDamage = OldDamage + Damage;
             if(injured == instigatedBy)
             {
@@ -1188,7 +1200,16 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                     NewDamage = RealDamage;
             }
             else
-                NewDamage = OldDamage + (Damage * (FriendlyFireScale - (FriendlyFireScale * RFF)));
+            {
+                if(bPureRFF)
+                {
+                    NewDamage = OldDamage + (Damage * PureRFFScale);
+                }
+                else
+                {
+                    NewDamage = OldDamage + (Damage * FriendlyFireScale);
+                }
+            }
 
             PRI.AllyDamage = NewDamage;
 
@@ -1197,13 +1218,6 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             {
                 if(injured != instigatedBy)
                 {
-                    if(RFF < 1.0)
-                    {
-                        RFF = FMin(RFF + (Damage * 0.0015), 1.0);
-                        GameEvent("RFFChange", string(RFF - PRI.ReverseFF), PRI);
-                        PRI.ReverseFF = RFF;
-                    }
-
                    EyeHeight.z = instigatedBy.EyeHeight;
                 }
 
@@ -1222,10 +1236,17 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
                 instigatedBy.Controller.AwardAdrenaline((-Score * 0.10) * AdrenalinePerDamage);
             }
 
-            FF = FriendlyFireScale;
-            FriendlyFireScale -= (FriendlyFireScale * RFF);
-            Result = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
-            FriendlyFireScale = FF;
+            if(bPureRFF && injured != instigatedBy)
+            {
+                FF = FriendlyFireScale;
+                FriendlyFireScale = PureRFFScale;
+                Result = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
+                FriendlyFireScale = FF;
+            }
+            else
+            {
+                Result = Super.ReduceDamage(Damage, injured, instigatedBy, HitLocation, Momentum, DamageType);
+            }
             return Result;
         }
         else if(injured.GetTeamNum() != instigatedBy.GetTeamNum()) // different teams
@@ -4182,7 +4203,9 @@ defaultproperties
      MinPlayersForStatsRecording=2
      FootstepVolume=0.15
      FootstepRadius=400
-     FriendlyFireScale=0.500000
+     FriendlyFireScale=0.000000
+     bPureRFF=false
+     PureRFFScale=0.5
      ClearOldStats=false
      bLockRolloff=true
      RollOffMinValue=0.4

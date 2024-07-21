@@ -946,7 +946,7 @@ simulated event DrawScoreBoard(Canvas C)
             C.SetPos(MiscX + TextX, MiscY + TextY);
             C.DrawText("ReverseFF:", true);
 
-            name = string(int(TmpPRI.ReverseFF * 100)) $ "%";
+            name = string(int(TmpPRI.ReverseFF * 100));
             C.StrLen(name, XL, YL);
             C.SetPos(MiscX + MiscW - TextX - XL, MiscY + TextY);
             C.DrawText(name, true);
