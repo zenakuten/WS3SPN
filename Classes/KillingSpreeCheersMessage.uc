@@ -77,7 +77,7 @@ static simulated function ClientReceive(
                 if ( (RelatedPRI_1 == P.PlayerReplicationInfo) 
                     || (P.PlayerReplicationInfo.bOnlySpectator && (Pawn(P.ViewTarget) != None) && (Pawn(P.ViewTarget).PlayerReplicationInfo == RelatedPRI_1)) )
                 {
-                    Misc_Player(P).ClientDelayedSound(Default.EndCheerSound[Rand(1)], 1.5);
+                    Misc_Player(P).ClientDelayedSound(Default.EndCheerSound[Rand(1)], 1.5, 1.0);
                 }
             }
         }
@@ -88,7 +88,7 @@ static simulated function ClientReceive(
                 if ( (RelatedPRI_2 == P.PlayerReplicationInfo) 
                     || (P.PlayerReplicationInfo.bOnlySpectator && (Pawn(P.ViewTarget) != None) && (Pawn(P.ViewTarget).PlayerReplicationInfo == RelatedPRI_2)) )
                 {
-                    Misc_Player(P).ClientDelayedSound(Default.EndSelfCheerSound[Rand(1)], 1.5);
+                    Misc_Player(P).ClientDelayedSound(Default.EndSelfCheerSound[Rand(1)], 1.5, 1.0);
                 }
             }
         }
@@ -103,7 +103,7 @@ static simulated function ClientReceive(
 		P.PlayRewardAnnouncement(Default.SpreeSoundName[Switch],1,true);
         if(Misc_Player(P) != None && Misc_Player(P).bKillingSpreeCheers)
         {
-            Misc_Player(P).ClientDelayedSound(Default.CheerSound[Switch], 1.5);
+            Misc_Player(P).ClientDelayedSound(Default.CheerSound[Switch], 1.5, 1.0);
         }
     }
 	else
