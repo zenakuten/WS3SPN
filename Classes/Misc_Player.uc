@@ -126,7 +126,7 @@ replication
         ClientSendBioStats, ClientSendShockStats, ClientSendLinkStats,
         ClientSendMiniStats, ClientSendFlakStats, ClientSendRocketStats,
         ClientSendSniperStats, ClientSendClassicSniperStats, ClientSendComboStats, ClientSendMiscStats,
-        ReceiveAwardMessage, AbortNecro, NumSpectators, ClientDelayedSound;
+        ReceiveAwardMessage, AbortNecro, NumSpectators;
 
     reliable if(bNetDirty && Role == ROLE_Authority)
         bSeeInvis;
@@ -1975,18 +1975,6 @@ function ServerPausePass(PlayerController PC, string pass)
             Level.Game.SetPause(bPause, PC);
             Level.Game.bPauseable = bCanPause;
         }
-    }
-}
-
-function ClientDelayedSound(Sound snd, float delay)
-{
-    local DelayedSound dsnd;
-    dsnd = spawn(class'DelayedSound');
-    if(dsnd != None)
-    {
-        dsnd.PC = self;
-        dsnd.SoundToPlay = snd;
-        dsnd.SetTimer(delay, false);
     }
 }
 
