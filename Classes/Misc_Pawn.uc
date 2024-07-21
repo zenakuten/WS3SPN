@@ -542,6 +542,11 @@ simulated function FootStepping(int Side)
 	PlaySound(SoundFootsteps[SurfaceNum], SLOT_Interact, Volume,,Radius );
 }
 
+function bool IsHeadshotDamageType(class<DamageType> damageType)
+{
+    return super.IsHeadshotDamageType(damageType) || DamageType == class'DamType_HeadShot' || DamageType == class'DamType_ClassicHeadShot';
+}
+
 
 defaultproperties
 {
