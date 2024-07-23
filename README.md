@@ -1,6 +1,13 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V7
+- Make stats work after warmup ends
+- In F3 stats, fix duplicate listing when players change name colors mid-game
+- Reverse FF changes
+  * FriendlyFireScale affects damage to teammates only.
+  * Enable RFF to use ReverseFFScale, ReverseFFScale affects damage to self. Default is 50% (0.5)
+
 V6 
 - Remove restriction on allowing mutators with 'UTComp' in the name like WeaponConfig
 - Remove voice taunt ban feature, move similar to UTComp
