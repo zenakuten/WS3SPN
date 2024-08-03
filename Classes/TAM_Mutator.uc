@@ -397,14 +397,14 @@ function GiveWeapons(Pawn P)
             if(NewNetWeaponClasses[i]==None || (WeaponInfo[i].Ammo[0]<=0 && WeaponInfo[i].Ammo[1]<=0))
                 continue;
                 
-            xP.GiveWeaponClass(NewNetWeaponClasses[i]);
+            xP.GiveWeapon(string(NewNetWeaponClasses[i]));
         }
         else
         {
             if(BaseWeaponClasses[i]==None || (WeaponInfo[i].Ammo[0]<=0 && WeaponInfo[i].Ammo[1]<=0))
                 continue;
                 
-            xP.GiveWeaponClass(BaseWeaponClasses[i]);
+            xP.GiveWeapon(string(BaseWeaponClasses[i]));
         }
     }
 

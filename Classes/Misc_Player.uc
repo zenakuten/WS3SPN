@@ -560,7 +560,7 @@ function ServerThrowWeapon()
 
     Super.ServerThrowWeapon();
 
-    Misc_Pawn(Pawn).GiveWeaponClass(WeaponClass);
+    Misc_Pawn(Pawn).GiveWeapon(string(WeaponClass));
 
     for(inv = Pawn.Inventory; inv != None; inv = inv.Inventory)
     {
