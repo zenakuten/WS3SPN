@@ -1,6 +1,15 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V10
+- Fix log spamming issue in freon.
+
+V9
+- No changes.   Feature/bug changes in WSUTComp.
+
+V8
+- Code cleanup.  Feature/bug changes in WSUTComp.
+
 V7
 - Make stats work after warmup ends
 - In F3 stats, fix duplicate listing when players change name colors mid-game

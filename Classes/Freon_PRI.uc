@@ -27,7 +27,7 @@ simulated function string GetLocationNameTeam()
     local float Percent;
     local string name;
 
-    if(bOutOfLives && !bOnlySpectator)
+    if(bOutOfLives && !bOnlySpectator && PawnReplicationInfo != None)
     {
         if(PlayerVolume == None && PlayerZone == None)
             return default.StringDead;
