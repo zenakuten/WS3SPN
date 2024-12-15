@@ -4,7 +4,7 @@
 
 class Misc_LocalStatsDB extends Object
   PerObjectConfig
-  Config(statstext);
+  Config(WS3SPN_Stats);
 
 const MIN_ROUNDS_FOR_LIST= 10;
 const PURGE_TIME= 86400;

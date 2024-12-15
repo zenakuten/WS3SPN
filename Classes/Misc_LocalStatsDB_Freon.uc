@@ -3,7 +3,7 @@
 //================================================================================
 
 class Misc_LocalStatsDB_Freon extends Misc_LocalStatsDB
-	Config(statstext_Freon);
+	Config(WS3SPN_StatsFreon);
 
 defaultproperties
 {
