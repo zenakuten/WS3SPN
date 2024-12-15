@@ -11,7 +11,9 @@
 #exec AUDIO IMPORT FILE="Sounds\meow2.wav"
 #exec AUDIO IMPORT FILE="Sounds\meow3.wav"
 
-class MutNecro extends Mutator;
+class MutNecro extends Mutator
+    config(WS3SPN_Server)
+    PerObjectConfig;
 
 var() config bool bShowSpawnMessage;
 var() config bool bBotsCanNecro;
