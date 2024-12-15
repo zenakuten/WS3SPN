@@ -2,7 +2,9 @@
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
 V10
-- Fix log spamming issue in freon.
+- Fix log spamming issue in freon
+- Attempt fix for random weapon fire sounds in freon games
+- Move server config to its own file
 
 V9
 - No changes.   Feature/bug changes in WSUTComp.
