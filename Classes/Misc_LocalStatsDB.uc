@@ -280,5 +280,5 @@ function bool IsOutDated (string Time)
 
 defaultproperties
 {
-     ConfigName="statstext"
+     ConfigName="WS3SPN_Stats"
 }

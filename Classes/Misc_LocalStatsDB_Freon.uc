@@ -7,5 +7,5 @@ class Misc_LocalStatsDB_Freon extends Misc_LocalStatsDB
 
 defaultproperties
 {
-     ConfigName="statstext_Freon"
+     ConfigName="WS3SPN_StatsFreon"
 }
