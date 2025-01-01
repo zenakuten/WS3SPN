@@ -318,10 +318,6 @@ function PlayerThawed(Freon_Pawn Thawed, optional float Health, optional float S
             FrozenPawns.Remove(i, 1);
     }
 
-    // snarf unpossess before destroy to cleanup owner chain
-    // attempt to fix random weapon sound issue
-    Thawed.UnPossessed();
-
     Thawed.Destroy();
 
     C.PlayerReplicationInfo.bOutOfLives = false;
