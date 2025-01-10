@@ -88,14 +88,14 @@ function ServerRegisterGame (string GameTime, string MapName, string TeamScores)
   }
 }
 
-function ServerRegisterStats (string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git)
+function ServerRegisterStats (string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git, float Elo)
 {
   local Misc_ServerLink SL;
 
   SL = GetServerLink();
   if ( SL != None )
   {
-    SL.RegisterStats(GameTime,PlayerName,PlayerHash,TeamIdx,Rounds,Score,Kills,Deaths,thaws,git);
+    SL.RegisterStats(GameTime,PlayerName,PlayerHash,TeamIdx,Rounds,Score,Kills,Deaths,thaws,git,Elo);
   }
 }
 
@@ -163,6 +163,7 @@ function Misc_PlayerData PlayerJoined(Misc_Player P)
     PlayerDataArray[i] = PD;
     Log("Requesting stats for player " $ P.PlayerReplicationInfo.PlayerName);
     ServerRequestStats(i, PD.StatsID);
+
     return none;
     //return;    
 }
@@ -189,10 +190,11 @@ function PlayerChangedName (Misc_Player P)
   }
 }
 
-function ReceiveStats (int PlayerIndex, float Rank, float PointsToRankUp, float AvgPPR, array<float> PPRList)
+function ReceiveStats (int PlayerIndex, float Rank, float PointsToRankUp, float AvgPPR, array<float> PPRList, float currentElo)
 {
   local Misc_PlayerData PD;
 
+    log("ReceiveStats");
   if ( PlayerIndex >= PlayerDataArray.Length )
   {
     return;
@@ -200,6 +202,7 @@ function ReceiveStats (int PlayerIndex, float Rank, float PointsToRankUp, float 
   PD = PlayerDataArray[PlayerIndex];
   PD.Rank = Rank;
   PD.AvgPPR = AvgPPR;
+  PD.Elo = currentElo;
   PD.PointsToRankUp = int(PointsToRankUp);
   PD.PPRList = PPRList;
   PD.PPRListLength = PPRList.Length;
@@ -208,6 +211,10 @@ function ReceiveStats (int PlayerIndex, float Rank, float PointsToRankUp, float 
   if ( PD.Owner != None )
   {
     PD.Owner.LoadPlayerDataStats();
+    if(Misc_PRI(PD.Owner.PlayerReplicationInfo) != None)
+    {
+        Misc_PRI(PD.Owner.PlayerReplicationInfo).Elo = currentElo;
+    }
   }
 }
 
@@ -298,7 +305,7 @@ function FinishMatch ()
       goto JL04C5;
     }
     Log("Sending results for " $ PD.OwnerID $ " - " $ PD.OwnerName $ " (index:" $ string(PD.StatsIndex) $ ")");
-    ServerRegisterStats(TimeString,PD.OwnerName,PD.StatsID,PD.TeamIdx,PD.Current.Rounds,PD.Current.Score,PD.Current.Kills,PD.Current.Deaths,PD.Current.thaws,PD.Current.git);
+    ServerRegisterStats(TimeString,PD.OwnerName,PD.StatsID,PD.TeamIdx,PD.Current.Rounds,PD.Current.Score,PD.Current.Kills,PD.Current.Deaths,PD.Current.thaws,PD.Current.git,PD.Elo);
     JL04C5:
 	++i;
     goto JL0303;

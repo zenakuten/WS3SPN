@@ -6,7 +6,7 @@
  * All rights belong to their respective owners.
  *******************************************************************************/
 class Misc_PlayerDataManager_Local extends Misc_PlayerDataManager_ServerLink
-    config(statstext)
+    config(WS3SPN_Stats)
     hidecategories(Movement,Collision,Lighting,LightColor,Karma,Force);
 
 const MAXRECORDS = 10000;
@@ -89,13 +89,13 @@ function class<Misc_LocalStatsDB> GetGameConfigClass()
 
 function ServerRequestStats(int PlayerIndex, string PlayerHash)
 {
-    local float Rank, PointsToRankUp, AvgPPR;
+    local float Rank, PointsToRankUp, AvgPPR, Elo;
     local array<float> PPRList;
 
-    GetDB(PlayerHash).ReadStats(Rank, PointsToRankUp, AvgPPR, PPRList);
+    GetDB(PlayerHash).ReadStats(Rank, PointsToRankUp, AvgPPR, PPRList, Elo);
 	
 	
-    ReceiveStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList);
+    ReceiveStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList, Elo);
     //return;    
 }
 
@@ -111,12 +111,12 @@ function ServerRegisterGame(string GameTime, string MapName, string TeamScores)
     //return;    
 }
 
-function ServerRegisterStats(string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git)
+function ServerRegisterStats(string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git, float Elo)
 {
     local Misc_LocalStatsDB DB;
 
     DB = GetDB(PlayerHash);
-    DB.WriteStats(DB.GetCurrentTime(Level), PlayerName, Rounds, Score, Kills, Deaths );
+    DB.WriteStats(DB.GetCurrentTime(Level), PlayerName, Rounds, Score, Kills, Deaths, Elo );
     //return;    
 }
 

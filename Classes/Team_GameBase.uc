@@ -1076,6 +1076,7 @@ function EndTimeOut()
 function ScoreKill(Controller Killer, Controller Other)
 {
     local Misc_PRI KillerPRI, KilledPRI;
+    local float Elo;
     if(Killer==None)
         return;
 
@@ -1084,8 +1085,22 @@ function ScoreKill(Controller Killer, Controller Other)
 
     if(KillerPRI != None && KilledPRI != None)
     {
+        // update each player's vs stat list (shown on F3) 
         KillerPRI.UpdateVsStats(KilledPRI.GetColoredName(),true);
         KilledPRI.UpdateVsStats(KillerPRI.GetcoloredName(),false);
+
+        // calc elo
+        // no elo change for suicide or friendly fire
+        if(KillerPRI.Team.TeamIndex != KilledPRI.Team.TeamIndex)
+        {
+            Elo = class'Misc_PRI'.static.CalcElo(KillerPRI.Elo, KilledPRI.Elo);
+            KillerPRI.Elo = Max(0, KillerPRI.Elo + Elo);
+            KilledPRI.Elo = Max(0, KilledPRI.Elo - Elo);
+
+            //debug
+            // KillerPRI.ClientEloChange(Elo);
+            // KilledPRI.ClientEloChange(-Elo);
+        }
     }
 
     Super.ScoreKill(Killer, Other);
@@ -1259,7 +1274,7 @@ function int ReduceDamageOld(int Damage, pawn injured, pawn instigatedBy, vector
             OldDamage = PRI.EnemyDamage;
             NewDamage = OldDamage + Damage;
             PRI.EnemyDamage = NewDamage;
-			
+
             Score = NewDamage - OldDamage;
             if(Score > 0.0)
             {
@@ -3634,7 +3649,8 @@ function EndRound(PlayerReplicationInfo Scorer)
     TeamScoreEvent(WinningTeamIndex, 1, "tdm_frag");
     Teams[WinningTeamIndex].Score += 1;
     AnnounceScoreReliable(WinningTeamIndex);
-	CalculateHatTricks(C);
+
+	CalculateHatTricks();
 
     // check for darkhorse
     if(DarkHorse != None && DarkHorse.PlayerReplicationInfo != None && DarkHorse.PlayerReplicationInfo == Scorer)
@@ -3704,8 +3720,9 @@ function EndRound(PlayerReplicationInfo Scorer)
     }
 }
 
-function CalculateHatTricks(Controller c)
+function CalculateHatTricks()
 {
+    local Controller C;
 	TeamScoreDelta[WinningTeamIndex]++;
 
 	if (LastWinTeamIndex == -1)
@@ -3727,7 +3744,7 @@ function CalculateHatTricks(Controller c)
 
 		C = Level.ControllerList;
 		JL02EE:
-		if ( C != None )
+		if ( C != None && PlayerController(C) != None )
 		{
 		  if( Pawn(PlayerController(C).ViewTarget) != None && Pawn(PlayerController(C).ViewTarget).GetTeamNum() == WinningTeamIndex )
 		  {

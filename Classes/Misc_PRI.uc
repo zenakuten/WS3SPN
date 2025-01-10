@@ -29,6 +29,11 @@ var float PointsToRankUp;
 var int ShieldCount;
 var int GrenCount;
 var int BioCount;
+var float Elo;
+
+const M_LN10 = 2.30258509299404568402;
+var float ELO_BaseCoeff;
+var float ELO_KFactor;
 
 var int CurrentDamage;
 var int CurrentDamage2;
@@ -86,7 +91,11 @@ replication
     reliable if ( Role == ROLE_Authority )
         RegisterDamage, UpdateVsStats;
     unreliable if ( bNetDirty && (Role == ROLE_Authority) )
-        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI;
+        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI,Elo;
+
+    //debug
+    reliable if (ROLE == ROLE_Authority)
+        ClientEloChange;
 }
 
 event PostBeginPlay()
@@ -396,8 +405,28 @@ simulated function ResetStats()
     ConsecutiveCampCount = 0;
 }
 
+static function float CalcElo(float elo1, float elo2)
+{
+    local float expected;
+
+    expected = 1 / (exp(M_LN10 * (abs(elo1 - elo2) / default.ELO_BaseCoeff)) + 1);
+    return default.ELO_KFactor * (1 - expected);
+}
+
+simulated function ClientEloChange(float eloChange)
+{
+    local PlayerController PC;
+    PC = Level.GetLocalPlayerController();
+    if(PC != None)
+    {
+        PC.ClientMessage("Elo change for "$PlayerName$" ("$Elo$") : "$eloChange);
+    }
+}
+
 defaultproperties
 {
      StringDeadNoRez="Dead [Inactive]"
      PawnInfoClass=Class'WS3SPN.Misc_PawnReplicationInfo'
+     ELO_BaseCoeff=400
+     ELO_KFactor=21
 }

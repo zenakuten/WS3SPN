@@ -13,7 +13,7 @@ var array<string> SendBuffer;
 var bool SendBufferActive;
 
 
-delegate OnReceivedStats (int PlayerIndex, float Rank, float PointsToRankUp, float AvgPPR, array<float> PPRList);
+delegate OnReceivedStats (int PlayerIndex, float Rank, float PointsToRankUp, float AvgPPR, array<float> PPRList, float currentElo);
 
 delegate OnReceivedListName (string ListName);
 
@@ -56,9 +56,9 @@ function RegisterGame (string GameTime, string MapName, string TeamScores)
   AddToBuffer("REGISTER_GAME " $ GameTime $ " " $ MapName $ " " $ TeamScores $ LF);
 }
 
-function RegisterStats (string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git)
+function RegisterStats (string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git, float Elo)
 {
-  AddToBuffer("REGISTER_STATS " $ GameTime $ " " $ PlayerName $ " " $ PlayerHash $ " " $ string(TeamIdx) $ " " $ string(Rounds) $ " " $ string(Score) $ " " $ string(Kills) $ " " $ string(Deaths) $ " " $ string(thaws) $ " " $ string(git) $ LF);
+  AddToBuffer("REGISTER_STATS " $ GameTime $ " " $ PlayerName $ " " $ PlayerHash $ " " $ string(TeamIdx) $ " " $ string(Rounds) $ " " $ string(Score) $ " " $ string(Kills) $ " " $ string(Deaths) $ " " $ string(thaws) $ " " $ string(git) $ " " $ string(Elo) $ LF);
 }
 
 function RequestStats (int PlayerIndex, string PlayerHash)
@@ -160,7 +160,7 @@ function Tick (float DeltaTime)
 function HandleMessage(array<string> Params)
 {
     local int PlayerIndex;
-    local float Rank, AvgPPR, PointsToRankUp;
+    local float Rank, AvgPPR, PointsToRankUp, Elo;
 //	local int Moneyreal;
     local string ListName, PlayerName, PlayerStat;
     local int ParamIdx;
@@ -185,6 +185,7 @@ function HandleMessage(array<string> Params)
         Rank = float(Params[2]);
         PointsToRankUp = float(Params[3]);
         AvgPPR = float(Params[4]);
+        Elo = float(Params[5]);
 //		Moneyreal = int (Params[5]);
         ParamIdx = 6;
         ParamIdx = 6;
@@ -197,7 +198,7 @@ function HandleMessage(array<string> Params)
             // [Loop Continue]
             goto J0xF6;
         }
-        OnReceivedStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList);
+        OnReceivedStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList, Elo);
     }
     // End:0x276
     else

@@ -27,6 +27,7 @@ var const string ConfigName;
 var config private string PlayerName;
 var config private int RankedScore;
 var config private int TopScore;
+var config private float Elo;
 //var config private int Money;
 //var config private int Moneyreal;
 var config private array<PlayerRecord> Rec;
@@ -128,11 +129,12 @@ static function float Decimal (float Num)
 //
 //}
 //
-function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList)
+function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList, out float currentElo)
 {
   local int i;
   local int j;
 
+  log("ReadStats");
   Rank = RankedScore / 2000 + 0.5;
   Rank = FMin(Rank / (30 - 0),1.0);
 //  Moneyreal = Money;
@@ -156,9 +158,10 @@ function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, 
   }
   PPRList.Length = j + 1;
   PPRList[j] = 0.0;
+  currentElo = Elo;
 }
 
-function WriteStats (string Time, string InPlayerName, int Rounds, float Score, int Kills, int Deaths)
+function WriteStats (string Time, string InPlayerName, int Rounds, float Score, int Kills, int Deaths, float currentElo)
 {
   local int i;
 
@@ -166,7 +169,9 @@ function WriteStats (string Time, string InPlayerName, int Rounds, float Score, 
   Rec.Length = i + 1;
   PlayerName = InPlayerName;
   RankedScore += int(Score);
+  Elo = currentElo;
   TopScore = Max(TopScore,int(Score));
+
   Rec[i].Time = Time;
   Rec[i].Rounds = Rounds;
   Rec[i].Score = Score;

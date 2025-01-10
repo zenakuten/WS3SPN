@@ -24,6 +24,7 @@ var int TeamIdx;
 var bool StatsReceived;
 var float Rank;
 var float AvgPPR;
+var float Elo;
 var int PointsToRankUp;
 var int PPRListLength;
 //var int Moneyreal;
@@ -87,15 +88,6 @@ static function ResetTrackedData (out TrackedData D)
   D.git = 0;
 }
 
-static function AddTrackedData (out TrackedData d1, TrackedData d2)
-{
-  d1.Rounds += d2.Rounds;
-  d1.Score += d2.Score;
-  d1.Kills += d2.Kills;
-  d1.Deaths += d2.Deaths;
-  d1.thaws += d2.thaws;
-  d1.git += d2.git;
-}
 
 defaultproperties
 {

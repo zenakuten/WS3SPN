@@ -261,6 +261,8 @@ function LoadPlayerData()
 		Misc_PRI(PlayerReplicationInfo).PlayedRounds = PlayerData.Current.Rounds-1;
 	else
 		Misc_PRI(PlayerReplicationInfo).PlayedRounds = PlayerData.Current.Rounds;
+
+    Misc_PRI(PlayerReplicationInfo).Elo = PlayerData.Elo;
 }
 
 function StorePlayerData()
@@ -293,6 +295,8 @@ function StorePlayerData()
 		PlayerData.Current.Rounds = Misc_PRI(PlayerReplicationInfo).PlayedRounds+1;
 	else
 		PlayerData.Current.Rounds = Misc_PRI(PlayerReplicationInfo).PlayedRounds;
+
+    PlayerData.Elo = Misc_PRI(PlayerReplicationInfo).Elo;
 }
 
 function SetTeamScore(int RedScore, int BlueScore)
