@@ -1,6 +1,10 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V11
+- Fix more log spamming
+- Fix can't fire weapons issue
+
 V10
 - Fix log spamming issue in freon
 - Attempt fix for random weapon fire sounds in freon games
