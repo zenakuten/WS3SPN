@@ -1779,6 +1779,11 @@ simulated function bool IsGroupedDamageType(class<DamageType> DamageType)
         || super.IsGroupedDamageType(DamageType);
 }
 
+simulated function InitializeScoreboard()
+{
+    //override base UTComp
+}
+
 /* settings */
 
 defaultproperties
