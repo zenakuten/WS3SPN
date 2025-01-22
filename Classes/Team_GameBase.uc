@@ -1086,8 +1086,8 @@ function ScoreKill(Controller Killer, Controller Other)
     if(KillerPRI != None && KilledPRI != None)
     {
         // update each player's vs stat list (shown on F3) 
-        KillerPRI.UpdateVsStats(KilledPRI.GetColoredName(),true);
-        KilledPRI.UpdateVsStats(KillerPRI.GetcoloredName(),false);
+        KillerPRI.UpdateVsStats(KilledPRI.GetColoredName(), KilledPRI.PlayerID,true);
+        KilledPRI.UpdateVsStats(KillerPRI.GetcoloredName(), KillerPRI.PlayerID,false);
 
         // calc elo
         // no elo change for suicide or friendly fire
