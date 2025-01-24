@@ -35,12 +35,39 @@ var int CurrentStatsList;
 var array<vector> TargetingLines;
 var Actor TargetingActor;
 
+// radar stuff
+var() SpriteWidget CenterRadarBG;
+var() Color	CurrentMutantColor;
+var() Color	MutantHudTint;
+
+var() localized String	MutantRangeFontName;
+var() Font MutantRangeFontFont;
+var() Color MutantRangeColor;
+
+var() localized String BottomFeederText;
+var() Color BottomFeederTextColor;
+
+var() Color AboveMutantColor;
+var() Color LevelMutantColor;
+var() Color BelowMutantColor;
+var() Color RangeDotColor;
+var() float LevelRampRegion;
+
+var() float RangeRampRegion;
+var() float MaxAngleDelta;
+var() float BigDotSize;
+var()float SmallDotSize;
+
+var() float XCen, XRad, YCen, YRad; // Center radar tweaking
+var() float MNOriginX, MNOriginY, MNSizeX, MNSizeY;
+var()float BFIOriginX, BFIOriginY, BFISizeX, BFISizeY, BFIMargin, BFIPulseRate;
+// end radar
+
 exec function ShowStats()
 {
     bShowLocalStats = !bShowLocalStats;
     Misc_Player(PlayerOwner).bFirstOpen = bShowLocalStats;
 }
-
 
 static function Color GetHealthRampColor(Misc_PRI PRI)
 {
@@ -126,6 +153,7 @@ simulated function DrawWeaponBar(Canvas C)
 
 simulated function DrawHudPassA(Canvas C)
 {
+
 	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
 		TeamWideDrawHudPassA(C);
 	else
@@ -1197,6 +1225,7 @@ simulated function DrawHudPassC(Canvas C)
       DrawTargetingLine(C);
   }
   DrawResWarningIcon(C);
+  DrawTeamRadar(C);
 }
 
 
@@ -1620,15 +1649,114 @@ function NewDraw2DLocationDot(Canvas C, vector Loc, int CenterX, int CenterY, in
     C.DrawTile(LocationDot, dotSize, dotSize, 340, 432, 78, 78);
 }
 
+function color LerpColor(float Alpha, color A, color B)
+{
+	local color output;
+
+	output.R = lerp(Alpha, A.R, B.R);
+	output.G = lerp(Alpha, A.G, B.G);
+	output.B = lerp(Alpha, A.B, B.B);
+	output.A = lerp(Alpha, A.A, B.A);
+
+	return output;
+}
+
+simulated function DrawTeamRadar(Canvas C)
+{
+    local rotator Dir;
+    local float Angle, VertDiff, Range;
+    local xPawn P;
+
+    PassStyle=STY_None;
+
+    //DrawSpriteWidget (C, CenterRadarBG);
+    // support widescreen
+    DrawSpriteTileWidget(C, CenterRadarBG);
+    PassStyle=STY_Alpha;
+
+    foreach DynamicActors(class'xPawn', P)
+    {
+        if(PawnOwner.PlayerReplicationInfo.bOnlySpectator)
+            continue;
+
+        if(P == PawnOwner)
+            continue;
+
+        if(PawnOwner.GetTeamNum() != P.GetTeamNum())
+            continue;
+
+        Dir = rotator(P.Location - PawnOwner.Location);
+        VertDiff = P.Location.Z - PawnOwner.Location.Z;
+
+        // Remove player radiii from range (so when you are standing next to the mutant range is zero)
+        Range = VSize(P.Location - PawnOwner.Location) - (2 * class'xPawn'.default.CollisionRadius);
+
+        Angle = ((Dir.Yaw - PawnOwner.Rotation.Yaw) & 65535) * 6.2832/65536;
+
+        if(VertDiff > LevelRampRegion)
+            C.DrawColor = AboveMutantColor;
+        else if(VertDiff > 0)
+            C.DrawColor = LerpColor(VertDiff/LevelRampRegion, LevelMutantColor, AboveMutantColor);
+        else if(VertDiff > -LevelRampRegion)
+            C.DrawColor = LerpColor(-VertDiff/LevelRampRegion, LevelMutantColor, BelowMutantColor);
+        else
+            C.DrawColor = BelowMutantColor;
+
+        C.Style = ERenderStyle.STY_Alpha;
+
+        //C.SetPos(XCen * C.ClipX + HudScale * XRad * C.ClipX * sin(Angle) - 0.5*BigDotSize*C.ClipX,
+        //    YCen * C.ClipY - HudScale * YRad * C.ClipY * cos(Angle) - 0.5*BigDotSize*C.ClipX );
+
+        // support widescreen
+        C.SetPos(XCen * C.ClipX + HudScale / (ResScaleX/ResScaleY) * XRad * C.ClipX * sin(Angle) - 0.5*BigDotSize*C.ClipX,
+                 YCen * C.ClipY - HudScale * YRad * C.ClipY * cos(Angle) - 0.5*BigDotSize*C.ClipX );
+
+        C.DrawTile(Material'InterfaceContent.Hud.SkinA', BigDotSize*C.ClipX, BigDotSize*C.ClipX,838,238,144,144);
+
+    }
+}
+
 defaultproperties
 {
-     TeamTex=Texture'HUDContent.Generic.HUD'
-     Hudzaxis=Texture'WS3SPN.textures.Hudzaxis'
-     TrackedPlayer=Texture'WS3SPN.textures.chair'
-     FullHealthColor=(B=200,G=100,A=255)
-     NameColor=(B=200,G=200,R=200,A=255)
-     LocationColor=(G=130,R=175,A=255)
-     AdrenColor=(B=201,G=200,R=181,A=255)
-     FullAdrenColor=(G=78,R=229,A=255)
-     CurrentStatsList=3
+    TeamTex=Texture'HUDContent.Generic.HUD'
+    Hudzaxis=Texture'WS3SPN.textures.Hudzaxis'
+    TrackedPlayer=Texture'WS3SPN.textures.chair'
+    FullHealthColor=(B=200,G=100,A=255)
+    NameColor=(B=200,G=200,R=200,A=255)
+    LocationColor=(G=130,R=175,A=255)
+    AdrenColor=(B=201,G=200,R=181,A=255)
+    FullAdrenColor=(G=78,R=229,A=255)
+    CurrentStatsList=3
+
+    CenterRadarBG=(WidgetTexture=Texture'MutantSkins.HUD.big_circle',RenderStyle=STY_Translucent,TextureCoords=(X1=255,Y2=255),TextureScale=0.800000,DrawPivot=DP_MiddleMiddle,PosX=0.500000,PosY=0.500000,ScaleMode=SM_Right,Scale=1.000000,Tints[0]=(B=255,G=255,R=255,A=255),Tints[1]=(B=255,G=255,R=255,A=255))
+    CurrentMutantColor=(B=128,R=255,A=255)
+    MutantHudTint=(B=128,R=200,A=100)
+    MutantRangeFontName="UT2003Fonts.FontMono"
+    MutantRangeColor=(B=200,G=200,R=200,A=255)
+    BottomFeederText="BOTTOM FEEDER"
+    BottomFeederTextColor=(B=255,G=255,A=255)
+    AboveMutantColor=(B=255,A=255)
+    LevelMutantColor=(B=255,G=255,R=255,A=255)
+    BelowMutantColor=(R=255,A=255)
+    RangeDotColor=(B=50,G=200,R=200,A=255)
+    LevelRampRegion=500.000000
+    RangeRampRegion=2500.000000
+    MaxAngleDelta=1.000000
+    BigDotSize=0.018750
+    SmallDotSize=0.011250
+    XCen=0.500000
+    XRad=0.150000
+    YCen=0.500000
+    YRad=0.200000
+    MNOriginX=0.280000
+    MNOriginY=0.008000
+    MNSizeX=0.450000
+    MNSizeY=0.060000
+    BFIOriginX=0.900000
+    BFIOriginY=0.640000
+    BFISizeX=0.090000
+    BFISizeY=0.100000
+    BFIMargin=0.010000
+    BFIPulseRate=1.000000
+
 }
