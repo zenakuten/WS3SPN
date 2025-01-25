@@ -1667,6 +1667,14 @@ simulated function DrawTeamRadar(Canvas C)
     local float Angle, VertDiff, Range;
     local xPawn P;
 
+    // check server config
+    if(BS_xPlayer(PlayerOwner).RepInfo == None || !BS_xPlayer(PlayerOwner).RepInfo.bAllowTeamRadarMap)
+        return;
+
+    // check client config
+    if(!BS_xPlayer(PlayerOwner).HUDSettings.bEnableMapTeamRadar)
+        return;
+
     PassStyle=STY_None;
 
     //DrawSpriteWidget (C, CenterRadarBG);
