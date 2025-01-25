@@ -29,6 +29,7 @@ var float PointsToRankUp;
 var int ShieldCount;
 var int GrenCount;
 var int BioCount;
+var int ShockCount;
 var float Elo;
 
 const M_LN10 = 2.30258509299404568402;
@@ -398,6 +399,7 @@ simulated function ResetStats()
     HatTrickCount = 0;
     LinkCount = 0;
     RoxCount = 0;
+    ShockCount = 0;
     rocketsuicide = 0;
     ShieldCount = 0;
     GrenCount = 0;
