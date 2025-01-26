@@ -41,7 +41,7 @@ exec function ShowStats()
     Misc_Player(PlayerOwner).bFirstOpen = bShowLocalStats;
 }
 
-static function Color GetHealthRampColor(Misc_PRI PRI)
+static function Color StaticGetHealthRampColor(Misc_PRI PRI)
 {
     local int StartHealth;
     local int CurrentHealth;
@@ -79,6 +79,11 @@ static function Color GetHealthRampColor(Misc_PRI PRI)
     return HealthColor;
 }
 
+
+function Color GetHealthRampColor(PlayerReplicationInfo PRI)
+{
+    return StaticGetHealthRampColor(Misc_PRI(PRI));
+}
 
 function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, float ScaleX, float ScaleY)
 {

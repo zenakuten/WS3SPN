@@ -3931,7 +3931,7 @@ function AnnounceSurvivors()
           continue;
 
         health = Max(0,PRI.PawnReplicationInfo.Health + PRI.PawnReplicationInfo.Shield);
-        color = class'Team_HUDBase'.static.GetHealthRampColor(PRI);
+        color = class'Team_HUDBase'.static.StaticGetHealthRampColor(PRI);
         HealthCol = class'Misc_Util'.static.MakeColorCode(color);
 
         if(i>0)

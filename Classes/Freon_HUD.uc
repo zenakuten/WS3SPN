@@ -13,11 +13,13 @@ var Texture ThawBarMat;
 
 
 //override so we can do the frozen colour
-static function Color GetHealthRampColor(Misc_PRI PRI)
+function Color GetHealthRampColor(PlayerReplicationInfo RepInfo)
 {
     local int CurrentHealth;
     local Color HealthColor;
+    local Misc_PRI PRI;
 
+    PRI = Misc_PRI(RepInfo);
     HealthColor = default.FullHealthColor;
 
     if(PRI == None)
