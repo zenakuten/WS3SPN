@@ -1,6 +1,10 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V12
+- Add support for utcomp team radar on hud
+- Add new awards: combo king, shock therapy, rockets go boom
+
 V11
 - Fix more log spamming
 - Fix can't fire weapons issue
