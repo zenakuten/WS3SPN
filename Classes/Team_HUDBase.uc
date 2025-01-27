@@ -112,23 +112,6 @@ function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, f
     C.DrawTile(LocationDot, Scaling, Scaling, 340, 432, 78, 78);
 }
 
-simulated function DrawWeaponBar(Canvas C)
-{
-	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
-		WideDrawWeaponBar(C);
-	else
-		Super.DrawWeaponBar(C);
-}
-
-simulated function DrawHudPassA(Canvas C)
-{
-
-	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
-		TeamWideDrawHudPassA(C);
-	else
-		Super.DrawHudPassA(C);
-}
-
 simulated function bool ShouldDrawPlayer(Misc_PRI PRI)
 {
     if(PRI == None || PRI.PawnReplicationInfo == None || PRI.bOutOfLives || PRI.Team == None || PRI == PlayerOwner.PlayerReplicationInfo)

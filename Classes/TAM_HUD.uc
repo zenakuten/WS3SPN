@@ -23,10 +23,7 @@ simulated function DrawChargeBar(Canvas C)
 {
     if (!bDrawCombos)
     {
-        if(BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
-            WideDrawChargeBar(C);
-        else
-            Super.DrawChargeBar(C);
+        Super.DrawChargeBar(C);
     }
 }
 
@@ -40,10 +37,7 @@ simulated function DrawAdrenaline(Canvas C)
     local TeamInfo TRI;
     local Misc_DynComboReplicationInfo CRI;
 
-    if(BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
-        WideDrawAdrenaline(C);
-    else
-        Super.DrawAdrenaline(C);
+    Super.DrawAdrenaline(C);
 
     if(myOwner == None || !class'Misc_Player'.default.bShowCombos)
         return;
