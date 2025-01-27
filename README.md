@@ -3,7 +3,9 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 
 V12
 - Add support for utcomp team radar on hud
+- Add support for mutant style team radar on hud
 - Add new awards: combo king, shock therapy, rockets go boom
+- fix bug with crosshairs not working with widescreen fix
 
 V11
 - Fix more log spamming
