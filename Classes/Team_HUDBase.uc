@@ -112,14 +112,6 @@ function Draw2DLocationDot(Canvas C, vector Loc, float OffsetX, float OffsetY, f
     C.DrawTile(LocationDot, Scaling, Scaling, 340, 432, 78, 78);
 }
 
-simulated function DrawCrosshair(Canvas C)
-{
-	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
-		WideDrawCrosshair(C);
-	else
-		Super.DrawCrosshair(C);
-}
-
 simulated function DrawWeaponBar(Canvas C)
 {
 	if (BS_xPlayer(PlayerOwner).HUDSettings.bEnableWidescreenFix)
