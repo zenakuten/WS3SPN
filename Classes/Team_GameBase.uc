@@ -3051,61 +3051,59 @@ function BalanceTeamsRoundStart()
     PlayersNeeded = (TeamSize[TeamIdx] - TeamSize[1-TeamIdx])/2;
     PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2;
 
-  if(PlayersNeeded==0 && ForceAutoBalance)
-  {
-    if(TeamScore[0]>TeamScore[1])
-      TeamIdx = 0;
-    else if(TeamScore[1]>TeamScore[0])
-      TeamIdx = 1;
-    else if(TeamPPR[0]>TeamPPR[1])
-      TeamIdx = 0;
-    else if(TeamPPR[1]>TeamPPR[0])
-      TeamIdx = 1;
-    else {
-      ForceAutoBalance = false;
-      return;
-    }
+    if(PlayersNeeded==0 && ForceAutoBalance)
+    {
+        if(TeamScore[0]>TeamScore[1])
+            TeamIdx = 0;
+        else if(TeamScore[1]>TeamScore[0])
+            TeamIdx = 1;
+        else if(TeamPPR[0]>TeamPPR[1])
+            TeamIdx = 0;
+        else if(TeamPPR[1]>TeamPPR[0])
+            TeamIdx = 1;
 
-    if(TeamSize[TeamIdx] >= TeamSize[1-TeamIdx]) {
-      PlayersNeeded = 1;
-      PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2;
-      if(TeamSize[TeamIdx] == TeamSize[1-TeamIdx]) // Cannot give players, so swap
-        SwapPlayers = true;
+        PlayersNeeded = 1;
+        PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2;
+        if(TeamSize[TeamIdx] == TeamSize[1-TeamIdx]) // Cannot give players, so swap
+            SwapPlayers = true;
     }
-  }
 
     PlayersMoved = 0;
 
-  // Calculate ppr needed for each move
-  if(PlayersNeeded>0)
-    PPRNeeded /= PlayersNeeded;
+    // Calculate ppr needed for each move
+    if(PlayersNeeded>0)
+        PPRNeeded /= PlayersNeeded;
 
     while(PlayersNeeded>0)
     {
         // move player that closest matches the required PPR gap / number of players needed
-    if(SwapPlayers) {
-      BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded*2);
-      BestMatch2 = FindBestAutoBalanceCandidate(1-TeamIdx, PPRNeeded);
+        if(SwapPlayers) 
+        {
+            BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded*2);
+            BestMatch2 = FindBestAutoBalanceCandidate(1-TeamIdx, PPRNeeded);
 
-      if(BestMatch!=None && BestMatch2!=None) {
-        AutoBalanceSwitchPlayer(BestMatch);
-        AutoBalanceSwitchPlayer(BestMatch2);
-      }
-    } else {
-      BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded);
+            if(BestMatch!=None && BestMatch2!=None) 
+            {
+                AutoBalanceSwitchPlayer(BestMatch);
+                AutoBalanceSwitchPlayer(BestMatch2);
+            }
+        } 
+        else 
+        {
+            BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded);
 
-      if(BestMatch!=None)
-        AutoBalanceSwitchPlayer(BestMatch);
-    }
+            if(BestMatch!=None)
+                AutoBalanceSwitchPlayer(BestMatch);
+        }
 
-    --PlayersNeeded;
+        --PlayersNeeded;
         ++PlayersMoved;
     }
 
     if(PlayersMoved>0)
         BroadcastLocalizedMessage( class'Message_TeamsBalanced' );
 
-  ForceAutoBalance = false;
+    ForceAutoBalance = false;
 }
 
 function QueueAutoBalance(bool bAdminUser)
