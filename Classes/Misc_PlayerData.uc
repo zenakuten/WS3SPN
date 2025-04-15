@@ -25,6 +25,8 @@ var bool StatsReceived;
 var float Rank;
 var float AvgPPR;
 var float Elo;
+var int KillCount;
+var int FraggedCount;
 var int PointsToRankUp;
 var int PPRListLength;
 //var int Moneyreal;

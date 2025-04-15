@@ -28,6 +28,8 @@ var config private string PlayerName;
 var config private int RankedScore;
 var config private int TopScore;
 var config private float Elo;
+var config private int KillCount;
+var config private int FraggedCount;
 //var config private int Money;
 //var config private int Moneyreal;
 var config private array<PlayerRecord> Rec;
@@ -129,7 +131,7 @@ static function float Decimal (float Num)
 //
 //}
 //
-function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList, out float currentElo)
+function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList, out float currentElo, out int currentKillCount, out int currentFraggedCount)
 {
   local int i;
   local int j;
@@ -159,9 +161,11 @@ function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, 
   PPRList.Length = j + 1;
   PPRList[j] = 0.0;
   currentElo = Elo;
+  currentKillCount = KillCount;
+  currentFraggedCount = FraggedCount;
 }
 
-function WriteStats (string Time, string InPlayerName, int Rounds, float Score, int Kills, int Deaths, float currentElo)
+function WriteStats (string Time, string InPlayerName, int Rounds, float Score, int Kills, int Deaths, float currentElo, int currentKillCount, int currentFraggedCount)
 {
   local int i;
 
@@ -170,6 +174,8 @@ function WriteStats (string Time, string InPlayerName, int Rounds, float Score, 
   PlayerName = InPlayerName;
   RankedScore += int(Score);
   Elo = currentElo;
+  KillCount = currentKillCount;
+  FraggedCount = currentFraggedCount;
   TopScore = Max(TopScore,int(Score));
 
   Rec[i].Time = Time;

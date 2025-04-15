@@ -263,6 +263,8 @@ function LoadPlayerData()
 		Misc_PRI(PlayerReplicationInfo).PlayedRounds = PlayerData.Current.Rounds;
 
     Misc_PRI(PlayerReplicationInfo).Elo = PlayerData.Elo;
+    Misc_PRI(PlayerReplicationInfo).KillCount = PlayerData.KillCount;
+    Misc_PRI(PlayerReplicationInfo).FraggedCount = PlayerData.FraggedCount;
 }
 
 function StorePlayerData()
@@ -297,6 +299,8 @@ function StorePlayerData()
 		PlayerData.Current.Rounds = Misc_PRI(PlayerReplicationInfo).PlayedRounds;
 
     PlayerData.Elo = Misc_PRI(PlayerReplicationInfo).Elo;
+    PlayerData.KillCount = Misc_PRI(PlayerReplicationInfo).KillCount;
+    PlayerData.FraggedCount = Misc_PRI(PlayerReplicationInfo).FraggedCount;
 }
 
 function SetTeamScore(int RedScore, int BlueScore)

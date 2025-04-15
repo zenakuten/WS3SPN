@@ -90,12 +90,13 @@ function class<Misc_LocalStatsDB> GetGameConfigClass()
 function ServerRequestStats(int PlayerIndex, string PlayerHash)
 {
     local float Rank, PointsToRankUp, AvgPPR, Elo;
+    local int KillCount, FraggedCount;
     local array<float> PPRList;
 
-    GetDB(PlayerHash).ReadStats(Rank, PointsToRankUp, AvgPPR, PPRList, Elo);
+    GetDB(PlayerHash).ReadStats(Rank, PointsToRankUp, AvgPPR, PPRList, Elo, KillCount, FraggedCount);
 	
 	
-    ReceiveStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList, Elo);
+    ReceiveStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList, Elo, KillCount, FraggedCount);
     //return;    
 }
 
@@ -111,12 +112,12 @@ function ServerRegisterGame(string GameTime, string MapName, string TeamScores)
     //return;    
 }
 
-function ServerRegisterStats(string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git, float Elo)
+function ServerRegisterStats(string GameTime, string PlayerName, string PlayerHash, int TeamIdx, int Rounds, float Score, int Kills, int Deaths, int thaws, int git, float Elo, int KillCount, int FraggedCount)
 {
     local Misc_LocalStatsDB DB;
 
     DB = GetDB(PlayerHash);
-    DB.WriteStats(DB.GetCurrentTime(Level), PlayerName, Rounds, Score, Kills, Deaths, Elo );
+    DB.WriteStats(DB.GetCurrentTime(Level), PlayerName, Rounds, Score, Kills, Deaths, Elo, KillCount, FraggedCount);
     //return;    
 }
 

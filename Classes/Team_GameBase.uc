@@ -1076,7 +1076,6 @@ function EndTimeOut()
 function ScoreKill(Controller Killer, Controller Other)
 {
     local Misc_PRI KillerPRI, KilledPRI;
-    local float Elo;
     if(Killer==None)
         return;
 
@@ -1093,13 +1092,7 @@ function ScoreKill(Controller Killer, Controller Other)
         // no elo change for suicide or friendly fire
         if(KillerPRI.Team.TeamIndex != KilledPRI.Team.TeamIndex)
         {
-            Elo = class'Misc_PRI'.static.CalcElo(KillerPRI.Elo, KilledPRI.Elo);
-            KillerPRI.Elo = Max(0, KillerPRI.Elo + Elo);
-            KilledPRI.Elo = Max(0, KilledPRI.Elo - Elo);
-
-            //debug
-            // KillerPRI.ClientEloChange(Elo);
-            // KilledPRI.ClientEloChange(-Elo);
+            KillerPRI.ScoreElo(KilledPRI);
         }
     }
 

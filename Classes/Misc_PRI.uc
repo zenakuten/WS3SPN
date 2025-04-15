@@ -31,6 +31,8 @@ var int GrenCount;
 var int BioCount;
 var int ShockCount;
 var float Elo;
+var int KillCount;
+var int FraggedCount;
 
 const M_LN10 = 2.30258509299404568402;
 var float ELO_BaseCoeff;
@@ -410,12 +412,41 @@ simulated function ResetStats()
     ConsecutiveCampCount = 0;
 }
 
-static function float CalcElo(float elo1, float elo2)
+static function float CalcElo(float elo1, float elo2, float kfactor)
 {
     local float expected;
 
     expected = 1 / (exp(M_LN10 * (abs(elo1 - elo2) / default.ELO_BaseCoeff)) + 1);
-    return default.ELO_KFactor * (1 - expected);
+    return kfactor * (1 - expected);
+}
+
+function ScoreElo(Misc_PRI killed)
+{
+    local float newElo, kfactor;
+    local int totalScores;
+
+    totalScores = KillCount + FraggedCount;
+    
+    if(totalScores > 10000)
+        kfactor = 20.0;
+    else if(totalScores > 5000)
+        kfactor = 30.0;
+    else if(totalScores > 1000)
+        kfactor = 40.0;
+    else 
+        kfactor = 50.0;
+
+    newElo = static.CalcElo(Elo, killed.Elo, kfactor);
+
+    Elo = Max(0, Elo + newElo);
+    killed.Elo = Max(0, killed.Elo - newElo);
+
+    KillCount++;
+    killed.FraggedCount++;
+
+    //debug
+    //ClientEloChange(newElo);
+    //killed.ClientEloChange(-newElo);
 }
 
 simulated function ClientEloChange(float eloChange)
