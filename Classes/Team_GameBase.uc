@@ -2105,7 +2105,8 @@ function AddGameSpecificInventory(Pawn P)
     MutTAM.GiveWeapons(P);
     MutTAM.GiveAmmo(P);
 
-    SetupPlayer(P);
+    // moved to tam mutator
+    //SetupPlayer(P);
 }
 
 function SetupPlayer(Pawn P)

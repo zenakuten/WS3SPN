@@ -382,6 +382,12 @@ function bool ReplaceWith(actor Other, string aClassName)
 	return false;
 }	
 
+function ModifyPlayer(Pawn Other)
+{
+    super.ModifyPlayer(Other);
+    Team_GameBase(Level.Game).SetupPlayer(Other);
+}
+
 function GiveWeapons(Pawn P)
 {
     local int i;
