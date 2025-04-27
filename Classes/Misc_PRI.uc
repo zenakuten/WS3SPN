@@ -422,21 +422,9 @@ static function float CalcElo(float elo1, float elo2, float kfactor)
 
 function ScoreElo(Misc_PRI killed)
 {
-    local float newElo, kfactor;
-    local int totalScores;
+    local float newElo;
 
-    totalScores = KillCount + FraggedCount;
-    
-    if(totalScores > 10000)
-        kfactor = 20.0;
-    else if(totalScores > 5000)
-        kfactor = 30.0;
-    else if(totalScores > 1000)
-        kfactor = 40.0;
-    else 
-        kfactor = 50.0;
-
-    newElo = static.CalcElo(Elo, killed.Elo, kfactor);
+    newElo = static.CalcElo(Elo, killed.Elo, GetKFactor(killed));
 
     Elo = Max(0, Elo + newElo);
     killed.Elo = Max(0, killed.Elo - newElo);
@@ -446,7 +434,24 @@ function ScoreElo(Misc_PRI killed)
 
     //debug
     //ClientEloChange(newElo);
-    //killed.ClientEloChange(-newElo);
+    //killed.ClientEloChange(-newEloKilled);
+}
+
+// scale kfactor based on elo delta
+function float GetKFactor(Misc_PRI killed)
+{
+    local float kfactor;
+
+    if(Abs(Elo - killed.Elo) > 20000)
+        kfactor = 20.0;
+    else if(Abs(Elo - Killed.Elo) > 10000)
+        kfactor = 30.0;
+    else if(Abs(Elo - Killed.Elo) > 5000)
+        kfactor = 40.0;
+    else 
+        kfactor = 50.0;
+
+    return kfactor;
 }
 
 simulated function ClientEloChange(float eloChange)
