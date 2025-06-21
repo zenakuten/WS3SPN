@@ -434,7 +434,7 @@ function ScoreElo(Misc_PRI killed)
 
     //debug
     //ClientEloChange(newElo);
-    //killed.ClientEloChange(-newEloKilled);
+    //killed.ClientEloChange(-newElo);
 }
 
 // scale kfactor based on elo delta
@@ -442,14 +442,30 @@ function float GetKFactor(Misc_PRI killed)
 {
     local float kfactor;
 
-    if(Abs(Elo - killed.Elo) > 20000)
-        kfactor = 20.0;
-    else if(Abs(Elo - Killed.Elo) > 10000)
-        kfactor = 30.0;
-    else if(Abs(Elo - Killed.Elo) > 5000)
-        kfactor = 40.0;
-    else 
-        kfactor = 50.0;
+    if(Elo >= killed.Elo)
+    {
+        // get less points for fragging a noob
+        if(Abs(Elo - killed.Elo) > 20000)
+            kfactor = 20.0;
+        else if(Abs(Elo - Killed.Elo) > 10000)
+            kfactor = 30.0;
+        else if(Abs(Elo - Killed.Elo) > 5000)
+            kfactor = 40.0;
+        else 
+            kfactor = 50.0;
+    }
+    else
+    {
+        // get more points for fragging a pro
+        if(Abs(Elo - killed.Elo) > 20000)
+            kfactor = 50.0;
+        else if(Abs(Elo - Killed.Elo) > 10000)
+            kfactor = 40.0;
+        else if(Abs(Elo - Killed.Elo) > 5000)
+            kfactor = 30.0;
+        else 
+            kfactor = 20.0;
+    }
 
     return kfactor;
 }

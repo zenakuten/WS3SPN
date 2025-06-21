@@ -1,4 +1,4 @@
-class MapLimits3SPNCW extends Actor config(WS3SPN_Server);
+class MapLimits3SPNCW extends Actor config(WS3SPN_MapLimits);
 
 var config array<string> MapLimits;
 var config string LastMapName;

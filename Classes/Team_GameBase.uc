@@ -1,7 +1,6 @@
 class Team_GameBase extends TeamGame
     abstract
-    config(WS3SPN_Server)
-    PerObjectConfig;
+    config;
 
 #exec OBJ LOAD FILE=TeamSymbols.utx
 #exec AUDIO IMPORT FILE="Sounds\Overtime.wav" GROUP=Sounds

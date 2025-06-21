@@ -3,8 +3,6 @@
 //================================================================================
 
 class NecroCombo extends Combo
-    config(WS3SPN_Server)
-    PerObjectConfig
     HideCategories(Movement,Collision,Lighting,LightColor,Karma,Force);
 
 #exec SOUND IMPORT NAME=Thaw FILE=Sounds\thaw.wav GROUP=Sounds 

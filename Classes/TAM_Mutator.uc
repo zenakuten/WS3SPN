@@ -24,9 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //    - Mar 15, 2005
 //-----------------------------------------------------------
 
-class TAM_Mutator extends MutUTComp
-    config(WS3SPN_Server)
-    PerObjectConfig;
+class TAM_Mutator extends MutUTComp;
 
 
 #exec OBJ LOAD FILE=Textures\3SPNTex.utx PACKAGE=WS3SPN
