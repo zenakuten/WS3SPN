@@ -37,6 +37,7 @@ var int FraggedCount;
 const M_LN10 = 2.30258509299404568402;
 var float ELO_BaseCoeff;
 var float ELO_KFactor;
+var float ELO_KFactorKillRange;
 
 var int CurrentDamage;
 var int CurrentDamage2;
@@ -422,12 +423,23 @@ static function float CalcElo(float elo1, float elo2, float kfactor)
 
 function ScoreElo(Misc_PRI killed)
 {
-    local float newElo;
+    local float eloScore;
+    local float factor;
 
-    newElo = static.CalcElo(Elo, killed.Elo, GetKFactor(killed));
+    // figure out how much elo score is involved
+    eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
 
-    Elo = Max(0, Elo + newElo);
-    killed.Elo = Max(0, killed.Elo - newElo);
+    // scale the score based on killer vs killed elo
+    factor = 1.0;
+    if(Elo > killed.Elo)                // If we are higher ranked than victim, scale down
+        factor = (Killed.Elo) / (Elo);
+    else if(Elo < killed.Elo)           // if we are lower ranked than victim, scale up
+        factor = (Elo) / (killed.Elo);
+
+    eloScore = eloScore * factor;
+
+    Elo = Max(1.0, Elo + eloScore);
+    killed.Elo = Max(1.0, killed.Elo - eloScore);
 
     KillCount++;
     killed.FraggedCount++;
@@ -437,37 +449,10 @@ function ScoreElo(Misc_PRI killed)
     //killed.ClientEloChange(-newElo);
 }
 
-// scale kfactor based on elo delta
-function float GetKFactor(Misc_PRI killed)
+// scale kfactor down with more experience
+function float GetKFactor()
 {
-    local float kfactor;
-
-    if(Elo >= killed.Elo)
-    {
-        // get less points for fragging a noob
-        if(Abs(Elo - killed.Elo) > 20000)
-            kfactor = 20.0;
-        else if(Abs(Elo - Killed.Elo) > 10000)
-            kfactor = 30.0;
-        else if(Abs(Elo - Killed.Elo) > 5000)
-            kfactor = 40.0;
-        else 
-            kfactor = 50.0;
-    }
-    else
-    {
-        // get more points for fragging a pro
-        if(Abs(Elo - killed.Elo) > 20000)
-            kfactor = 50.0;
-        else if(Abs(Elo - Killed.Elo) > 10000)
-            kfactor = 40.0;
-        else if(Abs(Elo - Killed.Elo) > 5000)
-            kfactor = 30.0;
-        else 
-            kfactor = 20.0;
-    }
-
-    return kfactor;
+    return ELO_KFactor * ELO_KFactorKillRange / (KillCount + FraggedCount + ELO_KFactorKillRange);
 }
 
 simulated function ClientEloChange(float eloChange)
@@ -485,5 +470,6 @@ defaultproperties
      StringDeadNoRez="Dead [Inactive]"
      PawnInfoClass=Class'WS3SPN.Misc_PawnReplicationInfo'
      ELO_BaseCoeff=400
-     ELO_KFactor=21
+     ELO_KFactor=40
+     ELO_KFactorKillRange=60000
 }
