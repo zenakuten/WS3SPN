@@ -455,7 +455,7 @@ function ScoreElo(Misc_PRI killed)
 
 // lim x -> n * x / (x + k)
 // lim x -> ( EloLimit * x ) / ( x + EloLimit/2 ) 
-function float ComputeElo()
+simulated function float ComputeElo()
 {
     local Misc_BaseGRI GRI;
     GRI = Misc_BaseGRI(Level.Game.GameReplicationInfo);
@@ -482,7 +482,7 @@ simulated function ClientEloChange(float eloChange)
 }
 
 // S = 0, ...
-function int GetSRank(Misc_BaseGRI GRI)
+simulated function int GetSRank(Misc_BaseGRI GRI)
 {
     local float RankSize;
     local int SRank;
