@@ -222,6 +222,10 @@ var config float PureRFFScale;
 
 var config float SRankLimit;
 var config float EloLimit;
+
+var config bool bSpawnAtPathNodes;
+var config bool bSpawnAtJumpSpots;
+
 /*
 struct RestartInfo
 {
@@ -438,10 +442,12 @@ static function FillPlayInfo(PlayInfo PI)
 
     PI.AddSetting("3SPN", "FootstepVolume", "volume of player footstep sound", 0, Weight++, "Text", "8;0.0:1.0");
     PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
-    PI.AddSetting("3SPN", "bPureRFF", "Reverse friendly fire", 0, 113, "Check");
+    PI.AddSetting("3SPN", "bPureRFF", "Reverse friendly fire", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "PureRFFScale", "Reverse friendly fire scale", 0, Weight++, "Text", "8;0.0:2.0");
     PI.AddSetting("3SPN", "SRankLimit", "SRank Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "EloLimit", "Elo Limit", 0, Weight++, "Text", "8;0:1000000");
+    PI.AddSetting("3SPN", "bSpawnAtPathNodes", " Spawn at Path Nodes", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "bSpawnAtJumpSpots", " Spawn at Jump Spots", 0, Weight++, "Check");
 
     //serverlink menu entry
     Weight = 1;
@@ -574,6 +580,8 @@ static event string GetDescriptionText(string PropName)
       case "PureRFFScale": return "scale of reflected back damage.";
       case "SRankLimit": return "Elo value needed for S Rank";
       case "EloLimit": return "Elo Scale (Max Elo)";
+      case "bSpawnAtPathNodes": return "Spawn at path nodes";
+      case "bSpawnAtJumpSpots": return "Spawn at jump spots";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -1601,7 +1609,7 @@ function NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam
 
     for ( N=Level.NavigationPointList; N!=None; N=N.NextNavigationPoint )
     {
-        if(N.IsA('PathNode') || N.IsA('PlayerStart') || N.IsA('JumpSpot'))
+        if((N.IsA('PathNode') && bSpawnAtPathNodes) || (N.IsA('JumpSpot') && bSpawnatJumpSpots) || N.IsA('PlayerStart'))
             NewRating = RatePlayerStart(N, Team, Player);
         else
             NewRating = 1;
@@ -4249,6 +4257,8 @@ defaultproperties
      ChallengeModeScale=1.0
      SRankLimit=1000
      EloLimit=1500     
+     bSpawnAtPathNodes=true
+     bSpawnAtJumpSpots=true
 
      DefaultEnemyRosterClass="WS3SPN.TAM_TeamInfo"
      ADR_MinorError=-5.000000

@@ -1,6 +1,12 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V15
+- Fix bug with extra countdown in warmup in TAM / Freon 
+- Add SRank/Elo scoreboard
+- Add option to spawn at path nodes (this was hardcoded true)
+- Add option to spawn at jump spots (this was hardcoded true)
+
 V14
 - More elo stats
 
