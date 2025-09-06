@@ -651,11 +651,11 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 
     SetDrawColorForPing(C, PRI.Ping * 4);
     name = string(Min(999, PRI.Ping *4))$"ms    ";
-    C.StrLen(name, XL, YL);
     C.DrawText(name);
 
     if(PRI.PacketLoss > 0)
     {
+        C.StrLen("000ms    ", XL, YL);
         SetDrawColorForPL(C, PRI.PacketLoss);
         name = string(PRI.PacketLoss)$"%";
         C.SetPos(BarX + StatX + XL, BarY + StatY - 8 + 4);
@@ -856,27 +856,27 @@ function SetDrawColorForPing(Canvas C, int Ping)
     }
     else if(Ping <= 56)
     {
-        C.DrawColor.R = 32;
-        C.DrawColor.G = 200;
+        C.DrawColor.R = 64;
+        C.DrawColor.G = 150;
         C.DrawColor.B = 16;
     }
     else if(Ping <= 72)
     {
-        C.DrawColor.R = 200;
-        C.DrawColor.G = 200;
-        C.DrawColor.B = 0;
+        C.DrawColor.R = 150;
+        C.DrawColor.G = 150;
+        C.DrawColor.B = 16;
     }
     else if(Ping <= 96)
     {
-        C.DrawColor.R = 200;
+        C.DrawColor.R = 150;
         C.DrawColor.G = 64;
-        C.DrawColor.B = 0;
+        C.DrawColor.B = 16;
     }
     else
     {
-        C.DrawColor.R = 180;
-        C.DrawColor.G = 32;
-        C.DrawColor.B = 32;
+        C.DrawColor.R = 150;
+        C.DrawColor.G = 16;
+        C.DrawColor.B = 16;
     }
 }
 
@@ -885,20 +885,20 @@ function SetDrawColorForPL(Canvas C, int PL)
     if(PL <= 1)
     {
         C.DrawColor.R = 64;
-        C.DrawColor.G = 200;
-        C.DrawColor.B = 0;
+        C.DrawColor.G = 150;
+        C.DrawColor.B = 16;
     }
     else if(PL <= 5)
     {
-        C.DrawColor.R = 200;
-        C.DrawColor.G = 200;
-        C.DrawColor.B = 0;
+        C.DrawColor.R = 150;
+        C.DrawColor.G = 150;
+        C.DrawColor.B = 16;
     }
     else
     {
-        C.DrawColor.R = 180;
-        C.DrawColor.G = 32;
-        C.DrawColor.B = 32;
+        C.DrawColor.R = 150;
+        C.DrawColor.G = 16;
+        C.DrawColor.B = 16;
     }
 }
 
