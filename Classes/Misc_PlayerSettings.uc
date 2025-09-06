@@ -30,6 +30,7 @@ struct MiscSettings
     var bool bConfigureNetSpeed;
     var int ConfigureNetSpeedValue;
     var bool bKillingSpreeCheers;
+    var bool bUseEloScoreboard;
 };
 
 var config bool Existing;

@@ -72,6 +72,8 @@ var bool bEnableExtraAwards;
 
 var bool bShowNumSpecs;
 var float ChallengeModeScale;
+var float SRankLimit;
+var float EloLimit;
 
 replication
 {
@@ -86,7 +88,7 @@ replication
         bLockRolloff, RollOffMinValue,
         bBoostedAltShieldJump, bAllowPauseSounds, bDisableNecro, bDisableNecroMessage, bAllowSetBehindView,
         bForceDeadToSpectate, ForceDeadSpectateDelay, bEnableAntiAwards, bEnableExtraAwards, 
-        bShowNumSpecs, ChallengeModeScale;
+        bShowNumSpecs, ChallengeModeScale, SRankLimit, EloLimit;
 
     reliable if(!bNetInitial && bNetDirty && Role == ROLE_Authority)
         RoundMinute;
@@ -296,5 +298,5 @@ simulated function Timer()
 defaultproperties
 {
      VersionName="Wicked Sick"
-     VersionNumber="V14"
+     VersionNumber="V15"
 }

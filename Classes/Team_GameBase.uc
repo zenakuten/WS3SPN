@@ -219,6 +219,9 @@ var config bool bCheersForSprees;
 var config float ChallengeModeScale;
 var config bool bPureRFF;
 var config float PureRFFScale;
+
+var config float SRankLimit;
+var config float EloLimit;
 /*
 struct RestartInfo
 {
@@ -306,6 +309,9 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).bShowNumSpecs = bShowNumSpecs;
     Misc_BaseGRI(GameReplicationInfo).ChallengeModeScale = ChallengeModeScale;
     Misc_BaseGRI(GameReplicationInfo).bDisableNecroMessage = bDisableNecroMessage;
+
+    Misc_BaseGRI(GameReplicationInfo).SRankLimit = SRankLimit;
+    Misc_BaseGRI(GameReplicationInfo).EloLimit = EloLimit;
 }
 
 function GetServerDetails(out ServerResponseLine ServerState)
@@ -434,6 +440,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
     PI.AddSetting("3SPN", "bPureRFF", "Reverse friendly fire", 0, 113, "Check");
     PI.AddSetting("3SPN", "PureRFFScale", "Reverse friendly fire scale", 0, Weight++, "Text", "8;0.0:2.0");
+    PI.AddSetting("3SPN", "SRankLimit", "SRank Limit", 0, Weight++, "Text", "8;0:1000000");
+    PI.AddSetting("3SPN", "EloLimit", "Elo Limit", 0, Weight++, "Text", "8;0:1000000");
 
     //serverlink menu entry
     Weight = 1;
@@ -564,6 +572,8 @@ static event string GetDescriptionText(string PropName)
       case "ChallengeModeScale": return "0-1 scale for how strong tamdicap is";
       case "bPureRFF": return "Teammate damage is reflected back.";
       case "PureRFFScale": return "scale of reflected back damage.";
+      case "SRankLimit": return "Elo value needed for S Rank";
+      case "EloLimit": return "Elo Scale (Max Elo)";
     }
 
     return Super.GetDescriptionText(PropName);
@@ -1505,6 +1515,10 @@ function int ReduceDamage (int Damage, Pawn injured, Pawn instigatedBy, Vector H
   local byte WeaponNum;
 
   Dam = ReduceDamageOld(Damage,injured,instigatedBy,HitLocation,Momentum,DamageType);
+  if(Misc_PRI(injured.PlayerReplicationInfo) != None)
+  {
+      Misc_PRI(injured.PlayerReplicationInfo).DamageReceived += Dam;
+  }
   if ( (Class<WeaponDamageType>(DamageType) != None) && (injured != None) && (instigatedBy != None) && (injured != instigatedBy) && (Misc_PRI(instigatedBy.PlayerReplicationInfo) != None) && (Dam != 0) )
   {
     WeaponNum = Class<WeaponDamageType>(DamageType).Default.WeaponClass.Default.InventoryGroup;
@@ -4233,13 +4247,15 @@ defaultproperties
      bShowNumSpecs=true
      bCheersForSprees=true
      ChallengeModeScale=1.0
+     SRankLimit=1000
+     EloLimit=1500     
 
      DefaultEnemyRosterClass="WS3SPN.TAM_TeamInfo"
      ADR_MinorError=-5.000000
      LoginMenuClass="WS3SPN.Menu_TAMLoginMenu"
      LocalStatsScreenClass=Class'Misc_StatBoard'
      DefaultPlayerClassName="WS3SPN.Misc_Pawn"
-     ScoreBoardType="WS3SPN.TAM_Scoreboard"
+     ScoreBoardType="WS3SPN.TAM_ScoreboardEx"
      HUDType="WS3SPN.TAM_HUD"
      MapListType="3SPNRU-B2.MapListTeamArenaMaster"
      GoalScore=10

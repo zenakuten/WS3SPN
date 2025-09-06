@@ -11,6 +11,7 @@ var automated moCheckBox PlayOwnLandings;
 var automated moComboBox AbortNecro;
 var automated moCheckBox ShowSpectators;
 var automated moCheckBox KillingSpreeCheers;
+var automated moCheckBox UseEloScoreboard;
 
 ///////////////////////////////
 
@@ -81,6 +82,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     }
 
     KillingSpreeCheers.Checked(class'Misc_Player'.default.bKillingSpreeCheers);
+    UseEloScoreboard.Checked(class'Misc_Player'.default.bUseEloScoreboard);
 
     ////////////////////
 
@@ -149,6 +151,11 @@ function InternalOnChange( GUIComponent C )
 			break;
         case KillingSpreeCheers:
 			class'Misc_Player'.default.bKillingSpreeCheers = KillingSpreeCheers.IsChecked();
+            break;
+
+        case UseEloScoreboard:
+			class'Misc_Player'.default.bUseEloScoreboard = UseEloScoreboard.IsChecked();
+            break;
 
         case DisableTeamInfo:
             class'Misc_Player'.default.bShowTeamInfo = !DisableTeamInfo.IsChecked();
@@ -277,6 +284,17 @@ defaultproperties
          OnChange=Menu_Settings.InternalOnChange
      End Object
      KillingSpreeCheers=wsCheckBox'WS3SPN.Menu_Settings.KillingSpreeCheersCheckBox'
+
+     Begin Object Class=wsCheckBox Name=UseEloScoreboardCheckBox
+         Caption="Use elo/rank scoreboard:"
+         OnCreateComponent=UseEloScoreboardCheckBox.InternalOnCreateComponent
+         WinTop=0.48
+         WinLeft=0.000000
+         WinWidth=0.400000
+         OnChange=Menu_Settings.InternalOnChange
+     End Object
+     UseEloScoreboard=wsCheckBox'WS3SPN.Menu_Settings.UseEloScoreboardCheckBox'
+
 
      /////////////////////////////////////////////
 

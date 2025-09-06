@@ -114,6 +114,7 @@ var Actor.eDoubleClickDir BufferedClickDir;
 var int NumSpectators;
 var config bool bShowSpectators;
 var config bool bKillingSpreeCheers;
+var config bool bUseEloScoreboard;
 var bool bOverlayInitialized;
 
 replication
@@ -198,6 +199,9 @@ function LoadPlayerDataStats()
   local Misc_PRI MPRI;
 
   MPRI = Misc_PRI(PlayerReplicationInfo);
+  MPRI.Elo = PlayerData.Elo;
+  MPRI.KillCount = PlayerData.KillCount;
+  MPRI.FraggedCount = PlayerData.FraggedCount;
   MPRI.Rank = PlayerData.Rank;
   MPRI.AvgPPR = PlayerData.AvgPPR;
   MPRI.PointsToRankUp = PlayerData.PointsToRankUp;
@@ -1593,6 +1597,7 @@ simulated function ReloadDefaults()
     AbortNecroSoundType = class'Misc_Player'.default.AbortNecroSoundType;
     bShowSpectators = class'Misc_Player'.default.bShowSpectators;
     bKillingSpreeCheers = class'Misc_Player'.default.bKillingSpreeCheers;
+    bUseEloScoreboard = class'Misc_Player'.default.bUseEloScoreboard;
 }
 
 function ServerReportNewNetStats(bool enable)
@@ -1839,6 +1844,7 @@ defaultproperties
 
      bShowSpectators=true
      bKillingSpreeCheers=true
+     bUseEloScoreboard=true
 
      AbortNecroSoundType=ANS_Meow
 }

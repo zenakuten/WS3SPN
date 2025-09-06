@@ -9,6 +9,7 @@ var int ConsecutiveCampCount;   // the number of times penalized for camping con
 
 var int EnemyDamage;            // damage done to enemies - NR
 var int AllyDamage;             // damage done to allies and self - NR
+var int DamageReceived;         // damage received
 var float ReverseFF;            // percentage of friendly fire that is returned - NR
 var int MinigunCount;	
 var int FlawlessCount;          // number of flawless victories - NR
@@ -38,6 +39,7 @@ const M_LN10 = 2.30258509299404568402;
 var float ELO_BaseCoeff;
 var float ELO_KFactor;
 var float ELO_KFactorKillRange;
+var float MinElo;
 
 var int CurrentDamage;
 var int CurrentDamage2;
@@ -411,6 +413,7 @@ simulated function ResetStats()
     CurrentDamage2 = 0;
     CampCount = 0;
     ConsecutiveCampCount = 0;
+    DamageReceived = 0;
 }
 
 static function float CalcElo(float elo1, float elo2, float kfactor)
@@ -431,22 +434,35 @@ function ScoreElo(Misc_PRI killed)
 
     // scale the score based on killer vs killed elo
     factor = 1.0;
-    if(Elo > killed.Elo)                // If we are higher ranked than victim, scale down
+    if(Elo > killed.Elo && Killed.Elo > 1)                // If we are higher ranked than victim, scale down
         factor = (Killed.Elo) / (Elo);
-    else if(Elo < killed.Elo)           // if we are lower ranked than victim, scale up
+    else if(Elo < killed.Elo && Elo > 1)           // if we are lower ranked than victim, scale up
         factor = (Elo) / (killed.Elo);
 
     eloScore = eloScore * factor;
 
     Elo = Max(1.0, Elo + eloScore);
-    killed.Elo = Max(1.0, killed.Elo - eloScore);
+    if(killed.Elo > MinElo)
+        killed.Elo = Max(MinElo, killed.Elo - eloScore);
 
     KillCount++;
     killed.FraggedCount++;
 
     //debug
-    //ClientEloChange(newElo);
-    //killed.ClientEloChange(-newElo);
+    //ClientEloChange(eloScore);
+    //killed.ClientEloChange(-eloScore);
+}
+
+// lim x -> n * x / (x + k)
+// lim x -> ( EloLimit * x ) / ( x + EloLimit/2 ) 
+function float ComputeElo()
+{
+    local Misc_BaseGRI GRI;
+    GRI = Misc_BaseGRI(Level.Game.GameReplicationInfo);
+    if(GRI == None)
+    return Elo;
+
+    return max(1.0,(GRI.EloLimit * Elo) / (Elo + GRI.EloLimit*0.5));
 }
 
 // scale kfactor down with more experience
@@ -465,11 +481,29 @@ simulated function ClientEloChange(float eloChange)
     }
 }
 
+// S = 0, ...
+function int GetSRank(Misc_BaseGRI GRI)
+{
+    local float RankSize;
+    local int SRank;
+
+    if(GRI == None)
+        return 6;
+
+    RankSize = GRI.SRankLimit / 7;
+    SRank = 7 - int(ComputeElo() / RankSize);
+    SRank = clamp(SRank, 0, 6);
+
+    return SRank;
+}
+
 defaultproperties
 {
      StringDeadNoRez="Dead [Inactive]"
      PawnInfoClass=Class'WS3SPN.Misc_PawnReplicationInfo'
-     ELO_BaseCoeff=400
-     ELO_KFactor=40
-     ELO_KFactorKillRange=60000
+     ELO_BaseCoeff=400.0
+     ELO_KFactor=40.0
+     ELO_KFactorKillRange=60000.0
+     Elo=400.0
+     MinElo=10.0
 }

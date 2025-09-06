@@ -641,7 +641,7 @@ defaultproperties
      TeamAIType(0)=Class'WS3SPN.Freon_TeamAI'
      TeamAIType(1)=Class'WS3SPN.Freon_TeamAI'
      DefaultPlayerClassName="WS3SPN.Freon_Pawn"
-     ScoreBoardType="WS3SPN.Freon_Scoreboard"
+     ScoreBoardType="WS3SPN.Freon_ScoreboardEx"
      HUDType="WS3SPN.Freon_HUD"
      MapListType="WS3SPN.MapListFreon"
      PlayerControllerClassName="WS3SPN.Freon_Player"

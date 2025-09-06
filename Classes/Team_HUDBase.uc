@@ -1385,6 +1385,15 @@ function CheckCountdown(GameReplicationInfo GRI)
 {
     local Misc_BaseGRI G;
 
+    if(BS_xPlayer(PlayerOwner) != None 
+        && BS_xPlayer(PlayerOwner).uWarmup!=None
+        && (BS_xPlayer(PlayerOwner).uWarmup.bWarmupEnded || BS_xPlayer(PlayerOwner).uWarmup.bInWarmup))
+    {
+        // fix the extra "one" at end of warmup
+        // the warmup countdown already does this
+        return;
+    }        
+
     G = Misc_BaseGRI(GRI);
     if(G == None || G.SecsPerRound == 0 || G.RoundTime == 0 || G.RoundTime == OldRoundTime || GRI.Winner != None)
     {
