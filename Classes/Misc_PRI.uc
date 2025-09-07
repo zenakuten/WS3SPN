@@ -98,7 +98,7 @@ replication
     reliable if ( Role == ROLE_Authority )
         RegisterDamage, UpdateVsStats;
     unreliable if ( bNetDirty && (Role == ROLE_Authority) )
-        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI,Elo;
+        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI,Elo,DamageReceived;
 
     //debug
     reliable if (ROLE == ROLE_Authority)
