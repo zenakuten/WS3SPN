@@ -427,23 +427,28 @@ static function float CalcElo(float elo1, float elo2, float kfactor)
 function ScoreElo(Misc_PRI killed)
 {
     local float eloScore;
-    local float factor;
+    local float killerfactor;
+    local float killedfactor;
 
     // figure out how much elo score is involved
     eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
 
     // scale the score based on killer vs killed elo
-    factor = 1.0;
-    if(Elo > killed.Elo && Killed.Elo > 1)                // If we are higher ranked than victim, scale down
-        factor = (Killed.Elo) / (Elo);
+    killerfactor = 1.0;
+    if(Elo > killed.Elo && Killed.Elo > 1)          // If we are higher ranked than victim, scale down
+        killerfactor = (Killed.Elo) / (Elo);
     else if(Elo < killed.Elo && Elo > 1)           // if we are lower ranked than victim, scale up
-        factor = (Elo) / (killed.Elo);
+        killerfactor = (Elo) / (killed.Elo);
 
-    eloScore = eloScore * factor;
+    killedfactor = 1.0;
+    if(Elo > killed.Elo && Elo > 1)                 // If we are higher ranked than victim, scale up
+        killedfactor = (Elo) / (killed.Elo);
+    else if(Elo < killed.Elo && killed.Elo > 1)     // if we are lower ranked than victim, scale down
+        killedfactor = (killed.Elo) / (Elo);
 
-    Elo = Max(1.0, Elo + eloScore);
+    Elo = Max(1.0, Elo + eloScore * killerFactor);
     if(killed.Elo > MinElo)
-        killed.Elo = Max(MinElo, killed.Elo - eloScore);
+        killed.Elo = Max(MinElo, killed.Elo - eloScore * killedFactor);
 
     KillCount++;
     killed.FraggedCount++;
@@ -452,6 +457,7 @@ function ScoreElo(Misc_PRI killed)
     //ClientEloChange(eloScore);
     //killed.ClientEloChange(-eloScore);
 }
+
 
 // lim x -> n * x / (x + k)
 // lim x -> ( EloLimit * x ) / ( x + EloLimit/2 ) 
