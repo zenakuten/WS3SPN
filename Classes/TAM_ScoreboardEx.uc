@@ -642,8 +642,20 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 			name = PRI.PlayerName;
 		C.DrawColor = HUDClass.default.WhiteColor * 0.7;
 	}
+
 	C.SetPos(BarX+NameX, BarY+NameY);
-	class'Misc_Util'.static.DrawTextClipped(C, name, NameW);
+
+    if(TAM_HUD(PlayerController(Owner).MyHUD).FindNextSmile(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
+    {
+        C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
+        TAM_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
+        StatX+=XL-48;
+    }
+    else
+    {
+        C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, smallf);
+	    class'Misc_Util'.static.DrawTextClipped(C, name, NameW);        
+    }
 	
     // in status ping ms / pl%
     C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);

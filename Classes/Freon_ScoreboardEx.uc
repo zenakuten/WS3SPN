@@ -716,7 +716,17 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
 		C.DrawColor = HUDClass.default.WhiteColor * 0.7;
 	}
 	C.SetPos(BarX+NameX, BarY+NameY);
-	class'Misc_Util'.static.DrawTextClipped(C, name, NameW);
+    if(Freon_HUD(PlayerController(Owner).MyHUD).FindNextSmile(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
+    {
+        C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
+        Freon_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
+        StatX+=XL - 48;
+    }
+    else
+    {
+        C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, smallf);
+	    class'Misc_Util'.static.DrawTextClipped(C, name, NameW);        
+    }
 
         // in status ping/pl
     C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);
