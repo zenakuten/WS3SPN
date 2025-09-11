@@ -817,11 +817,7 @@ event InitGame(string Options, out string Error)
      ScoreBoardType="WS3SPN.TAM_ScoreboardEx";
   else
      ScoreBoardType="WS3SPN.TAM_Scoreboard";
-
-  }
-  //SaveConfig();
-
-  //SaveConfig();
+  
 }
 
 
