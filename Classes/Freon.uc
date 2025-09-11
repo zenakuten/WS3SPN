@@ -103,9 +103,9 @@ event InitGame(string options, out string error)
     Super.InitGame(Options, Error);
 
     if(bUseNewScoreboard)
-        ScoreBoardType="WS3SPN.Freon_ScoreboardEx"
+        ScoreBoardType="WS3SPN.Freon_ScoreboardEx";
     else
-        ScoreBoardType="WS3SPN.Freon_Scoreboard"
+        ScoreBoardType="WS3SPN.Freon_Scoreboard";
 
     class'xPawn'.Default.ControllerClass = class'Freon_Bot';
 
