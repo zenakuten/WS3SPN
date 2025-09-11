@@ -225,6 +225,7 @@ var config float EloLimit;
 
 var config bool bSpawnAtPathNodes;
 var config bool bSpawnAtJumpSpots;
+var config bool bUseNewScoreboard;
 
 /*
 struct RestartInfo
@@ -448,6 +449,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "EloLimit", "Elo Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "bSpawnAtPathNodes", " Spawn at Path Nodes", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnAtJumpSpots", " Spawn at Jump Spots", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "bUseNewScoreboard", " Let players use the new scoreboard", 0, Weight++, "Check");
 
     //serverlink menu entry
     Weight = 1;
@@ -582,6 +584,8 @@ static event string GetDescriptionText(string PropName)
       case "EloLimit": return "Elo Scale (Max Elo)";
       case "bSpawnAtPathNodes": return "Spawn at path nodes";
       case "bSpawnAtJumpSpots": return "Spawn at jump spots";
+      case "bUseNewScoreboard": return "Let players use the new scoreboard";
+
     }
 
     return Super.GetDescriptionText(PropName);
@@ -807,6 +811,13 @@ event InitGame(string Options, out string Error)
   if(bShowNumSpecs)
   {
       Spawn(class'SpecMonitor');
+  }
+
+  if(bUseNewScoreboard)
+     ScoreBoardType="WS3SPN.TAM_ScoreboardEx"
+  else
+     ScoreBoardType="WS3SPN.TAM_Scoreboard"
+
   }
   //SaveConfig();
 
@@ -4259,6 +4270,7 @@ defaultproperties
      EloLimit=1500     
      bSpawnAtPathNodes=true
      bSpawnAtJumpSpots=true
+     bUseNewScoreboard=true
 
      DefaultEnemyRosterClass="WS3SPN.TAM_TeamInfo"
      ADR_MinorError=-5.000000
