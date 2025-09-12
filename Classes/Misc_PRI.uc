@@ -427,6 +427,7 @@ static function float CalcElo(float elo1, float elo2, float kfactor)
 function ScoreElo(Misc_PRI killed)
 {
     local float eloScore;
+    local float normalizedElo;
 
     // normalize 
     Elo = Max(1.0, Elo);
@@ -434,10 +435,11 @@ function ScoreElo(Misc_PRI killed)
 
     // figure out how much elo score is involved
     eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
+    normalizedElo = static.CalcElo(1.0, 1.0, GetKFactor());
     
     // scale the score based on killer vs killed elo
     if(Elo > Killed.Elo)
-        eloScore = 1 / eloScore;
+        eloScore = normalizedElo / eloScore;
 
     // assign elo
     Elo = Max(1.0, Elo + eloScore);
