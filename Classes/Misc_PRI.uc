@@ -427,20 +427,22 @@ static function float CalcElo(float elo1, float elo2, float kfactor)
 function ScoreElo(Misc_PRI killed)
 {
     local float eloScore;
-    local float Factor;
+
+    // normalize 
+    Elo = Max(1.0, Elo);
+    Killed.Elo = Max(1.0, Killed.Elo);
 
     // figure out how much elo score is involved
     eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
-
+    
     // scale the score based on killer vs killed elo
-    Elo = Max(1.0, Elo);
-    Killed.Elo = Max(1.0, Killed.Elo);
-    Factor = Killed.Elo / Elo;
+    if(Elo > Killed.Elo)
+        eloScore = 1 / eloScore;
 
     // assign elo
-    Elo = Max(1.0, Elo + eloScore * Factor);
+    Elo = Max(1.0, Elo + eloScore);
     if(killed.Elo > MinElo)
-        killed.Elo = Max(MinElo, killed.Elo - eloScore * Factor);
+        killed.Elo = Max(MinElo, killed.Elo - eloScore);
 
     KillCount++;
     killed.FraggedCount++;
@@ -456,7 +458,7 @@ function ScoreElo(Misc_PRI killed)
 simulated function float ComputeElo()
 {
     local Misc_BaseGRI GRI;
-    GRI = Misc_BaseGRI(Level.Game.GameReplicationInfo);
+    GRI = Misc_BaseGRI(Level.GRI);
     if(GRI == None)
     return Elo;
 
