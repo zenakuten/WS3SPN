@@ -430,8 +430,8 @@ function ScoreElo(Misc_PRI killed)
     local float normalizedElo;
 
     // normalize 
-    Elo = Max(1.0, Elo);
-    Killed.Elo = Max(1.0, Killed.Elo);
+    Elo = fmax(1.0, Elo);
+    Killed.Elo = fmax(1.0, Killed.Elo);
 
     // figure out how much elo score is involved
     eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
@@ -442,9 +442,9 @@ function ScoreElo(Misc_PRI killed)
         eloScore = normalizedElo / eloScore;
 
     // assign elo
-    Elo = Max(1.0, Elo + eloScore);
+    Elo = fmax(1.0, Elo + eloScore);
     if(killed.Elo > MinElo)
-        killed.Elo = Max(MinElo, killed.Elo - eloScore);
+        killed.Elo = fmax(MinElo, killed.Elo - eloScore);
 
     KillCount++;
     killed.FraggedCount++;
@@ -464,7 +464,7 @@ simulated function float ComputeElo()
     if(GRI == None)
     return Elo;
 
-    return max(1.0,(GRI.EloLimit * Elo) / (Elo + GRI.EloLimit*0.5));
+    return fmax(1.0,(GRI.EloLimit * Elo) / (Elo + GRI.EloLimit*0.5));
 }
 
 // scale kfactor down with more experience
