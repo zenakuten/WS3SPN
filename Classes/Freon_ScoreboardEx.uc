@@ -647,6 +647,7 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
 	local Freon_PRI xPRI;
 	local int OwnerTeam;
     local float smallf, smallerf;
+    local float XXL;
 
 	OwnerPRI = PlayerController(Owner).PlayerReplicationInfo;
 	xPRI = Freon_PRI(PRI);
@@ -719,8 +720,9 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
     if(Freon_HUD(PlayerController(Owner).MyHUD).FindNextSmile(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
     {
         C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
+        XXL=C.CurX;
         Freon_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
-        StatX+=XL - 48;
+        StatX+=XL-XXL;
     }
     else
     {
@@ -927,7 +929,7 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
 	// ELO	
 	C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);
 	C.DrawColor = HUDClass.default.WhiteColor * 0.55;
-	name = string(int(Misc_PRI(PRI).ComputeElo()));
+	name = string(int(Misc_PRI(PRI).ScaledElo()));
 	C.StrLen(name, XL, YL);
 	C.SetPos(BarX + EloX + 16 - (XL * 0.5), BarY + EloY + 4);
 	C.DrawText(name);
@@ -1190,7 +1192,7 @@ simulated function DrawTeamBoard(Canvas C, int BoxX, int BoxY, int BoxW, string 
 		{
 			TeamThaws += xPRI.Thaws;
             TeamDamage += xPRI.EnemyDamage;
-			TeamAvgElo += xPRI.ComputeElo();
+			TeamAvgElo += xPRI.ScaledElo();
 			
 			if(xPRI.AvgPPR!=0)
 			{

@@ -581,6 +581,7 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 	local Misc_PRI OwnerPRI;
 	local int OwnerTeam;
     local float smallf, smallerf;
+    local float XXL;
 
     OwnerPRI = Misc_PRI(PlayerController(Owner).PlayerReplicationInfo);
 	
@@ -648,8 +649,9 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
     if(TAM_HUD(PlayerController(Owner).MyHUD).FindNextSmile(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
     {
         C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
+        XXL=C.CurX;
         TAM_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
-        StatX+=XL-48;
+        StatX+=XL-XXL;
     }
     else
     {
@@ -838,7 +840,7 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 	// ELO	
 	C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);
 	C.DrawColor = HUDClass.default.WhiteColor * 0.55;
-	name = string(int(Misc_PRI(PRI).ComputeElo()));
+	name = string(int(Misc_PRI(PRI).ScaledElo()))$" "$string(int(Misc_PRI(PRI).ComputeElo()));
 	C.StrLen(name, XL, YL);
 	C.SetPos(BarX + EloX + 16 - (XL * 0.5), BarY + EloY -24);
 	C.DrawText(name);
@@ -1162,7 +1164,7 @@ simulated function DrawTeamBoard(Canvas C, int BoxX, int BoxY, int BoxW, string 
 		if(Misc_PRI(PRI)!=None)
         {
             TeamDamage += Misc_PRI(PRI).EnemyDamage;
-            TeamAvgElo += Misc_PRI(PRI).ComputeElo();
+            TeamAvgElo += Misc_PRI(PRI).ScaledElo();
 
             if(Misc_PRI(PRI).AvgPPR!=0)
             {
@@ -1415,7 +1417,7 @@ defaultproperties
      SRankTex(2)=Texture'WS3SPN.textures.SRankB'
      SRankTex(3)=Texture'WS3SPN.textures.SRankC'
      SRankTex(4)=Texture'WS3SPN.textures.SRankD'
-     SRankTex(5)=Texture'WS3SPN.textures.SRankD'
+     SRankTex(5)=Texture'WS3SPN.textures.SRankE'
      SRankTex(6)=Texture'WS3SPN.textures.SRankF'
      BaseAlpha=200
      MaxTeamSize=12

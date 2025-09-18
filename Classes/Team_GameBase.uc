@@ -220,6 +220,7 @@ var config float ChallengeModeScale;
 var config bool bPureRFF;
 var config float PureRFFScale;
 
+var config float FRankLimit;
 var config float SRankLimit;
 var config float EloLimit;
 
@@ -315,6 +316,7 @@ function InitGameReplicationInfo()
     Misc_BaseGRI(GameReplicationInfo).ChallengeModeScale = ChallengeModeScale;
     Misc_BaseGRI(GameReplicationInfo).bDisableNecroMessage = bDisableNecroMessage;
 
+    Misc_BaseGRI(GameReplicationInfo).FRankLimit = FRankLimit;
     Misc_BaseGRI(GameReplicationInfo).SRankLimit = SRankLimit;
     Misc_BaseGRI(GameReplicationInfo).EloLimit = EloLimit;
 }
@@ -445,7 +447,8 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "FootstepRadius", "radius of player footstep sound", 0, Weight++, "Text", "6;0:100000");
     PI.AddSetting("3SPN", "bPureRFF", "Reverse friendly fire", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "PureRFFScale", "Reverse friendly fire scale", 0, Weight++, "Text", "8;0.0:2.0");
-    PI.AddSetting("3SPN", "SRankLimit", "SRank Limit", 0, Weight++, "Text", "8;0:1000000");
+    PI.AddSetting("3SPN", "FRankLimit", "F Rank Limit", 0, Weight++, "Text", "8;0:1000000");
+    PI.AddSetting("3SPN", "SRankLimit", "S Rank Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "EloLimit", "Elo Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "bSpawnAtPathNodes", " Spawn at Path Nodes", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnAtJumpSpots", " Spawn at Jump Spots", 0, Weight++, "Check");
@@ -581,6 +584,7 @@ static event string GetDescriptionText(string PropName)
       case "bPureRFF": return "Teammate damage is reflected back.";
       case "PureRFFScale": return "scale of reflected back damage.";
       case "SRankLimit": return "Elo value needed for S Rank";
+      case "FRankLimit": return "Elo value needed for F Rank";
       case "EloLimit": return "Elo Scale (Max Elo)";
       case "bSpawnAtPathNodes": return "Spawn at path nodes";
       case "bSpawnAtJumpSpots": return "Spawn at jump spots";
@@ -4262,8 +4266,9 @@ defaultproperties
      bShowNumSpecs=true
      bCheersForSprees=true
      ChallengeModeScale=1.0
-     SRankLimit=1000
-     EloLimit=1500     
+     SRankLimit=450
+     FRankLimit=150
+     EloLimit=1000     
      bSpawnAtPathNodes=true
      bSpawnAtJumpSpots=true
      bUseNewScoreboard=true

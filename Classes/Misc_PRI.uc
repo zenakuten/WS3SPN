@@ -36,10 +36,7 @@ var int KillCount;
 var int FraggedCount;
 
 const M_LN10 = 2.30258509299404568402;
-var float ELO_BaseCoeff;
-var float ELO_KFactor;
-var float ELO_KFactorKillRange;
-var float MinElo;
+var float ELO_Base;
 
 var int CurrentDamage;
 var int CurrentDamage2;
@@ -416,61 +413,35 @@ simulated function ResetStats()
     DamageReceived = 0;
 }
 
-static function float CalcElo(float elo1, float elo2, float kfactor)
+function float ComputeElo()
 {
-    local float expected;
-
-    expected = 1 / (exp(M_LN10 * (abs(elo1 - elo2) / default.ELO_BaseCoeff)) + 1);
-    return kfactor * (1 - expected);
+    return (Elo + ELO_Base * ( fmax(0,KillCount - FraggedCount))) / fmax(1,( KillCount + FraggedCount));
 }
 
+// https://en.wikipedia.org/wiki/Elo_rating_system#Performance_rating
 function ScoreElo(Misc_PRI killed)
 {
-    local float eloScore;
-    local float normalizedElo;
-
-    // normalize 
-    Elo = fmax(1.0, Elo);
-    Killed.Elo = fmax(1.0, Killed.Elo);
-
-    // figure out how much elo score is involved
-    eloScore = static.CalcElo(Elo, killed.Elo, GetKFactor());
-    normalizedElo = static.CalcElo(1.0, 1.0, GetKFactor());
-    
-    // scale the score based on killer vs killed elo
-    if(Elo > Killed.Elo)
-        eloScore = normalizedElo / eloScore;
-
-    // assign elo
-    Elo = fmax(1.0, Elo + eloScore);
-    if(killed.Elo > MinElo)
-        killed.Elo = fmax(MinElo, killed.Elo - eloScore);
-
+    Elo += killed.ComputeElo();
     KillCount++;
     killed.FraggedCount++;
-
-    //debug
-    //ClientEloChange(eloScore);
-    //killed.ClientEloChange(-eloScore);
 }
-
 
 // lim x -> n * x / (x + k)
 // lim x -> ( EloLimit * x ) / ( x + EloLimit/2 ) 
-simulated function float ComputeElo()
+simulated function float ScaledElo()
 {
+    local float retval;
     local Misc_BaseGRI GRI;
+
+    // get elo
+    retval = ComputeElo();
+
     GRI = Misc_BaseGRI(Level.GRI);
     if(GRI == None)
-    return Elo;
+        return retval;
 
-    return fmax(1.0,(GRI.EloLimit * Elo) / (Elo + GRI.EloLimit*0.5));
-}
-
-// scale kfactor down with more experience
-function float GetKFactor()
-{
-    return ELO_KFactor * ELO_KFactorKillRange / (KillCount + FraggedCount + ELO_KFactorKillRange);
+    // scale to limit
+    return fmax(1.0,(GRI.EloLimit * retval) / (retval + GRI.EloLimit*0.5));
 }
 
 simulated function ClientEloChange(float eloChange)
@@ -487,25 +458,44 @@ simulated function ClientEloChange(float eloChange)
 simulated function int GetSRank(Misc_BaseGRI GRI)
 {
     local float RankSize;
-    local int SRank;
+    local float selo;
+    local float F,E,D,C,B,A,S;
+
 
     if(GRI == None)
         return 6;
 
-    RankSize = GRI.SRankLimit / 7;
-    SRank = 7 - int(ComputeElo() / RankSize);
-    SRank = clamp(SRank, 0, 6);
+    RankSize = (GRI.SRankLimit - GRI.FRankLimit) / 7;
 
-    return SRank;
+    selo = ScaledElo();
+
+    F = GRI.FRankLimit + RankSize * 1;
+    E = GRI.FRankLimit + RankSize * 2;
+    D = GRI.FRankLimit + RankSize * 3;
+    C = GRI.FRankLimit + RankSize * 4;
+    B = GRI.FRankLimit + RankSize * 5;
+    A = GRI.FRankLimit + RankSize * 6;
+    S = GRI.FRankLimit + RankSize * 7;
+
+    if(selo <= F)
+        return 6;
+    else if(selo <= E)
+        return 5;
+    else if(selo <= D)
+        return 4;
+    else if(selo <= C)
+        return 3;
+    else if(selo <= B)
+        return 2;
+    else if(selo <= A)
+        return 1;
+
+    return 0;
 }
 
 defaultproperties
 {
      StringDeadNoRez="Dead [Inactive]"
      PawnInfoClass=Class'WS3SPN.Misc_PawnReplicationInfo'
-     ELO_BaseCoeff=400.0
-     ELO_KFactor=40.0
-     ELO_KFactorKillRange=60000.0
-     Elo=400.0
-     MinElo=10.0
+     ELO_Base=1500.0
 }
