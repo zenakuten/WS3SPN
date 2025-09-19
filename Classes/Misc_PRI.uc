@@ -413,13 +413,13 @@ simulated function ResetStats()
     DamageReceived = 0;
 }
 
-function float ComputeElo()
+simulated function float ComputeElo()
 {
     return (Elo + ELO_Base * ( fmax(0,KillCount - FraggedCount))) / fmax(1,( KillCount + FraggedCount));
 }
 
 // https://en.wikipedia.org/wiki/Elo_rating_system#Performance_rating
-function ScoreElo(Misc_PRI killed)
+simulated function ScoreElo(Misc_PRI killed)
 {
     Elo += killed.ComputeElo();
     KillCount++;

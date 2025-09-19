@@ -840,7 +840,7 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 	// ELO	
 	C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);
 	C.DrawColor = HUDClass.default.WhiteColor * 0.55;
-	name = string(int(Misc_PRI(PRI).ScaledElo()))$" "$string(int(Misc_PRI(PRI).ComputeElo()));
+	name = " "$class'Misc_PRI'.static.GetFormattedPPR(Misc_PRI(PRI).ScaledElo());
 	C.StrLen(name, XL, YL);
 	C.SetPos(BarX + EloX + 16 - (XL * 0.5), BarY + EloY -24);
 	C.DrawText(name);
@@ -853,7 +853,7 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 	{
 		C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -5);
 		C.DrawColor = HUDClass.default.WhiteColor * 0.55;
-		name = class'Misc_PRI'.static.GetFormattedPPR(Misc_PRI(PRI).AvgPPR);
+		name = " "$class'Misc_PRI'.static.GetFormattedPPR(Misc_PRI(PRI).AvgPPR);
 		C.StrLen(name, XL, YL);
 		C.SetPos(BarX + EloX + 16 - (XL * 0.5), BarY + EloY + 2);
 		C.DrawText(name);
