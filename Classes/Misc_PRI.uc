@@ -95,7 +95,7 @@ replication
     reliable if ( Role == ROLE_Authority )
         RegisterDamage, UpdateVsStats;
     unreliable if ( bNetDirty && (Role == ROLE_Authority) )
-        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI,Elo,DamageReceived;
+        PlayedRounds,Rank,AvgPPR,PointsToRankUp,PPRListLength,PPRList,PawnReplicationInfo, UTCompPRI,Elo,DamageReceived,KillCount,FraggedCount;
 
     //debug
     reliable if (ROLE == ROLE_Authority)
@@ -419,7 +419,7 @@ simulated function float ComputeElo()
 }
 
 // https://en.wikipedia.org/wiki/Elo_rating_system#Performance_rating
-simulated function ScoreElo(Misc_PRI killed)
+function ScoreElo(Misc_PRI killed)
 {
     Elo += killed.ComputeElo();
     KillCount++;
