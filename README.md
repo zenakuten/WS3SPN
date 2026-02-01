@@ -1,6 +1,19 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V18
+- Fix aiming in 3p view (adapted from superaerialview)
+- Possible? fix for shock crash
+- Limit the custom weapon color range to minimum rgb value
+- Add server option to disable all view shake
+
+V17
+- fix channel leak when controllers join/leave
+
+V16
+- emote menu improvements
+- fix floating/ghost players appearing in some ONS games
+
 V15
 - Fix bug with extra countdown in warmup in TAM / Freon 
 - Add SRank/Elo scoreboard
