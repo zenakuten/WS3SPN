@@ -1,6 +1,10 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V19
+- Fix crash from V18 (ty Calypto!)
+- rewrite 3p view
+
 V18
 - Fix aiming in 3p view (adapted from superaerialview)
 - Possible? fix for shock crash
