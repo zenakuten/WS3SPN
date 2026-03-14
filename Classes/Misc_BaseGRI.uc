@@ -102,174 +102,185 @@ replication
 
 function float Decimal (float Num)
 {
-  if ( Num > 0 )
-  {
-    return int((Num + 0.051) * 10) * 0.1;
-  } else {
-    return int((Num - 0.051) * 10) * 0.1;
-  }
+	if ( Num > 0 )
+	{
+		return int((Num + 0.051) * 10) * 0.1;
+	} 
+	else 
+	{
+		return int((Num - 0.051) * 10) * 0.1;
+	}
 }
 
 function UpdateServerRecorder ()
 {
-  local string NewText;
-  local string Text;
-  
-  if ( Class'Misc_PlayerDataManager_Local'.Default.TopScore > 0 )
-  {
-    NewText = "Server Record:" @ Class'Misc_PlayerDataManager_Local'.Default.TopName @ string(Class'Misc_PlayerDataManager_Local'.Default.TopScore) @ "Points";
-  } else {
-    NewText = "Server Record: -";
-  }
-  if ( ScoreBoardExtraInfo != NewText )
-  {
-    ScoreBoardExtraInfo = NewText @ Text;
-  }
+	local string NewText;
+	local string Text;
+
+	if ( Class'Misc_PlayerDataManager_Local'.Default.TopScore > 0 )
+	{
+		NewText = "Server Record:" @ Class'Misc_PlayerDataManager_Local'.Default.TopName @ string(Class'Misc_PlayerDataManager_Local'.Default.TopScore) @ "Points";
+	} 
+	else 
+	{
+		NewText = "Server Record: -";
+	}
+	if ( ScoreBoardExtraInfo != NewText )
+	{
+		ScoreBoardExtraInfo = NewText @ Text;
+	}
 }
 
-simulated function string onoff() {
-  local string Text;
+simulated function string onoff() 
+{
+	local string Text;
 
-  if (stat)
-    Text = class'Message_StatsRecordingDisabled'.Default.recor;
-  else 
-    Text =class'Message_StatsRecordingDisabled'.Default.disabled;
- 
-  return Text;
+	if (stat)
+		Text = class'Message_StatsRecordingDisabled'.Default.recor;
+	else 
+		Text =class'Message_StatsRecordingDisabled'.Default.disabled;
+
+	return Text;
 }
-
 
 function UpdateServerSkill ()
 {
-  local int i;
-  local float Players[2];
-  local float PPR[2];
-  local float AvgPPR;
+	local int i;
+	local float Players[2];
+	local float PPR[2];
+	local float AvgPPR;
 
-  i = 0;
-  JL0007:
-  if ( i < PRIArray.Length )
-  {
-  if ( (PRIArray[i].Team != None) && (PRIArray[i].Team.TeamIndex < 2) )
-    {
-  if ( (Misc_PRI(PRIArray[i]) == None) || (Misc_PRI(PRIArray[i]).AvgPPR == 0) )
-      {
-        goto JL00FF;
-      }
-    
-      PPR[PRIArray[i].Team.TeamIndex] += Decimal(Misc_PRI(PRIArray[i]).AvgPPR);
-      Players[PRIArray[i].Team.TeamIndex] += 1;
-	  }
-    JL00FF:
-    i++;
-    goto JL0007;
-  }
-  if ( (Players[0] < 1) || (Players[1] < 1) )
-  {
-    AvgPPR = 0.0;
-  } else {
-    AvgPPR = Decimal((Decimal(PPR[0] / Players[0]) + Decimal(PPR[1] / Players[1])) * 0.5);
-  }
-  if ( ServerSkill != AvgPPR )
-  {
-    ServerSkill = AvgPPR;
-  }
+	i = 0;
+	JL0007:
+	if ( i < PRIArray.Length )
+	{
+		if ( (PRIArray[i].Team != None) && (PRIArray[i].Team.TeamIndex < 2) )
+		{
+			if ( (Misc_PRI(PRIArray[i]) == None) || (Misc_PRI(PRIArray[i]).AvgPPR == 0) )
+			{
+				goto JL00FF;
+			}
+
+			PPR[PRIArray[i].Team.TeamIndex] += Decimal(Misc_PRI(PRIArray[i]).AvgPPR);
+			Players[PRIArray[i].Team.TeamIndex] += 1;
+		}
+		JL00FF:
+		i++;
+		goto JL0007;
+	}
+	if ( (Players[0] < 1) || (Players[1] < 1) )
+	{
+		AvgPPR = 0.0;
+	} 
+	else 
+	{
+		AvgPPR = Decimal((Decimal(PPR[0] / Players[0]) + Decimal(PPR[1] / Players[1])) * 0.5);
+	}
+	if ( ServerSkill != AvgPPR )
+	{
+		ServerSkill = AvgPPR;
+	}
 }
 
 simulated function string GetServerSkillText ()
 {
-  if ( ServerSkill <= 0 )
-  {
-    return "??(Min.2 Players)";
-  }
-  if ( ServerSkill < 1 )
-  {
-    return "?{No-Skill (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "?{)"
-  }
-  if ( ServerSkill < 1.8 )
-  {
-    return "?Low (???" & Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) & "?)"
-  }
-  if ( ServerSkill < 2.1 )
-  {
-    return "??Mid (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
-  }
-  if ( ServerSkill < 2.25 )
-  {
-    return "??Good (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
-  }
-  if ( ServerSkill < 2.7 )
-  {
-    return "??High (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
-  }
-  if ( ServerSkill > 3.1 )
-  {
-    return "??Insane (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
-  }
-  
+	if ( ServerSkill <= 0 )
+	{
+		return "??(Min.2 Players)";
+	}
+	if ( ServerSkill < 1 )
+	{
+		return "?{No-Skill (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "?{)";
+	}
+	if ( ServerSkill < 1.8 )
+	{
+		return "?Low (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "?)";
+	}
+	if ( ServerSkill < 2.1 )
+	{
+		return "??Mid (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)";
+	}
+	if ( ServerSkill < 2.25 )
+	{
+		return "??Good (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)";
+	}
+	if ( ServerSkill < 2.7 )
+	{
+		return "??High (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)";
+	}
+	if ( ServerSkill > 3.1 )
+	{
+		return "??Insane (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)";
+	}
 }
-
-
-
 
 function PlayerReplicationInfo PickWhoToRes (TeamInfo Team)
 {
-  local Controller C;
+	local Controller C;
 
-  if ( Team == None )
-  {
-    return None;
-  }
-  C = Class'NecroCombo'.static.PickWhoToRes(Team);
-  if ( C == None )
-  {
-    return None;
-  }
-  return C.PlayerReplicationInfo;
+	if ( Team == None )
+	{
+		return None;
+	}
+
+	C = Class'NecroCombo'.static.PickWhoToRes(Team);
+	if ( C == None )
+	{
+		return None;
+	}
+
+	return C.PlayerReplicationInfo;
 }
 
 function UpdateWhoToRes ()
 {
-  local PlayerReplicationInfo PRI;
-  local Controller C;
-  local int CanRes[2];
+	local PlayerReplicationInfo PRI;
+	local Controller C;
+	local int CanRes[2];
 
-  if (  !Level.Game.bGameEnded )
-  {
-    C = Level.ControllerList;
-	JL0031:
-    if ( C != None )
-    {
-      if ( (C.PlayerReplicationInfo != None) && (C.PlayerReplicationInfo.Team != None) &&  !C.PlayerReplicationInfo.bOutOfLives && (C.Adrenaline >= 100) )
-      {
-        CanRes[C.PlayerReplicationInfo.Team.TeamIndex]++;
-      }
-      C = C.nextController;
-      goto JL0031;
-    }
-  }
-  if ( CanRes[0] > 0 )
-  {
-    PRI = PickWhoToRes(Teams[0]);
-  } else {
-    PRI = None;
-  }
-  if ( NextWhoToRes[0] != PRI )
-  {
-    NextWhoToRes[0] = PRI;
-  }
-  if ( CanRes[1] > 0 )
-  {
-    PRI = PickWhoToRes(Teams[1]);
-  } else {
-    PRI = None;
-  }
-  if ( NextWhoToRes[1] != PRI )
-  {
-    NextWhoToRes[1] = PRI;
-  }
+	if (  !Level.Game.bGameEnded )
+	{
+		C = Level.ControllerList;
+		JL0031:
+		if ( C != None )
+		{
+			if ( (C.PlayerReplicationInfo != None) && (C.PlayerReplicationInfo.Team != None) &&  !C.PlayerReplicationInfo.bOutOfLives && (C.Adrenaline >= 100) )
+			{
+				CanRes[C.PlayerReplicationInfo.Team.TeamIndex]++;
+			}
+
+			C = C.NextController;
+			goto JL0031;
+		}
+	}
+	if ( CanRes[0] > 0 )
+	{
+		PRI = PickWhoToRes(Teams[0]);
+	} 
+	else 
+	{
+		PRI = None;
+	}
+
+	if ( NextWhoToRes[0] != PRI )
+	{
+		NextWhoToRes[0] = PRI;
+	}
+
+	if ( CanRes[1] > 0 )
+	{
+		PRI = PickWhoToRes(Teams[1]);
+	} 
+	else 
+	{
+		PRI = None;
+	}
+
+	if ( NextWhoToRes[1] != PRI )
+	{
+		NextWhoToRes[1] = PRI;
+	}
 }
-
 
 simulated function Timer()
 { 
@@ -297,6 +308,6 @@ simulated function Timer()
 
 defaultproperties
 {
-     VersionName="Wicked Sick"
-     VersionNumber="V21"
+	VersionName="Wicked Sick"
+	VersionNumber="V21"
 }

@@ -260,7 +260,7 @@ simulated function DrawPlayers(Canvas C)
 
         if(PRI.Team.TeamIndex == Team)
         {
-            if(allies > 9)
+            if(allies > HudTeamPlayersMax)
                 continue;
 
             posy = listy + ((height + space) * allies);
@@ -305,7 +305,7 @@ simulated function DrawPlayers(Canvas C)
         }
         else
         {
-            if(enemies > 9)
+            if(enemies > HudTeamPlayersMax)
                 continue;
 
             posy = listy + ((height + space) * enemies);
@@ -409,7 +409,7 @@ simulated function DrawPlayersExtended(Canvas C)
 
         if(PRI.Team.TeamIndex == Team)
         {
-            if(allies > 9)
+            if(allies > HudTeamPlayersMax)
                 continue;
 
             space = height + (0.0075 * C.ClipY);
@@ -495,7 +495,7 @@ simulated function DrawPlayersExtended(Canvas C)
         }
         else
         {
-            if(enemies > 9)
+            if(enemies > HudTeamPlayersMax)
                 continue;
 
             space = (0.005 * C.ClipY);
@@ -603,7 +603,7 @@ simulated function DrawPlayersZAxis(Canvas C)
     // loop this twice, once for each team, allies first
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(allies > 9)
+        if(allies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -716,7 +716,7 @@ simulated function DrawPlayersZAxis(Canvas C)
     //
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(enemies > 9)
+        if(enemies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -1121,7 +1121,7 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     // loop this twice, once for each team, allies first
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(allies > 9)
+        if(allies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -1153,7 +1153,7 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     //
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(enemies > 9)
+        if(enemies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);

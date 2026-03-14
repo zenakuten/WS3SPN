@@ -34,6 +34,7 @@ var int CurrentStatsList;
 
 var array<vector> TargetingLines;
 var Actor TargetingActor;
+var int HudTeamPlayersMax;
 
 exec function ShowStats()
 {
@@ -178,7 +179,7 @@ simulated function DrawPlayers(Canvas C)
 
         if(PRI.Team.TeamIndex == Team)
         {
-            if(allies > 9)
+            if(allies > HudTeamPlayersMax)
                 continue;
 
             posy = listy + ((height + space) * allies);
@@ -218,7 +219,7 @@ simulated function DrawPlayers(Canvas C)
         }
         else
         {
-            if(enemies > 9)
+            if(enemies > HudTeamPlayersMax)
                 continue;
 
             posy = listy + ((height + space) * enemies);
@@ -356,7 +357,7 @@ simulated function DrawPlayersZAxis(Canvas C)
     // loop this twice, once for each team, allies first
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(allies > 9)
+        if(allies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -456,7 +457,7 @@ simulated function DrawPlayersZAxis(Canvas C)
     //
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(enemies > 9)
+        if(enemies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -638,7 +639,7 @@ simulated function DrawPlayersExtended(Canvas C)
 
         if(PRI.Team.TeamIndex == Team)
         {
-            if(allies > 9)
+            if(allies > HudTeamPlayersMax)
                 continue;
 
             space = height + (0.0075 * C.ClipY);
@@ -713,7 +714,7 @@ simulated function DrawPlayersExtended(Canvas C)
         }
         else
         {
-            if(enemies > 9)
+            if(enemies > HudTeamPlayersMax)
                 continue;
 
             space = (0.005 * C.ClipY);
@@ -1066,7 +1067,7 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     // loop this twice, once for each team, allies first
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(allies > 9)
+        if(allies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -1102,7 +1103,7 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     //
     for(i = 0; i < MyOwner.GameReplicationInfo.PRIArray.Length; i++)
     {
-        if(enemies > 9)
+        if(enemies > HudTeamPlayersMax)
             break;
 
         PRI = Misc_PRI(myOwner.GameReplicationInfo.PRIArray[i]);
@@ -1151,20 +1152,20 @@ simulated function DrawPlayersExtendedZAxis(Canvas C)
     }
 }
 
-
-simulated function DrawSpectatingHud(Canvas C)
+simulated function DrawSpectatingHud (Canvas C)
 {
-  Super.DrawSpectatingHud(C);
+	Super.DrawSpectatingHud(C);
 
-  if(PlayerOwner.PlayerReplicationInfo!=None && PlayerOwner.PlayerReplicationInfo.bOnlySpectator) {
-    if(class'Misc_Player'.default.bAdminVisionInSpec)
-      DrawAdminVision(C);
-    if(class'Misc_Player'.default.bDrawTargetingLineInSpec)
-      DrawTargetingLine(C);
-  }
-  DrawResWarningIcon(C);
+	if(PlayerOwner.PlayerReplicationInfo!=None && PlayerOwner.PlayerReplicationInfo.bOnlySpectator) 
+	{
+		if(class'Misc_Player'.default.bAdminVisionInSpec)
+			DrawAdminVision(C);
+		if(class'Misc_Player'.default.bDrawTargetingLineInSpec)
+			DrawTargetingLine(C);
+	}
+
+	DrawResWarningIcon(C);
 }
-
 
 simulated function DrawHudPassC(Canvas C)
 {
@@ -1621,4 +1622,5 @@ defaultproperties
     AdrenColor=(B=201,G=200,R=181,A=255)
     FullAdrenColor=(G=78,R=229,A=255)
     CurrentStatsList=3
+    HudTeamPlayersMax=16
 }
