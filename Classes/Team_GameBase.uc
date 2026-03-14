@@ -227,6 +227,7 @@ var config float EloLimit;
 var config bool bSpawnAtPathNodes;
 var config bool bSpawnAtJumpSpots;
 var config bool bUseNewScoreboard;
+var config bool bUseEloBalancer;
 
 /*
 struct RestartInfo
@@ -453,6 +454,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "bSpawnAtPathNodes", " Spawn at Path Nodes", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnAtJumpSpots", " Spawn at Jump Spots", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bUseNewScoreboard", " Let players use the new scoreboard", 0, Weight++, "Check");
+    PI.AddSetting("3SPN", "bUseEloBalancer", "Use Elo for the balancer instead of PPR", 0, Weight++, "Check");
 
     //serverlink menu entry
     Weight = 1;
@@ -589,6 +591,7 @@ static event string GetDescriptionText(string PropName)
       case "bSpawnAtPathNodes": return "Spawn at path nodes";
       case "bSpawnAtJumpSpots": return "Spawn at jump spots";
       case "bUseNewScoreboard": return "Let players use the new scoreboard";
+      case "bUseEloBalancer": return "Use Elo for the balancer instead of PPR";
 
     }
 
@@ -2968,6 +2971,14 @@ function BalanceTeamsMatchStart()
   DontAutoBalanceList.Length = 0;
 }
 
+function float GetPlayerAutoBalancingValue(Controller C)
+{
+	if(bUseEloBalancer)
+		return GetPlayerAutoBalancingElo(C);
+
+	return GetPlayerAutoBalancingPPR(C);
+}
+
 function float GetPlayerAutoBalancingPPR(Controller C)
 {
   local Misc_PRI PRI;
@@ -2984,6 +2995,18 @@ function float GetPlayerAutoBalancingPPR(Controller C)
 
   return Lerp(AutoBalanceAvgPPRWeight/100.0, PPR, PRI.AvgPPR);
 }
+
+function float GetPlayerAutoBalancingElo(Controller C)
+{
+  local Misc_PRI PRI;
+
+  PRI = Misc_PRI(C.PlayerReplicationInfo);
+  if(PRI==None)
+    return 0;
+
+  return PRI.ScaledElo();
+}
+
 
 function Controller FindBestAutoBalanceCandidate(int TeamIdx, float PPRNeeded)
 {
@@ -3011,7 +3034,7 @@ function Controller FindBestAutoBalanceCandidate(int TeamIdx, float PPRNeeded)
       C.PlayerReplicationInfo.Team.TeamIndex==TeamIdx &&
       Misc_PRI(C.PlayerReplicationInfo)!=None)
     {
-      PPR = abs(PPRNeeded - GetPlayerAutoBalancingPPR(C));
+      PPR = abs(PPRNeeded - GetPlayerAutoBalancingValue(C));
       if(BestMatch==None || PPR<BestPPR)
       {
         BestMatch = C;
@@ -3060,7 +3083,7 @@ function BalanceTeamsRoundStart()
             continue;
 
     TeamScore[C.PlayerReplicationInfo.Team.TeamIndex] += Teams[C.PlayerReplicationInfo.Team.TeamIndex].Score;
-    TeamPPR[C.PlayerReplicationInfo.Team.TeamIndex] += GetPlayerAutoBalancingPPR(C);
+    TeamPPR[C.PlayerReplicationInfo.Team.TeamIndex] += GetPlayerAutoBalancingValue(C);
         ++TeamSize[C.PlayerReplicationInfo.Team.TeamIndex];
     }
 

@@ -14,6 +14,6 @@ static function string GetString(
 
 defaultproperties
 {
-     ForceAutoBalanceString="Teens will be nakedly balanced like shit and as bad as it can be at round start."
+     ForceAutoBalanceString="Teams will be balanced like shit at round start."
      bIsSpecial=False
 }

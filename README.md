@@ -1,6 +1,14 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V21
+- Show more than 9 players in each team hud
+- Add balance by Elo option
+
+V20
+- no 3spn changes, utcomp changes for 3p view (not tam/freon)
+
+
 V19
 - Fix crash from V18 (ty Calypto!)
 - rewrite 3p view
