@@ -180,31 +180,31 @@ simulated function string GetServerSkillText ()
 {
   if ( ServerSkill <= 0 )
   {
-    return "�(Min.2 Players)";
+    return "??(Min.2 Players)";
   }
   if ( ServerSkill < 1 )
   {
-    return "��No-Skill ���(��" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "?{No-Skill (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "?{)"
   }
   if ( ServerSkill < 1.8 )
   {
-    return "��@Low ���(��@" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "?Low (???" & Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) & "?)"
   }
   if ( ServerSkill < 2.1 )
   {
-    return "��Mid ���(��" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "??Mid (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
   }
   if ( ServerSkill < 2.25 )
   {
-    return "��Good ���(��" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "??Good (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
   }
   if ( ServerSkill < 2.7 )
   {
-    return "��High ���(��" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "??High (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
   }
   if ( ServerSkill > 3.1 )
   {
-    return "��Insane ���(��" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "���)";
+    return "??Insane (???" $ Class'Misc_PRI'.static.GetFormattedPPR(ServerSkill) $ "??)"
   }
   
 }
@@ -298,5 +298,5 @@ simulated function Timer()
 defaultproperties
 {
      VersionName="Wicked Sick"
-     VersionNumber="V20"
+     VersionNumber="V21"
 }
