@@ -180,6 +180,7 @@ function GetServerDetails(out ServerResponseLine ServerState)
 static function FillPlayInfo(PlayInfo PI)
 {
     Super.FillPlayInfo(PI);
+    class'TAM_Mutator'.static.FillPlayInfo(PI);
 
     //weight is held in a byte (max 127?)
 

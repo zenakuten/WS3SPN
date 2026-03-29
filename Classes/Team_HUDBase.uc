@@ -1450,9 +1450,9 @@ simulated function DrawTimer(Canvas C)
     TimerBackground.Tints[TeamIndex] = HudColorBlack;
     TimerBackground.Tints[TeamIndex].A = 150;
 
-    DrawSpriteTileWidget(C, TimerBackground);
-    DrawSpriteTileWidget(C, TimerBackgroundDisc);
-    DrawSpriteTileWidget(C, TimerIcon);
+    DrawSpriteWidget(C, TimerBackground);
+    DrawSpriteWidget(C, TimerBackgroundDisc);
+    DrawSpriteWidget(C, TimerIcon);
 
     TimerMinutes.OffsetX = default.TimerMinutes.OffsetX - 80;
     TimerSeconds.OffsetX = default.TimerSeconds.OffsetX - 80;
@@ -1480,9 +1480,9 @@ simulated function DrawTimer(Canvas C)
             TimerDigitSpacer[1].OffsetX = Default.TimerDigitSpacer[1].OffsetX - 32;
         }
 
-        DrawSpriteTileWidget( C, TimerDigitSpacer[0]);
+        DrawSpriteWidget( C, TimerDigitSpacer[0]);
     }
-    DrawSpriteTileWidget( C, TimerDigitSpacer[1]);
+    DrawSpriteWidget( C, TimerDigitSpacer[1]);
 
     Minutes = Seconds / 60;
     Seconds -= Minutes * 60;
@@ -1490,8 +1490,8 @@ simulated function DrawTimer(Canvas C)
     TimerMinutes.Value = Min(Minutes, 60);
     TimerSeconds.Value = Min(Seconds, 60);
 
-    DrawNumericTileWidget( C, TimerMinutes, DigitsBig);
-    DrawNumericTileWidget( C, TimerSeconds, DigitsBig);
+    DrawNumericWidget( C, TimerMinutes, DigitsBig);
+    DrawNumericWidget( C, TimerSeconds, DigitsBig);
 }
 
 

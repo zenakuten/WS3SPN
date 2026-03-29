@@ -79,16 +79,16 @@ simulated function DrawAdrenaline(Canvas C)
         {
             ComboBack.PosY = (posy - (0.033 * drawn) * Scale);
 
-            DrawSpriteTileWidget(C, ComboBack);
+            DrawSpriteWidget(C, ComboBack);
             
             ComboType[CRI.Combos[i].Type].PosY = (posy - (0.033 * drawn) * Scale);
             
-            DrawSpriteTileWidget(C, ComboType[CRI.Combos[i].Type]);
+            DrawSpriteWidget(C, ComboType[CRI.Combos[i].Type]);
 
             ComboAdren.Value = CRI.Combos[i].Time;
             ComboAdren.PosY = (posy - (0.033 * drawn) * Scale);
 
-            DrawNumericTileWidget(C, ComboAdren, DigitsBig);
+            DrawNumericWidget(C, ComboAdren, DigitsBig);
             
             drawn++;
         }
