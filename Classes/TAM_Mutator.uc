@@ -383,7 +383,11 @@ function bool ReplaceWith(actor Other, string aClassName)
 function ModifyPlayer(Pawn Other)
 {
     super.ModifyPlayer(Other);
-    Team_GameBase(Level.Game).SetupPlayer(Other);
+	if(Team_GameBase(Level.Game) != None)
+		Team_GameBase(Level.Game).SetupPlayer(Other);
+
+	if(ArenaMaster(Level.Game) != None)
+		ArenaMaster(Level.Game).SetupPlayer(Other);
 }
 
 function GiveWeapons(Pawn P)

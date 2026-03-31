@@ -3,6 +3,7 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 
 V22
 - Fix missing utcomp options in ArenaMaster settings
+- Fix armor setting not working in ArenaMaster 
 
 V21
 - Show more than 9 players in each team hud

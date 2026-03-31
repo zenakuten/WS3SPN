@@ -1030,6 +1030,14 @@ function SetupPlayer(Pawn P)
     local int armor;
     local float formula;
 
+    p.Health = StartingHealth;
+    p.HealthMax = StartingHealth;
+    p.SuperHealthMax = StartingHealth * MaxHealth;
+    xPawn(p).ShieldStrengthMax = StartingArmor * MaxHealth;
+
+    if(Misc_Player(p.Controller) != None)
+        xPawn(p).Spree = Misc_Player(p.Controller).Spree;
+	
     if(bChallengeMode)
     {
         won = int(P.PlayerReplicationInfo.Score / 10000);
@@ -1050,14 +1058,7 @@ function SetupPlayer(Pawn P)
         p.AddShieldStrength(Max(0, armor));
     }
     else
-    {
-        p.Health = StartingHealth;
-        p.HealthMax = StartingHealth;
-        p.SuperHealthMax = StartingHealth * MaxHealth;
-
-        xPawn(p).ShieldStrengthMax = StartingArmor * MaxHealth;
         p.AddShieldStrength(StartingArmor);
-    }
 
     if(Misc_Player(p.Controller) != None)
         xPawn(p).Spree = Misc_Player(p.Controller).Spree;
