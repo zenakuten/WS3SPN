@@ -250,6 +250,8 @@ function LoadPlayerData()
 	PlayerReplicationInfo.Score = PlayerData.Current.Score;
 	PlayerReplicationInfo.Kills = PlayerData.Current.Kills;
 	PlayerReplicationInfo.Deaths = PlayerData.Current.Deaths;
+	Misc_PRI(PlayerReplicationInfo).EnemyDamage = PlayerData.Current.EnemyDamage;
+	Misc_PRI(PlayerReplicationInfo).DamageReceived = PlayerData.Current.DamageReceived;
 	
 	if(Freon_PRI(PlayerReplicationInfo)!=None) {
 		Freon_PRI(PlayerReplicationInfo).Thaws = PlayerData.Current.Thaws;
@@ -285,7 +287,9 @@ function StorePlayerData()
 	
 	PlayerData.Current.Score = PlayerReplicationInfo.Score;
 	PlayerData.Current.Kills = PlayerReplicationInfo.Kills;
-	PlayerData.Current.Deaths = PlayerReplicationInfo.Deaths;	
+	PlayerData.Current.Deaths = PlayerReplicationInfo.Deaths;
+	PlayerData.Current.EnemyDamage = Misc_PRI(PlayerReplicationInfo).EnemyDamage;
+	PlayerData.Current.DamageReceived = Misc_PRI(PlayerReplicationInfo).DamageReceived;
 	
 	if(Freon_PRI(PlayerReplicationInfo)!=None) {
 		PlayerData.Current.Thaws = Freon_PRI(PlayerReplicationInfo).Thaws;

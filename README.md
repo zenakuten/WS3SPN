@@ -1,6 +1,9 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V23
+- Fix Damage not restoring on re-join
+
 V22
 - Fix missing utcomp options in ArenaMaster settings
 - Fix armor setting not working in ArenaMaster 

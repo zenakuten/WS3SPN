@@ -12,6 +12,8 @@ struct TrackedData
   var int Deaths;
   var int thaws;
   var int git;
+  var int EnemyDamage;
+  var int DamageReceived;
 };
 
 var Misc_Player Owner;
@@ -88,6 +90,8 @@ static function ResetTrackedData (out TrackedData D)
   D.Deaths = 0;
   D.thaws = 0;
   D.git = 0;
+  D.EnemyDamage = 0;
+  D.DamageReceived = 0;
 }
 
 
