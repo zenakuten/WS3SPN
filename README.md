@@ -1,6 +1,11 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V25
+
+V24
+- see WSUTComp readme for changes
+
 V23
 - Fix Damage not restoring on re-join
 
