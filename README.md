@@ -2,6 +2,7 @@
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
 V25
+- see WSUTComp readme for changes
 
 V24
 - see WSUTComp readme for changes
