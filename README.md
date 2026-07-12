@@ -3,6 +3,7 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 
 V25
 - see WSUTComp readme for changes
+- Fix hearing sounds from your old frozen location after thawing in freon
 
 V24
 - see WSUTComp readme for changes
