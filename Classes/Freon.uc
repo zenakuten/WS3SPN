@@ -388,6 +388,19 @@ function PlayerThawed(Freon_Pawn Thawed, optional float Health, optional float S
     if(PlayerController(C) != None)
         PlayerController(C).ClientSetRotation(Rot);
 
+    // Fix audio listener / view stuck at the frozen pawn location after thaw.
+    // ClientRestart (which normally re-targets the view onto the new pawn) can
+    // be dropped while the client is in a spectating-style state, so re-assert
+    // the view target explicitly now that the new pawn exists.
+    if(C.Pawn != None && PlayerController(C) != None)
+    {
+        PlayerController(C).SetViewTarget(C.Pawn);
+        if(Freon_Player(C) != None)
+            Freon_Player(C).ClientThawView(C.Pawn);
+        else
+            PlayerController(C).ClientSetViewTarget(C.Pawn);
+    }
+
     Team = C.GetTeamNum();
     if(Team == 255)
         return;

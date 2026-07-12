@@ -5,7 +5,7 @@ var Freon_Pawn FrozenPawn;
 replication
 {
     reliable if(Role == ROLE_Authority)
-        ClientSendStatsFreon, ClientListBestFreon;
+        ClientSendStatsFreon, ClientListBestFreon, ClientThawView;
 }
 
 exec function SwitchTeam()
@@ -122,6 +122,33 @@ function Freeze()
     }
 }
 
+// Runs on the owning client at thaw time. The audio listener follows
+// GetViewTarget(); if the view was left on / near the destroyed frozen pawn
+// (ClientReset points it at self, at the frozen spot) the player keeps hearing
+// the world from that old location. Force the view onto the new pawn here.
+function ClientThawView(Pawn P)
+{
+    // The new pawn ref may not have replicated to us yet, in which case P (and
+    // possibly our own Pawn) resolves to None. Prefer the replicated Pawn.
+    if(P == None)
+        P = Pawn;
+
+    if(P != None)
+    {
+        SetViewTarget(P);
+        bBehindView = false;
+        ClientSetBehindView(false);
+    }
+    else
+    {
+        // Pawn not here yet: hand off to the engine WaitingForPawn poll, which
+        // calls ClientRestart(Pawn) locally once it replicates - that re-targets
+        // the view (and thus the audio listener) onto the new pawn. Avoids the
+        // race where a one-shot SetViewTarget fires before the pawn exists.
+        GotoState('WaitingForPawn');
+    }
+}
+
 function ServerViewNextPlayer()
 {
     local Controller C, Pick;
@@ -218,7 +245,9 @@ state Frozen extends Spectating
 //trying to get round bug where we can't always get back to own camera
 state Frozen
 {
-    ignores SwitchWeapon, RestartLevel, ClientRestart, Suicide,
+    // NOTE: ClientRestart must NOT be ignored here - the thaw path relies on
+    // it to move the audio listener / view off the frozen pawn onto the new one.
+    ignores SwitchWeapon, RestartLevel, Suicide,
      ThrowWeapon, NotifyPhysicsVolumeChange, NotifyHeadVolumeChange;
 
     exec function Fire( optional float F )
