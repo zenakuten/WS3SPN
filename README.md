@@ -1,9 +1,12 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V26
+- Dynamically scale TAM/ArenaMaster/Freon scoreboard rows to fit the player count, up to 64 on screen
+- Fix hearing sounds from your old frozen location after thawing in freon
+
 V25
 - see WSUTComp readme for changes
-- Fix hearing sounds from your old frozen location after thawing in freon
 
 V24
 - see WSUTComp readme for changes

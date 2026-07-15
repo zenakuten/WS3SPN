@@ -60,6 +60,11 @@ var int   MaxTeamSize;
 var int	  MaxTeamPlayers;
 var int	  MaxSpectators;
 
+// Vertical scale applied to each player bar (height, intra-bar offsets, text and
+// icons). 1.0 by default; auto-fit shrinks it below 1.0 in DrawTeamBoard so all
+// players fit on screen. Read by DrawPlayerBar. See scoreboard-64-player work.
+var float RowScale;
+
 var config bool bEnableColoredNamesOnScoreboard;
 
 simulated function SetCustomBarColor(out Color C, PlayerReplicationInfo PRI, bool bOwner);
@@ -564,32 +569,36 @@ simulated function DrawPlayerBar(Canvas C, int BarX, int BarY, int BarW, int Bar
 		OwnerTeam = 255;
 	
 	NameX = BarW * 0.031;
-    NameY = C.ClipY * 0.0075;
+    NameY = C.ClipY * 0.0075 * RowScale;
     NameW = BarW * 0.47;
 	StatX = BarW * 0.051;
-    StatY = C.ClipY * 0.035;
+    StatY = C.ClipY * 0.035 * RowScale;
 	ScoreX = BarW * 0.59;
-	ScoreY = C.ClipY * 0.0075;
+	ScoreY = C.ClipY * 0.0075 * RowScale;
 	PointsPerX = BarW * 0.59;
-	PointsPerY = C.ClipY * 0.035;
+	PointsPerY = C.ClipY * 0.035 * RowScale;
 	KillsX = BarW * 0.71;
-	KillsY = C.ClipY * 0.0075;
+	KillsY = C.ClipY * 0.0075 * RowScale;
 	DeathsX = BarW * 0.71;
-	DeathsY = C.ClipY * 0.035;
+	DeathsY = C.ClipY * 0.035 * RowScale;
 	PingX = BarW * 0.82;
-	PingY = C.ClipY * 0.0075;
+	PingY = C.ClipY * 0.0075 * RowScale;
 	PLX = BarW * 0.82;
-	PLY = C.ClipY * 0.035;
+	PLY = C.ClipY * 0.035 * RowScale;
 	RankX = BarW * 0.93;
 	cronex= BarW * 0.43;
-	crony = C.ClipY * 0.0075;
-	RankY = C.ClipY * 0.0075;
+	crony = C.ClipY * 0.0075 * RowScale;
+	RankY = C.ClipY * 0.0075 * RowScale;
 	AvgPPRX = BarW * 0.93;
-	AvgPPRY = C.ClipY * 0.035;
-	
-	RankW = C.ClipX * 32.0/1920.0;
-	RankH = C.ClipY * 32.0/1080.0;
-	
+	AvgPPRY = C.ClipY * 0.035 * RowScale;
+
+	RankW = C.ClipX * 32.0/1920.0 * RowScale;
+	RankH = C.ClipY * 32.0/1080.0 * RowScale;
+
+	// Shrink all bar text to match the (possibly auto-fit) bar height. No-op at 1.0.
+	C.FontScaleX = RowScale;
+	C.FontScaleY = RowScale;
+
 	// BACKGROUND
 
 	C.SetPos(BarX, BarY);
@@ -791,6 +800,10 @@ simulated function DrawPlayerBar(Canvas C, int BarX, int BarY, int BarW, int Bar
 	C.StrLen(name, XL, YL);
 	C.SetPos(BarX + PLX - (XL * 0.5), BarY + PLY);
 	C.DrawText(name);
+
+	// Restore so totals bar, labels and specs draw full size.
+	C.FontScaleX = 1.0;
+	C.FontScaleY = 1.0;
 }
 
 simulated function DrawPlayerTotalsBar(Canvas C, int BarX, int BarY, int BarW, int BarH, string TeamName, Color backgroundCol, int Score, int Kills, int Ping, float PPR)
@@ -1003,6 +1016,14 @@ simulated function DrawTeamBoard(Canvas C, int BoxX, int BoxY, int BoxW, string 
 
 	PlayerTotalsW = BoxW;
 	PlayerTotalsH = C.ClipY * 0.04;
+
+	// Auto-fit: shrink player bars (and their contents, via RowScale in DrawPlayerBar)
+	// so header + all rows + totals fit on screen. Never enlarge past the 0.06 default.
+	if(MaxPlayers > 0)
+		RowScale = FMin(1.0, (C.ClipY*0.98 - LabelsBarH - PlayerTotalsH) / (C.ClipY*0.06*MaxPlayers));
+	else
+		RowScale = 1.0;
+	PlayerBoxH = C.ClipY * 0.06 * RowScale;
 
 	BoxH = PlayerBoxY + (PlayerBoxH+PlayerBoxSeparatorH)*MaxPlayers;
 	if(MaxPlayers >= 2)
@@ -1269,7 +1290,8 @@ defaultproperties
      crons(5)=Texture'WS3SPN.textures.Test'
      crons(6)=Texture'WS3SPN.textures.Test'
      BaseAlpha=200
-     MaxTeamSize=12
+     MaxTeamSize=32
      MaxSpectators=19
+     RowScale=1.0
      bEnableColoredNamesOnScoreboard=True
 }

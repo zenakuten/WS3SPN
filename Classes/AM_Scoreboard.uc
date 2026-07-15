@@ -129,22 +129,26 @@ simulated function DrawPlayerBar(Canvas C, int BarX, int BarY, int BarW, int Bar
     OwnerPRI = Misc_PRI(PlayerController(Owner).PlayerReplicationInfo);
 	
 	NameX = BarW * 0.031;
-    NameY = C.ClipY * 0.0075;
+    NameY = C.ClipY * 0.0075 * RowScale;
     NameW = BarW * 0.47;
 	StatX = BarW * 0.051;
-    StatY = C.ClipY * 0.035;
+    StatY = C.ClipY * 0.035 * RowScale;
 	ScoreX = BarW * 0.66;
-	ScoreY = C.ClipY * 0.0075;
+	ScoreY = C.ClipY * 0.0075 * RowScale;
 	PointsPerX = BarW * 0.66;
-	PointsPerY = C.ClipY * 0.035;
+	PointsPerY = C.ClipY * 0.035 * RowScale;
 	WinsX = BarW * 0.80;
-	WinsY = C.ClipY * 0.0075;
+	WinsY = C.ClipY * 0.0075 * RowScale;
 	DeathsX = BarW * 0.80;
-	DeathsY = C.ClipY * 0.035;
+	DeathsY = C.ClipY * 0.035 * RowScale;
 	PingX = BarW * 0.92;
-	PingY = C.ClipY * 0.0075;
+	PingY = C.ClipY * 0.0075 * RowScale;
 	PLX = BarW * 0.92;
-	PLY = C.ClipY * 0.035;
+	PLY = C.ClipY * 0.035 * RowScale;
+
+	// Shrink all bar text to match the (possibly auto-fit) bar height. No-op at 1.0.
+	C.FontScaleX = RowScale;
+	C.FontScaleY = RowScale;
 
 	// BACKGROUND
 
@@ -328,6 +332,10 @@ simulated function DrawPlayerBar(Canvas C, int BarX, int BarY, int BarW, int Bar
 	C.StrLen(name, XL, YL);
 	C.SetPos(BarX + PLX - (XL * 0.5), BarY + PLY);
 	C.DrawText(name);
+
+	// Restore so totals bar, labels and specs draw full size.
+	C.FontScaleX = 1.0;
+	C.FontScaleY = 1.0;
 }
 
 simulated function DrawPlayerTotalsBar(Canvas C, int BarX, int BarY, int BarW, int BarH, string TeamName, Color backgroundCol, int Score, int Kills, int Ping, float PPR)
@@ -485,4 +493,6 @@ simulated event UpdateScoreBoard(Canvas C)
 
 defaultproperties
 {
+     // ArenaMaster lists everyone in one column, so allow the full 64.
+     MaxTeamSize=64
 }
