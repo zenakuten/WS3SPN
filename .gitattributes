@@ -1,0 +1,28 @@
+# This tree is cloned on Windows and on Linux, and with no rules here each clone
+# decides line endings for itself from its own core.autocrlf -- which is where
+# the drift comes from. Every text file in this repository is LF and always has
+# been; these rules make that a property of the repository rather than of
+# whoever happened to clone it, and of how.
+#
+# UCC compiles LF sources perfectly well, so this costs the build nothing.
+* text=auto eol=lf
+
+# Said outright rather than left to git's text/binary heuristic, which decides
+# on NUL bytes alone: some UnrealScript sources carry raw control bytes inside
+# string literals (colour codes), and that is a poor thing to have guessed
+# wrong about.
+*.uc  text eol=lf
+*.uci text eol=lf
+
+# Content rather than source -- git should not look inside it or rewrite a byte
+# of it. Upper-case variants are listed because these patterns are
+# case-sensitive and both spellings are in the tree.
+*.dds binary
+*.lwo binary
+*.png binary
+*.tga binary
+*.TGA binary
+*.usx binary
+*.utx binary
+*.wav binary
+*.WAV binary

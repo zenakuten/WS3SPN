@@ -1382,18 +1382,51 @@ simulated function DrawTargetingLine(Canvas C)
   }
 }
 
+// True while UTComp_Warmup owns the countdown. It broadcasts its own
+// UTComp_Warmup_CountDown messages over the closing seconds of warmup, so anything this
+// HUD announces during that window is a second voice on the same numbers.
+function bool WarmupOwnsCountdown()
+{
+    local BS_xPlayer P;
+
+    P = BS_xPlayer(PlayerOwner);
+    if(P == None || P.uWarmup == None)
+        return false;
+
+    return P.uWarmup.bInWarmup || P.uWarmup.bWarmupEnded;
+}
+
+// Keep the countdown baselines level with the clock while we are staying quiet.
+//
+// Both countdowns here -- this one on RoundTime and the stock one on RemainingTime that it
+// falls through to -- announce whenever the clock differs from the value they last saw.
+// Returning early without touching those leaves a stale baseline sitting there for the
+// whole of warmup, so the first call after the suppression lifts finds a difference and
+// fires on it once. That is the stray extra number: warmup counts three, two, one, the
+// guard lifts as the match starts, and the HUD immediately flushes one more.
+//
+// Suppressing harder cannot fix that on its own, which is why this kept coming back at the
+// edges. The baseline has to move even when nothing is being announced.
+function SyncCountdownBaseline(GameReplicationInfo GRI)
+{
+    if(GRI == None)
+        return;
+
+    OldRemainingTime = GRI.RemainingTime;
+
+    if(Misc_BaseGRI(GRI) != None)
+        OldRoundTime = Misc_BaseGRI(GRI).RoundTime;
+}
+
 function CheckCountdown(GameReplicationInfo GRI)
 {
     local Misc_BaseGRI G;
 
-    if(BS_xPlayer(PlayerOwner) != None 
-        && BS_xPlayer(PlayerOwner).uWarmup!=None
-        && (BS_xPlayer(PlayerOwner).uWarmup.bWarmupEnded || BS_xPlayer(PlayerOwner).uWarmup.bInWarmup))
+    if(WarmupOwnsCountdown())
     {
-        // fix the extra "one" at end of warmup
-        // the warmup countdown already does this
+        SyncCountdownBaseline(GRI);
         return;
-    }        
+    }
 
     G = Misc_BaseGRI(GRI);
     if(G == None || G.SecsPerRound == 0 || G.RoundTime == 0 || G.RoundTime == OldRoundTime || GRI.Winner != None)

@@ -1021,7 +1021,8 @@ function BecomeActivePlayer()
 			TeamIdx = int(GetURLOption("Team"));
 		else
 			TeamIdx = 255;
-		Level.Game.ChangeTeam(self, Level.Game.PickTeam(TeamIdx, None), false);
+		// pass self so PickTeam can apply the player team balancing rules
+		Level.Game.ChangeTeam(self, Level.Game.PickTeam(TeamIdx, self), false);
     
     if( Team_GameBase(Level.Game)!=None && Team_GameBase(Level.Game).AutoBalanceOnJoins )
       Team_GameBase(Level.Game).ForceAutoBalance = true;
@@ -1432,11 +1433,24 @@ exec function ToggleTeamInfo()
     class'Misc_Player'.static.StaticSaveConfig();
 }
 
+// The 1p-only rule is about players on foot, and a vehicle is the one case where third
+// person is the normal way to drive rather than an advantage: stock hands it out on entry
+// by itself, since Vehicle defaults bDesiredBehindView to True and Possess asks the pawn
+// via PointOfView (Vehicle.uc:1574, Vehicle.uc:1943). Without the exemption these two
+// force a driver straight back to 1p and there is no way to get out of it.
+//
+// ClientSetBehindView below already exempts vehicles the same way -- these were simply
+// missed, so the toggle was blocked one level up before it ever reached it.
+//
+// Nothing is needed for getting out again: leaving the vehicle repossesses the player's
+// own pawn, whose PointOfView returns false, and the resulting BehindView(false) is
+// allowed through by either branch.
 exec function BehindView(bool b)
 {
-	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView) 
-        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
-        || PlayerReplicationInfo.bAdmin 
+	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound)
+        || Vehicle(Pawn) != None
+        || PlayerReplicationInfo.bAdmin
         || Level.NetMode == NM_Standalone)
 		Super.BehindView(b);
 	else
@@ -1445,9 +1459,10 @@ exec function BehindView(bool b)
 
 exec function ToggleBehindView()
 {
-	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView) 
-        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound) 
-        || PlayerReplicationInfo.bAdmin 
+	if((PlayerReplicationInfo.bOnlySpectator && Misc_BaseGRI(GameReplicationInfo).bAllowSetBehindView)
+        || (Pawn == None && !Misc_BaseGRI(GameReplicationInfo).bEndOfRound)
+        || Vehicle(Pawn) != None
+        || PlayerReplicationInfo.bAdmin
         || Level.NetMode == NM_Standalone)
 		Super.ToggleBehindView();
 	else

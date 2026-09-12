@@ -2291,7 +2291,10 @@ state MatchInProgress
         {
             if(NextRoundTime == NextRoundDelay)
             {
-                if(AutoBalanceTeams)
+                // AutoBalanceTeams drives the automatic balancing, but a
+                // balance forced by an admin or by 'teams' must run even when
+                // automatic balancing is turned off
+                if(AutoBalanceTeams || ForceAutoBalance)
                     BalanceTeamsRoundStart();
             }
 
@@ -2383,6 +2386,10 @@ function RespawnTimer()
 
     if(RespawnTime == 3)
     {
+        // Before the controller loop: it reads C.Pawn, which for a driver is the
+        // vehicle rather than the pawn it means to clear.
+        ResetVehicles();
+
         for(C = Level.ControllerList; C != None; C = C.NextController)
         {
             if(Misc_Player(C) != None)
@@ -2713,8 +2720,77 @@ function CleanUpPawns()
     {
         if(P.Controller != None)
             continue;
+
+        // A vehicle is a Pawn, and an empty one has no Controller by design --
+        // Vehicle.KDriverLeave unpossesses it and leaves it sitting there. It is
+        // also never a pawn anyone restarted, and LastStartTime is stamped in
+        // exactly one place in the whole engine (GameInfo.RestartPlayer:1369),
+        // so it stays 0 and the age test below reads every vehicle as stale the
+        // instant it is built.
+        //
+        // That is the whole reason a vehicle factory looks broken in these
+        // gametypes: the build effect plays, the vehicle spawns, the next Timer
+        // tick destroys it, Vehicle.Destroyed tells the factory its vehicle
+        // died, and the factory starts the cycle over. Nothing ever appears.
+        //
+        // Turret seats are Vehicles too (VehicleWeaponPawn), and are owned and
+        // destroyed by their hull, so the same exemption is what they want.
+        if(Vehicle(P) != None)
+            continue;
+
+        // And the driver's own pawn is unpossessed for as long as they are
+        // aboard -- Vehicle.KDriverEnter hands their Controller to the vehicle
+        // (Vehicle.uc:626). Destroying it would delete a live player out from
+        // under themselves the moment they got in.
+        if(P.DrivenVehicle != None)
+            continue;
+
         if(Level.TimeSeconds - P.LastStartTime > 3)
             P.Destroy();
+    }
+}
+
+// Round reset: empty every vehicle and hand the factory-built ones back to
+// their factory.
+//
+// The reset sweep in RespawnTimer only destroys xPawns, so a vehicle survives
+// it and would otherwise carry its damage, its position and its driver into the
+// next round. Recycling it through ParentFactory is the engine's own idiom for
+// this -- ONSVehicle.CheckReset does the same three calls when a vehicle has
+// been abandoned too far from home (ONSVehicle.uc:809-818).
+//
+// Drivers come out first. The controller loop in RespawnTimer only destroys
+// what it finds on C.Pawn, and for someone driving that is the vehicle: their
+// real pawn is unpossessed and reachable only through DrivenVehicle, so leaving
+// them aboard strands the pawn and leaves a spectating controller possessing a
+// vehicle. Iterating Vehicles rather than hulls covers turret seats as well.
+//
+// Reset() on the factory is the hook a factory needs to re-arm anything it does
+// on a fresh round (an opening spawn delay, say). Actor.Reset is a no-op, so a
+// stock ONSVehicleFactory just rebuilds on its normal RespawnTime, which is the
+// right default.
+function ResetVehicles()
+{
+    local Vehicle V;
+    local SVehicleFactory F;
+
+    ForEach DynamicActors(class'Vehicle', V)
+        if(V.Driver != None)
+            V.KDriverLeave(true);
+
+    ForEach DynamicActors(class'Vehicle', V)
+    {
+        F = V.ParentFactory;
+
+        // No factory: a turret seat, or a vehicle the mapper placed by hand.
+        // Neither is ours to recycle.
+        if(F == None)
+            continue;
+
+        F.VehicleDestroyed(V);
+        V.ParentFactory = None; // so Destroyed() doesn't report the death twice
+        V.Destroy();
+        F.Reset();
     }
 }
 
@@ -3008,38 +3084,51 @@ function float GetPlayerAutoBalancingElo(Controller C)
 }
 
 
+function bool IsAutoBalanceCandidate(Controller C, int TeamIdx)
+{
+  local int i;
+
+  if(PlayerController(C)==None)
+    return false;
+
+  if(C.PlayerReplicationInfo==None || C.PlayerReplicationInfo.Team==None)
+    return false;
+
+  if(C.PlayerReplicationInfo.bOnlySpectator)
+    return false;
+
+  if(C.PlayerReplicationInfo.Team.TeamIndex!=TeamIdx)
+    return false;
+
+  if(Misc_PRI(C.PlayerReplicationInfo)==None)
+    return false;
+
+  // Skip players already moved by this balancing pass
+  for(i=0; i<DontAutoBalanceList.Length; ++i)
+  {
+    if(DontAutoBalanceList[i] == C)
+      return false;
+  }
+
+  return true;
+}
+
 function Controller FindBestAutoBalanceCandidate(int TeamIdx, float PPRNeeded)
 {
   local float PPR, BestPPR;
   local Controller C,BestMatch;
-  local int i;
-
-  // make sure tha auto balance list doesn't grow too big to prevent balancing
-  while(DontAutoBalanceList.Length>NumPlayers/2) {
-    DontAutoBalanceList.Remove(0,1);
-  }
 
   // move player that closest matches the required PPR gap / number of players needed
   for(C=Level.ControllerList; C!=None; C=C.NextController)
   {
-    // Skip players who are on the don't switch list
-    for(i=0; i<DontAutoBalanceList.Length; ++i) {
-      if(DontAutoBalanceList[i] == C)
-        continue;
-    }
+    if(!IsAutoBalanceCandidate(C, TeamIdx))
+      continue;
 
-    if(    PlayerController(C)!=None &&
-      C.PlayerReplicationInfo!=None &&
-      C.PlayerReplicationInfo.Team!=None &&
-      C.PlayerReplicationInfo.Team.TeamIndex==TeamIdx &&
-      Misc_PRI(C.PlayerReplicationInfo)!=None)
+    PPR = abs(PPRNeeded - GetPlayerAutoBalancingValue(C));
+    if(BestMatch==None || PPR<BestPPR)
     {
-      PPR = abs(PPRNeeded - GetPlayerAutoBalancingValue(C));
-      if(BestMatch==None || PPR<BestPPR)
-      {
-        BestMatch = C;
-        BestPPR = PPR;
-      }
+      BestMatch = C;
+      BestPPR = PPR;
     }
   }
 
@@ -3064,43 +3153,79 @@ function BalanceTeamsRoundStart()
 {
     local float TeamPPR[2];
     local int TeamSize[2];
-  local int TeamScore[2];
+    local int TeamScore[2];
     local Controller C, BestMatch, BestMatch2;
     local int TeamIdx, PlayersNeeded, PlayersMoved, i;
-    local float PPRNeeded;
-  local bool SwapPlayers;
+    local float PPRNeeded, MovedPPR;
 
     for(i=0; i<2; ++i)
     {
         TeamPPR[i] = 0;
         TeamSize[i] = 0;
+        TeamScore[i] = 0;
+
+        if(Teams[i]!=None)
+            TeamScore[i] = Teams[i].Score;
     }
 
-    // calculate total PPR for each team
+    // calculate team size and total PPR for each team
     for(C=Level.ControllerList; C!=None; C=C.NextController)
     {
         if(C.PlayerReplicationInfo==None || C.PlayerReplicationInfo.Team==None)
             continue;
 
-    TeamScore[C.PlayerReplicationInfo.Team.TeamIndex] += Teams[C.PlayerReplicationInfo.Team.TeamIndex].Score;
-    TeamPPR[C.PlayerReplicationInfo.Team.TeamIndex] += GetPlayerAutoBalancingValue(C);
-        ++TeamSize[C.PlayerReplicationInfo.Team.TeamIndex];
+        if(C.PlayerReplicationInfo.bOnlySpectator)
+            continue;
+
+        i = C.PlayerReplicationInfo.Team.TeamIndex;
+        TeamPPR[i] += GetPlayerAutoBalancingValue(C);
+        ++TeamSize[i];
     }
 
-  if(TeamSize[0]==TeamSize[1] && !ForceAutoBalance)
-    return;
+    if(TeamSize[0]==TeamSize[1] && !ForceAutoBalance)
+        return;
 
-    // Choose the team that is going to give players
-    if(TeamSize[0]>TeamSize[1])
-        TeamIdx = 0;
-    else
-        TeamIdx = 1;
+    // only players moved by this pass are locked down, so that a player is
+    // never handed back and forth inside one balancing run
+    DontAutoBalanceList.Length = 0;
 
-    // See how many players we need to move, and what PPR they should add up to
-    PlayersNeeded = (TeamSize[TeamIdx] - TeamSize[1-TeamIdx])/2;
-    PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2;
+    // Player count comes first.  Keep taking players off the bigger team until
+    // the sizes differ by at most one.  PPR/Elo only decides *which* player
+    // moves, it never decides how many move.
+    while(true)
+    {
+        if(TeamSize[0] > TeamSize[1]+1)
+            TeamIdx = 0;
+        else if(TeamSize[1] > TeamSize[0]+1)
+            TeamIdx = 1;
+        else
+            break;
 
-    if(PlayersNeeded==0 && ForceAutoBalance)
+        PlayersNeeded = (TeamSize[TeamIdx] - TeamSize[1-TeamIdx])/2;
+        PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/(2.0*float(PlayersNeeded));
+
+        BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded);
+        if(BestMatch==None)
+        {
+            // nobody left that we are allowed to move (bots/spectators only) -
+            // stop instead of pretending the move happened
+            log("AUTOBALANCE stuck: no candidate on team "$TeamIdx$" sizes "$TeamSize[0]$"v"$TeamSize[1]);
+            break;
+        }
+
+        MovedPPR = GetPlayerAutoBalancingValue(BestMatch);
+        AutoBalanceSwitchPlayer(BestMatch);
+
+        TeamPPR[TeamIdx] -= MovedPPR;
+        TeamPPR[1-TeamIdx] += MovedPPR;
+        --TeamSize[TeamIdx];
+        ++TeamSize[1-TeamIdx];
+        ++PlayersMoved;
+    }
+
+    // Sizes are now as even as they can be.  A forced balance additionally
+    // evens out team strength, which has to be a swap so the counts survive.
+    if(ForceAutoBalance && PlayersMoved==0 && TeamSize[0]>0 && TeamSize[1]>0)
     {
         if(TeamScore[0]>TeamScore[1])
             TeamIdx = 0;
@@ -3108,57 +3233,35 @@ function BalanceTeamsRoundStart()
             TeamIdx = 1;
         else if(TeamPPR[0]>TeamPPR[1])
             TeamIdx = 0;
-        else if(TeamPPR[1]>TeamPPR[0])
+        else
             TeamIdx = 1;
 
-        PlayersNeeded = 1;
-        PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2;
-        if(TeamSize[TeamIdx] == TeamSize[1-TeamIdx]) // Cannot give players, so swap
-            SwapPlayers = true;
-    }
+        PPRNeeded = (TeamPPR[TeamIdx] - TeamPPR[1-TeamIdx])/2.0;
 
-    PlayersMoved = 0;
+        BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded*2.0);
+        BestMatch2 = FindBestAutoBalanceCandidate(1-TeamIdx, PPRNeeded);
 
-    // Calculate ppr needed for each move
-    if(PlayersNeeded>0)
-        PPRNeeded /= PlayersNeeded;
-
-    while(PlayersNeeded>0)
-    {
-        // move player that closest matches the required PPR gap / number of players needed
-        if(SwapPlayers) 
+        if(BestMatch!=None && BestMatch2!=None)
         {
-            BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded*2);
-            BestMatch2 = FindBestAutoBalanceCandidate(1-TeamIdx, PPRNeeded);
-
-            if(BestMatch!=None && BestMatch2!=None) 
-            {
-                AutoBalanceSwitchPlayer(BestMatch);
-                AutoBalanceSwitchPlayer(BestMatch2);
-            }
-        } 
-        else 
-        {
-            BestMatch = FindBestAutoBalanceCandidate(TeamIdx, PPRNeeded);
-
-            if(BestMatch!=None)
-                AutoBalanceSwitchPlayer(BestMatch);
+            AutoBalanceSwitchPlayer(BestMatch);
+            AutoBalanceSwitchPlayer(BestMatch2);
+            PlayersMoved = 2;
         }
-
-        --PlayersNeeded;
-        ++PlayersMoved;
     }
+
+    log("AUTOBALANCE moved="$PlayersMoved$" final sizes "$TeamSize[0]$"v"$TeamSize[1]);
 
     if(PlayersMoved>0)
         BroadcastLocalizedMessage( class'Message_TeamsBalanced' );
 
     ForceAutoBalance = false;
+    DontAutoBalanceList.Length = 0;
 }
 
 function QueueAutoBalance(bool bAdminUser)
 {
     if(!bAdminUser)
-        if(!AutoBalanceTeams || !AllowForceAutoBalance)
+        if(!AllowForceAutoBalance)
             return;
     
   if(ForceAutoBalanceTimer>0)
@@ -3198,11 +3301,32 @@ function AssignTeams(ControllerArray TeamPlayers, int TeamIdx)
 
 /* Return a picked team number if none was specified
 */
+function int CountTeamMembers(int TeamIdx)
+{
+    local Controller C;
+    local int Count;
+
+    for(C=Level.ControllerList; C!=None; C=C.NextController)
+    {
+        if(C.PlayerReplicationInfo==None || C.PlayerReplicationInfo.Team==None)
+            continue;
+
+        if(C.PlayerReplicationInfo.bOnlySpectator)
+            continue;
+
+        if(C.PlayerReplicationInfo.Team.TeamIndex==TeamIdx)
+            ++Count;
+    }
+
+    return Count;
+}
+
 function byte PickTeam(byte num, Controller C)
 {
     local UnrealTeamInfo SmallTeam, BigTeam, NewTeam;
     local Controller B;
     local int BigTeamBots, SmallTeamBots;
+    local int SmallSize, BigSize, SwapSize;
 
     if ( bPlayersVsBots && (Level.NetMode != NM_Standalone) )
     {
@@ -3211,13 +3335,22 @@ function byte PickTeam(byte num, Controller C)
         return 0;
     }
 
+    // Count the teams for real instead of trusting TeamInfo.Size.  Size is
+    // plain script bookkeeping and leaks whenever a PRI Team is cleared
+    // without a matching RemoveFromTeam, and a stale Size makes us stack new
+    // players onto the team that is already bigger.
     SmallTeam = Teams[0];
     BigTeam = Teams[1];
+    SmallSize = CountTeamMembers(0);
+    BigSize = CountTeamMembers(1);
 
-    if( SmallTeam.Size > BigTeam.Size || (SmallTeam.Size == BigTeam.Size && SmallTeam.Score > BigTeam.Score) )
+    if( SmallSize > BigSize || (SmallSize == BigSize && SmallTeam.Score > BigTeam.Score) )
     {
         SmallTeam = Teams[1];
         BigTeam = Teams[0];
+        SwapSize = SmallSize;
+        SmallSize = BigSize;
+        BigSize = SwapSize;
     }
 
     if ( num < 2 ) {
@@ -3228,7 +3361,7 @@ function byte PickTeam(byte num, Controller C)
         NewTeam = SmallTeam;
     else if ( bPlayersBalanceTeams && Level.NetMode != NM_Standalone && PlayerController(C) != None )
     {
-        if ( SmallTeam.Size < BigTeam.Size)
+        if ( SmallSize < BigSize )
             NewTeam = SmallTeam;
         else
         {
@@ -3247,9 +3380,9 @@ function byte PickTeam(byte num, Controller C)
             if ( BigTeamBots > 0 )
             {
                 // balance the number of players on each team
-                if ( SmallTeam.Size - SmallTeamBots < BigTeam.Size - BigTeamBots )
+                if ( SmallSize - SmallTeamBots < BigSize - BigTeamBots )
                     NewTeam = SmallTeam;
-                else if ( BigTeam.Size - BigTeamBots < SmallTeam.Size - SmallTeamBots )
+                else if ( BigSize - BigTeamBots < SmallSize - SmallTeamBots )
                     NewTeam = BigTeam;
                 else if ( SmallTeamBots == 0 )
                     NewTeam = BigTeam;

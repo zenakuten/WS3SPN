@@ -1,6 +1,19 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V28
+- Support vehicles in TAM/Freon/ArenaMaster
+- Reset vehicles back to their factory between rounds
+- Allow third person view while driving a vehicle
+- Fix extra number at the end of the warmup countdown
+- Team balancer now equalizes player count first, score/Elo only picks who moves
+- Count teams live when picking a join team, stale team size could stack players
+- Run a forced balance ('teams') even when auto balance at match start is off
+- Respect team balancing when a spectator rejoins the game
+
+V27
+- see WSUTComp readme for changes
+
 V26
 - Dynamically scale TAM/ArenaMaster/Freon scoreboard rows to fit the player count, up to 64 on screen
 - Fix hearing sounds from your old frozen location after thawing in freon

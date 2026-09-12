@@ -175,9 +175,41 @@ static function bool IsTargetInFrontOfPlayer( Canvas C, Actor Target, out Vector
 	return true;
 }*/
 
+// See Team_HUDBase.WarmupOwnsCountdown / SyncCountdownBaseline for why these exist.
+// ArenaMaster's HUD descends from UTComp_HudCDeathMatch rather than from Team_HUDBase, so
+// it needs its own copy -- and it had no warmup guard at all, so it doubled the warmup
+// countdown outright rather than only at the seam.
+function bool WarmupOwnsCountdown()
+{
+    local BS_xPlayer P;
+
+    P = BS_xPlayer(PlayerOwner);
+    if(P == None || P.uWarmup == None)
+        return false;
+
+    return P.uWarmup.bInWarmup || P.uWarmup.bWarmupEnded;
+}
+
+function SyncCountdownBaseline(GameReplicationInfo GRI)
+{
+    if(GRI == None)
+        return;
+
+    OldRemainingTime = GRI.RemainingTime;
+
+    if(Misc_BaseGRI(GRI) != None)
+        OldRoundTime = Misc_BaseGRI(GRI).RoundTime;
+}
+
 function CheckCountdown(GameReplicationInfo GRI)
 {
     local TAM_GRI G;
+
+    if(WarmupOwnsCountdown())
+    {
+        SyncCountdownBaseline(GRI);
+        return;
+    }
 
     G = TAM_GRI(GRI);
     if(G == None || G.SecsPerRound == 0 || G.RoundTime == 0 || G.RoundTime == OldRoundTime || GRI.Winner != None)

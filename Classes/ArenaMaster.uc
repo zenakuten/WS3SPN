@@ -1196,6 +1196,10 @@ function RespawnTimer()
 
 	if(RespawnTime == 3)
 	{
+		// Before the controller loop: it reads c.Pawn, which for a driver is the
+		// vehicle rather than the pawn it means to clear.
+		ResetVehicles();
+
 		for(c = Level.ControllerList; c != None; c = c.NextController)
 		{
 			if(Misc_Player(c) != None)
@@ -1275,14 +1279,54 @@ function RespawnTimer()
 function CleanUpPawns()
 {
     local Pawn P;
-    
+
 	ForEach AllActors(class'Pawn', P)
 	{
         if(P.Controller != None)
-            continue;           
+            continue;
+
+        // Same exemptions as Team_GameBase.CleanUpPawns -- see the note there.
+        // An empty vehicle has no Controller and no LastStartTime, so without
+        // this a vehicle factory builds a vehicle that is gone a tick later.
+        if(Vehicle(P) != None)
+            continue;
+        if(P.DrivenVehicle != None)
+            continue;
+
         if(Level.TimeSeconds - P.LastStartTime > 3)
             P.Destroy();
-	}   
+	}
+}
+
+// See Team_GameBase.ResetVehicles -- ArenaMaster descends from xDeathmatch
+// rather than from that class, so it needs its own copy.
+//
+// It matters more here: this gametype's DestroyActor destroys every Pawn on a
+// round reset, vehicles included, which leaves the factory to rebuild on its
+// own RespawnTime with a driver possibly still possessing the wreck. Emptying
+// and recycling them first makes that orderly, and the Vehicle exemption added
+// to DestroyActor keeps the sweep off them.
+function ResetVehicles()
+{
+    local Vehicle V;
+    local SVehicleFactory F;
+
+    ForEach DynamicActors(class'Vehicle', V)
+        if(V.Driver != None)
+            V.KDriverLeave(true);
+
+    ForEach DynamicActors(class'Vehicle', V)
+    {
+        F = V.ParentFactory;
+
+        if(F == None)
+            continue;
+
+        F.VehicleDestroyed(V);
+        V.ParentFactory = None;
+        V.Destroy();
+        F.Reset();
+    }
 }
 
 function RestartPlayer(Controller C)
@@ -1302,6 +1346,12 @@ function bool DestroyActor(Actor A)
 {
     if(Projectile(A) != None)
         return true;
+    // Vehicles are recycled through their factory by ResetVehicles instead, so
+    // that the factory hears about the death and rebuilds. A bare Destroy here
+    // would work too, but it would also take out a hand-placed vehicle that has
+    // no factory to bring it back.
+    else if(Vehicle(A) != None)
+        return false;
     else if(Pawn(A) != None) // && (xPawn(A).Controller == None || xPawn(A).PlayerReplicationInfo == None))
         return true;
 	else if(Inventory(A) != None)
