@@ -1,6 +1,9 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V29
+- see WSUTComp readme for changes
+
 V28
 - Support vehicles in TAM/Freon/ArenaMaster
 - Reset vehicles back to their factory between rounds

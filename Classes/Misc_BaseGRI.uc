@@ -309,5 +309,5 @@ simulated function Timer()
 defaultproperties
 {
 	VersionName="Wicked Sick"
-	VersionNumber="V28"
+	VersionNumber="V29"
 }
