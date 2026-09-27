@@ -87,13 +87,44 @@ function class<Misc_LocalStatsDB> GetGameConfigClass()
     //return;    
 }
 
+function int GetRatingHistoryMinutes()
+{
+    if(BaseGame == None)
+    {
+        return 43200;
+    }
+    return Max(0,BaseGame.EloRankHistoryDays) * 1440;
+}
+
+function int GetRecordRetentionMinutes()
+{
+    local int i;
+    local int RetentionMinutes;
+
+    RetentionMinutes = GetRatingHistoryMinutes();
+    if(RetentionMinutes <= 0)
+    {
+        return 0;
+    }
+
+    i = 0;
+    while(i < Lists.Length)
+    {
+        RetentionMinutes = Max(RetentionMinutes,Lists[i].TimeRange);
+        i++;
+    }
+    return RetentionMinutes;
+}
+
 function ServerRequestStats(int PlayerIndex, string PlayerHash)
 {
     local float Rank, PointsToRankUp, AvgPPR, Elo;
     local int KillCount, FraggedCount;
     local array<float> PPRList;
+    local Misc_LocalStatsDB DB;
 
-    GetDB(PlayerHash).ReadStats(Rank, PointsToRankUp, AvgPPR, PPRList, Elo, KillCount, FraggedCount);
+    DB = GetDB(PlayerHash);
+    DB.ReadStats(DB.GetCurrentTime(Level), GetRatingHistoryMinutes(), Rank, PointsToRankUp, AvgPPR, PPRList, Elo, KillCount, FraggedCount);
 	
 	
     ReceiveStats(PlayerIndex, Rank, PointsToRankUp, AvgPPR, PPRList, Elo, KillCount, FraggedCount);
@@ -117,7 +148,7 @@ function ServerRegisterStats(string GameTime, string PlayerName, string PlayerHa
     local Misc_LocalStatsDB DB;
 
     DB = GetDB(PlayerHash);
-    DB.WriteStats(DB.GetCurrentTime(Level), PlayerName, Rounds, Score, Kills, Deaths, Elo, KillCount, FraggedCount);
+    DB.WriteStats(DB.GetCurrentTime(Level), GetRatingHistoryMinutes(), PlayerName, Rounds, Score, Kills, Deaths, Elo, KillCount, FraggedCount);
     //return;    
 }
 
@@ -151,7 +182,7 @@ function PurgeAndUpdateTopScore()
     {
         StatsDB = new (none, Names[i]) GetGameConfigClass();
         // End:0xB7
-        if(StatsDB.IsOutDated(Time) && ClearOldStats)
+        if(StatsDB.IsOutDated(Time, GetRatingHistoryMinutes(), GetRecordRetentionMinutes()) && ClearOldStats)
         {
             StatsDB.ClearConfig();
         }

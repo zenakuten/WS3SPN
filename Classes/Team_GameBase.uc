@@ -223,6 +223,7 @@ var config float PureRFFScale;
 var config float FRankLimit;
 var config float SRankLimit;
 var config float EloLimit;
+var config int EloRankHistoryDays;
 
 var config bool bSpawnAtPathNodes;
 var config bool bSpawnAtJumpSpots;
@@ -451,6 +452,7 @@ static function FillPlayInfo(PlayInfo PI)
     PI.AddSetting("3SPN", "FRankLimit", "F Rank Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "SRankLimit", "S Rank Limit", 0, Weight++, "Text", "8;0:1000000");
     PI.AddSetting("3SPN", "EloLimit", "Elo Limit", 0, Weight++, "Text", "8;0:1000000");
+    PI.AddSetting("3SPN Local StatsDB", "EloRankHistoryDays", "Elo/Rank History Days", 0, Weight++, "Text", "4;0:9999");
     PI.AddSetting("3SPN", "bSpawnAtPathNodes", " Spawn at Path Nodes", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bSpawnAtJumpSpots", " Spawn at Jump Spots", 0, Weight++, "Check");
     PI.AddSetting("3SPN", "bUseNewScoreboard", " Let players use the new scoreboard", 0, Weight++, "Check");
@@ -588,6 +590,7 @@ static event string GetDescriptionText(string PropName)
       case "SRankLimit": return "Elo value needed for S Rank";
       case "FRankLimit": return "Elo value needed for F Rank";
       case "EloLimit": return "Elo Scale (Max Elo)";
+      case "EloRankHistoryDays": return "Days of match history used for Elo and rank. Set to 0 for unlimited.";
       case "bSpawnAtPathNodes": return "Spawn at path nodes";
       case "bSpawnAtJumpSpots": return "Spawn at jump spots";
       case "bUseNewScoreboard": return "Let players use the new scoreboard";
@@ -4425,6 +4428,7 @@ defaultproperties
      SRankLimit=450
      FRankLimit=150
      EloLimit=1000     
+     EloRankHistoryDays=30
      bSpawnAtPathNodes=true
      bSpawnAtJumpSpots=true
      bUseNewScoreboard=true

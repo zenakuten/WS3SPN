@@ -20,6 +20,11 @@ struct PlayerRecord
   var float Score;
   var int Kills;
   var int Deaths;
+  var bool bRatingRecord;
+  var int RatingScore;
+  var float EloEarned;
+  var int EloKills;
+  var int EloDeaths;
   //var int Money;
 };
 
@@ -30,6 +35,12 @@ var config private int TopScore;
 var config private float Elo;
 var config private int KillCount;
 var config private int FraggedCount;
+var config private bool bRollingRatingsInitialized;
+var config private string LegacyRatingTime;
+var config private int LegacyRankedScore;
+var config private float LegacyElo;
+var config private int LegacyKillCount;
+var config private int LegacyFraggedCount;
 //var config private int Money;
 //var config private int Moneyreal;
 var config private array<PlayerRecord> Rec;
@@ -125,18 +136,73 @@ static function float Decimal (float Num)
   }
 }
 
+function InitializeRollingRatings(string Time)
+{
+  if ( bRollingRatingsInitialized )
+  {
+    return;
+  }
+
+  bRollingRatingsInitialized = True;
+  LegacyRatingTime = Time;
+  LegacyRankedScore = RankedScore;
+  LegacyElo = Elo;
+  LegacyKillCount = KillCount;
+  LegacyFraggedCount = FraggedCount;
+  SaveConfig();
+}
+
+function bool IsWithinRatingHistory(string Time, string RecordTime, int HistoryMinutes)
+{
+  return HistoryMinutes <= 0 || TimeDiff(Time,RecordTime) <= HistoryMinutes;
+}
+
+function UpdateRollingRatings(string Time, int HistoryMinutes)
+{
+  local int i;
+
+  InitializeRollingRatings(Time);
+
+  RankedScore = 0;
+  Elo = 0.0;
+  KillCount = 0;
+  FraggedCount = 0;
+
+  if ( IsWithinRatingHistory(Time,LegacyRatingTime,HistoryMinutes) )
+  {
+    RankedScore = LegacyRankedScore;
+    Elo = LegacyElo;
+    KillCount = LegacyKillCount;
+    FraggedCount = LegacyFraggedCount;
+  }
+
+  i = 0;
+  while ( i < Rec.Length )
+  {
+    if ( Rec[i].bRatingRecord && IsWithinRatingHistory(Time,Rec[i].Time,HistoryMinutes) )
+    {
+      RankedScore += Rec[i].RatingScore;
+      Elo += Rec[i].EloEarned;
+      KillCount += Rec[i].EloKills;
+      FraggedCount += Rec[i].EloDeaths;
+    }
+    i++;
+  }
+}
+
 //function Readgeld (out int Moneyreal) {
 //
 //Moneyreal = Moneyreal;
 //
 //}
 //
-function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList, out float currentElo, out int currentKillCount, out int currentFraggedCount)
+function ReadStats (string Time, int HistoryMinutes, out float Rank, out float PointsToRankUp, out float AvgPPR, out array<float> PPRList, out float currentElo, out int currentKillCount, out int currentFraggedCount)
 {
   local int i;
   local int j;
 
   log("ReadStats");
+  UpdateRollingRatings(Time,HistoryMinutes);
   Rank = RankedScore / 2000 + 0.5;
   Rank = FMin(Rank / (30 - 0),1.0);
 //  Moneyreal = Money;
@@ -165,17 +231,20 @@ function ReadStats (out float Rank, out float PointsToRankUp, out float AvgPPR, 
   currentFraggedCount = FraggedCount;
 }
 
-function WriteStats (string Time, string InPlayerName, int Rounds, float Score, int Kills, int Deaths, float currentElo, int currentKillCount, int currentFraggedCount)
+function WriteStats (string Time, int HistoryMinutes, string InPlayerName, int Rounds, float Score, int Kills, int Deaths, float currentElo, int currentKillCount, int currentFraggedCount)
 {
   local int i;
+  local float MatchElo;
+  local int MatchKillCount;
+  local int MatchFraggedCount;
 
+  InitializeRollingRatings(Time);
+  MatchElo = FMax(0.0,currentElo - Elo);
+  MatchKillCount = Max(0,currentKillCount - KillCount);
+  MatchFraggedCount = Max(0,currentFraggedCount - FraggedCount);
   i = Rec.Length;
   Rec.Length = i + 1;
   PlayerName = InPlayerName;
-  RankedScore += int(Score);
-  Elo = currentElo;
-  KillCount = currentKillCount;
-  FraggedCount = currentFraggedCount;
   TopScore = Max(TopScore,int(Score));
 
   Rec[i].Time = Time;
@@ -183,7 +252,13 @@ function WriteStats (string Time, string InPlayerName, int Rounds, float Score, 
   Rec[i].Score = Score;
   Rec[i].Kills = Kills;
   Rec[i].Deaths = Deaths;
+  Rec[i].bRatingRecord = True;
+  Rec[i].RatingScore = int(Score);
+  Rec[i].EloEarned = MatchElo;
+  Rec[i].EloKills = MatchKillCount;
+  Rec[i].EloDeaths = MatchFraggedCount;
  // Rec[i].Money = Money;
+  UpdateRollingRatings(Time,HistoryMinutes);
   SaveConfig();
 }
 
@@ -261,25 +336,27 @@ function int GetTopScore ()
 //  return Money;
 //}
 //
-function bool IsOutDated (string Time)
+function bool IsOutDated (string Time, int HistoryMinutes, int RecordRetentionMinutes)
 {
   local int i;
 
+  UpdateRollingRatings(Time,HistoryMinutes);
+  if ( Rec.Length == 0 )
+  {
+    return False;
+  }
   if ( TimeDiff(Time,Rec[Rec.Length - 1].Time) > 86400 )
   {
     return True;
   }
   i = 0;
-  JL0032:
-  if ( i < Rec.Length - 20 )
+  while ( i < Rec.Length - 20 )
   {
-    if ( TimeDiff(Time,Rec[i].Time) < 43200 )
+    if ( RecordRetentionMinutes <= 0 || TimeDiff(Time,Rec[i].Time) <= RecordRetentionMinutes )
     {
-     // goto JL0078;
+      break;
     }
     i++;
-	// JL0078:
-    goto JL0032;
   }
   if ( i > 0 )
   {
