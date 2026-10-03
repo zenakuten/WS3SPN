@@ -13,11 +13,12 @@ function SetPawnClass(string inClass, string inCharacter)
 	local class<Freon_Pawn> pClass;
 
 	if(inClass != "")
-	{
 		pClass = class<Freon_Pawn>(DynamicLoadObject(inClass, class'Class'));
-		if(pClass != None)
-			PawnClass = pClass;
-	}
+	// see UTComp_xBot.SetPawnClass
+	if(pClass == None)
+		pClass = class<Freon_Pawn>(DynamicLoadObject(Level.Game.DefaultPlayerClassName, class'Class'));
+	if(pClass != None)
+		PawnClass = pClass;
 
 	PawnSetupRecord = class'xUtil'.static.FindPlayerRecord(inCharacter);
 	PlayerReplicationInfo.SetCharacterName(inCharacter);

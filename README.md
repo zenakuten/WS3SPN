@@ -4,6 +4,7 @@ Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](h
 V30
 - limit elo and rank history to a configurable number of days, default 30
 - retain existing elo and rank as a legacy bucket that expires after the configured window
+- fix bots logging a class load warning on every respawn
 
 V29
 - see WSUTComp readme for changes
