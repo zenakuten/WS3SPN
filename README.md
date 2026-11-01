@@ -1,6 +1,9 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V31
+- see WSUTComp changes
+
 V30
 - limit elo and rank history to a configurable number of days, default 30
 - retain existing elo and rank as a legacy bucket that expires after the configured window
