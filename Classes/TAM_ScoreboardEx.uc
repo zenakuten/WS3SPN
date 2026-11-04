@@ -582,6 +582,8 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 	local int OwnerTeam;
     local float smallf, smallerf;
     local float XXL;
+    local EmoticonsReplicationInfo EmoteRep;
+    local EmoticonsParsedText ParsedName;
 
     OwnerPRI = Misc_PRI(PlayerController(Owner).PlayerReplicationInfo);
 	
@@ -650,11 +652,14 @@ simulated function DrawPlayerBarEx(Canvas C, int BarX, int BarY, int BarW, int B
 
 	C.SetPos(BarX+NameX, BarY+NameY);
 
-    if(TAM_HUD(PlayerController(Owner).MyHUD).FindNextSmile(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
+    EmoteRep = TAM_HUD(PlayerController(Owner).MyHUD).GetReplication();
+    if(EmoteRep != None)
+        ParsedName = EmoteRep.GetParsedText(name);
+    if(ParsedName != None && ParsedName.IconTex.Length > 0)
     {
         C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
         XXL=C.CurX;
-        TAM_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(TAM_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
+        TAM_HUD(PlayerController(Owner).MyHUD).DrawParsedSmileyText(ParsedName, C, XL, YL);
         StatX+=XL-XXL;
     }
     else

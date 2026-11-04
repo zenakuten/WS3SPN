@@ -656,6 +656,8 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
 	local int OwnerTeam;
     local float smallf, smallerf;
     local float XXL;
+    local EmoticonsReplicationInfo EmoteRep;
+    local EmoticonsParsedText ParsedName;
 
 	OwnerPRI = PlayerController(Owner).PlayerReplicationInfo;
 	xPRI = Freon_PRI(PRI);
@@ -729,11 +731,14 @@ simulated function DrawPlayerBarFreonEx(Canvas C, int BarX, int BarY, int BarW, 
 		C.DrawColor = HUDClass.default.WhiteColor * 0.7;
 	}
 	C.SetPos(BarX+NameX, BarY+NameY);
-    if(Freon_HUD(PlayerController(Owner).MyHUD).FindNextSmile(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name) >= 0)
+    EmoteRep = Freon_HUD(PlayerController(Owner).MyHUD).GetReplication();
+    if(EmoteRep != None)
+        ParsedName = EmoteRep.GetParsedText(name);
+    if(ParsedName != None && ParsedName.IconTex.Length > 0)
     {
         C.Font = PlayerController(Owner).MyHUD.GetFontSizeIndex(C, -4);
         XXL=C.CurX;
-        Freon_HUD(PlayerController(Owner).MyHUD).DrawSmileyText(Freon_HUD(PlayerController(Owner).MyHUD).GetReplication(), name, C, XL, YL);
+        Freon_HUD(PlayerController(Owner).MyHUD).DrawParsedSmileyText(ParsedName, C, XL, YL);
         StatX+=XL-XXL;
     }
     else
