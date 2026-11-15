@@ -1096,7 +1096,7 @@ state MatchInProgress
 {
     function Timer()
     {
-		local Controller c;
+		local Controller c, NextC;
 
 		for(C=Level.ControllerList; C!=None; C=C.NextController)
 		{
@@ -1138,8 +1138,13 @@ state MatchInProgress
 
             if(RoundOTTime % OTInterval == 0)
             {
-                for(c = Level.ControllerList; c != None; c = c.NextController)
+                // TakeDamage can destroy c (a dying bot enters Bot's Dead state,
+                // whose BeginState destroys it when TooManyBots), so read the next
+                // link first
+                for(c = Level.ControllerList; c != None; c = NextC)
                 {
+                    NextC = c.NextController;
+
                     if(c.Pawn == None)
                         continue;
 
