@@ -1,6 +1,10 @@
 # WS3SPN
 Wicked Sick 3SPN made to work with UTComp, originally based on [3SPNvSoL 3.18](https://github.com/zenakuten/3SPNvSoL) 
 
+V33
+- Fix "Join" button not working for spectators before match start
+- Auto set netspeed now defaults to 1000000 instead of 15000 (still default off)
+
 V32
 - see WSUTComp changes
 

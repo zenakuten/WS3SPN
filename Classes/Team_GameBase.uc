@@ -253,6 +253,12 @@ function InitGameReplicationInfo()
 {
     Super.InitGameReplicationInfo();
 
+    // Spectators may join at any time here (AllowBecomeActivePlayer has no lives
+    // test), but the login tab greys Join for spectators while GRI.MaxLives > 0.
+    // MaxLives reaches clients once, when they connect, and this function runs again
+    // on every GameInfo.Reset (UTComp warmup end, restart vote), so clear it here.
+    GameReplicationInfo.MaxLives = 0;
+
     if(Misc_BaseGRI(GameReplicationInfo) == None)
         return;
 
@@ -2207,7 +2213,7 @@ state MatchInProgress
 {
     function Timer()
     {
-        local Controller c;
+        local Controller c, NextC;
 
         // DEBUG {
         //Rez();
@@ -2322,8 +2328,13 @@ state MatchInProgress
 
             if(RoundOTTime % OTInterval == 0)
             {
-                for(c = Level.ControllerList; c != None; c = c.NextController)
+                // TakeDamage can destroy c (a bot that freezes/dies enters Bot's Dead
+                // state, whose BeginState destroys it when TooManyBots), so read the
+                // next link first
+                for(c = Level.ControllerList; c != None; c = NextC)
                 {
+                    NextC = c.NextController;
+
                     if(c.Pawn == None)
                         continue;
 

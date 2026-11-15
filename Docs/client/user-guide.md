@@ -79,7 +79,7 @@ immediately. The controls are split into a left column and a right column.
   - **Team** — your awards and your teammates'.
   - **All** — everyone's awards.
 - **Auto Set Net Speed** (check box + value) — When checked, WS3SPN forces your netspeed
-  to the value in the box (default **15000**) each time you connect, so you don't have to
+  to the value in the box (default **1000000**) each time you connect, so you don't have to
   set it manually. Type the desired netspeed in the field beside it.
 - **Play Own Landing Sounds** — Hear your own landing/footstep‑style landing sounds.
 - **Abort Necro Sound** (drop‑down) — The sound played when a Necro adrenaline
