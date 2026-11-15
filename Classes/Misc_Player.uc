@@ -605,15 +605,6 @@ function AwardAdrenaline(float amount)
     }
 }
 
-simulated function PostNetBeginPlay()
-{
-    Super.PostNetBeginPlay();
-
-    if(Level.GRI != None)
-        Level.GRI.MaxLives = 0;	
-
-}
-
 simulated function InitInputSystem()
 {
 	local PlayerController C;

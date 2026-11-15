@@ -253,6 +253,12 @@ function InitGameReplicationInfo()
 {
     Super.InitGameReplicationInfo();
 
+    // Spectators may join at any time here (AllowBecomeActivePlayer has no lives
+    // test), but the login tab greys Join for spectators while GRI.MaxLives > 0.
+    // MaxLives reaches clients once, when they connect, and this function runs again
+    // on every GameInfo.Reset (UTComp warmup end, restart vote), so clear it here.
+    GameReplicationInfo.MaxLives = 0;
+
     if(Misc_BaseGRI(GameReplicationInfo) == None)
         return;
 
